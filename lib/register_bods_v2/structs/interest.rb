@@ -13,5 +13,5 @@ module RegisterBodsV2
     attribute :share, Share.optional
     attribute :startDate, Types::String.optional
     attribute :endDate Types::String.optional
-  )
+  end
 end
