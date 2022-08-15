@@ -6,6 +6,8 @@ require 'register_bods_v2/structs/share'
 
 module RegisterBodsV2
   class Interest < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :type, InterestTypes.optional
     attribute :interestLevel, InterestLevels.optional
     attribute :beneficialOwnershipOrControl, Types::String.optional

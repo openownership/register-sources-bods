@@ -3,6 +3,8 @@ require 'register_bods_v2/enums/annotation_motivations'
 
 module RegisterBodsV2
   class Annotation < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :statementPointerTarget, Types::String.optional
     attribute :creationDate, Types::String.optional
     attribute :createdBy, Types::String.optional  # object, name, url

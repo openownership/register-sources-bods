@@ -9,6 +9,8 @@ require 'register_bods_v2/structs/subject'
 
 module RegisterBodsV2
   class OwnershipOrControlStatement < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute :statementDate,	Types::String.optional

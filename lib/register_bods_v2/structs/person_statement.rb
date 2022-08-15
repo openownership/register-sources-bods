@@ -9,6 +9,8 @@ require 'register_bods_v2/structs/source'
 
 module RegisterBodsV2
   class PersonStatement < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute :statementDate, Types::String.optional

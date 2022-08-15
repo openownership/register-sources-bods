@@ -10,6 +10,8 @@ require 'register_bods_v2/structs/source'
 
 module RegisterBodsV2
   class EntityStatement < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute :statementDate, Types::String.optional

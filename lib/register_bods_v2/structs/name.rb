@@ -2,6 +2,8 @@ require 'register_bods_v2/types'
 
 module RegisterBodsV2
   class Name < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :type, Types::String.optional
     attribute :fullName, Types::String.optional
     attribute :familyName, Types::String.optional

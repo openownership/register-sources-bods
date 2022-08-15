@@ -7,7 +7,7 @@ RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
     let(:params) do
       {
         statementID: '',
-        statementType: 'personStatement',
+        statementType: 'ownershipOrControlStatement',
         statementDate: '',
         isComponent: '',
         componentStatementIDs: [],

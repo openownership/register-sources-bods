@@ -5,6 +5,8 @@ require 'register_bods_v2/structs/agent'
 
 module RegisterBodsV2
   class Source < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :type, SourceTypes
     attribute :description, Types::String.optional
     attribute :url, Types::String.optional

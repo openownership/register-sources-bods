@@ -5,6 +5,8 @@ require 'register_bods_v2/enums/unspecified_reasons'
 
 module RegisterBodsV2
   class PepStatusDetails < Dry::Struct
+    transform_keys(&:to_sym)
+
     attribute :reason, Types::String.optional
     attribute :missingInfoReason, UnspecifiedReasons
     attribute :jurisdiction, Types::String.optional
