@@ -12,6 +12,6 @@ module RegisterBodsV2
     attribute :details, Types::String.optional
     attribute :share, Share.optional
     attribute :startDate, Types::String.optional
-    attribute :endDate Types::String.optional
+    attribute :endDate, Types::String.optional
   end
 end

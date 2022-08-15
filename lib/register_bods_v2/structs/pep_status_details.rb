@@ -1,6 +1,6 @@
 require 'register_bods_v2/types'
 
-require 'register_bods_v2/enums/source'
+require 'register_bods_v2/structs/source'
 require 'register_bods_v2/enums/unspecified_reasons'
 
 module RegisterBodsV2

@@ -1,15 +1,18 @@
-require 'register_bods_v2/structs/address'
+require 'register_bods_v2/structs/annotation'
 
-RSpec.describe RegisterBodsV2::Address do
+RSpec.describe RegisterBodsV2::Annotation do
   subject { described_class }
 
   context 'when params are valid' do
     let(:params) do
       {
-        type: 'residence',
-        address: '123 House',
-        postCode: 'ABC 123',
-        country: 'United Kingdom'
+        statementPointerTarget: '',
+        creationDate: '',
+        createdBy: '',
+        motivation: 'commenting',
+        description: '',
+        transformedContent: '',
+        url: ''
       }
     end
 
@@ -21,10 +24,7 @@ RSpec.describe RegisterBodsV2::Address do
   context 'when params are invalid' do
     let(:params) do
       {
-        type: 'invalid',
-        address: '123 House',
-        postCode: 'ABC 123',
-        country: 'United Kingdom'
+        motivation: 'invalid'
       }
     end
 

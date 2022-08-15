@@ -1,15 +1,12 @@
-require 'register_bods_v2/structs/address'
+require 'register_bods_v2/structs/replaces_statements'
 
-RSpec.describe RegisterBodsV2::Address do
+RSpec.describe RegisterBodsV2::ReplacesStatements do
   subject { described_class }
 
   context 'when params are valid' do
     let(:params) do
       {
-        type: 'residence',
-        address: '123 House',
-        postCode: 'ABC 123',
-        country: 'United Kingdom'
+        value: '',
       }
     end
 
@@ -20,12 +17,7 @@ RSpec.describe RegisterBodsV2::Address do
 
   context 'when params are invalid' do
     let(:params) do
-      {
-        type: 'invalid',
-        address: '123 House',
-        postCode: 'ABC 123',
-        country: 'United Kingdom'
-      }
+      {}
     end
 
     it 'raises and error' do

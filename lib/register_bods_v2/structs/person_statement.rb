@@ -30,5 +30,5 @@ module RegisterBodsV2
     attribute :source, Source.optional
     attribute :annotations, Types.Array(Annotation)
     attribute :replacesStatements, Types::String.optional
-  )
+  end
 end
