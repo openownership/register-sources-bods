@@ -15,174 +15,251 @@ module RegisterBodsV2
         client.indices.create index: es_index, body: {
           mappings: {
             properties: {
-              "company_number": {
-                "type": "keyword"
+              "addresses": {
+                "type":  "keyword" # Types::String.optional
               },
-              "data": {
+              "alternateNames": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "annotations": { # Types.Array(Annotation)
                 "type": "nested",
                 "properties": {
-                  "address": {
-                    "type": "nested",
-                    "properties": {
-                      "address_line_1": {
-                        "type": "keyword"
-                      },
-                      "address_line_2": {
-                        "type": "keyword"
-                      },
-                      "care_of": {
-                        "type": "keyword"
-                      },
-                      "country": {
-                        "type": "keyword"
-                      },
-                      "locality": {
-                        "type": "keyword"
-                      },
-                      "postal_code": {
-                        "type": "keyword"
-                      },
-                      "premises": {
-                        "type": "keyword"
-                      },
-                      "region": {
-                        "type": "keyword"
-                      }
-                    }
+                  "statementPointerTarget": {
+                    "type":  "keyword" # Types::String.optional
                   },
-                  "ceased": {
-                    "type": "boolean"
+                  "creationDate": {
+                    "type":  "keyword" # Types::String.optional
                   },
-                  "ceased_on": {
-                    "type": "date"
+                  "createdBy": {
+                    "type":  "keyword" # Types::String.optional
                   },
-                  "country_of_residence": {
-                    "type": "keyword"
-                  },
-                  "date_of_birth": {
-                    "type": "nested",
-                    "properties": {
-                      "day": {
-                        "type": "integer"
-                      },
-                      "month": {
-                        "type": "integer"
-                      },
-                      "year": {
-                        "type": "integer"
-                      }
-                    }
+                  "motivation": {
+                    "type":  "keyword" # AnnotationMotivations
                   },
                   "description": {
-                    "type": "keyword"
+                    "type":  "keyword" # Types::String.optional
                   },
-                  "etag": {
-                    "type": "keyword"
+                  "transformedContent": {
+                    "type":  "keyword" # Types::String.optional
                   },
-                  "identification": {
+                  "url": {
+                    "type":  "keyword" # Types::String.optional
+                  },
+                }
+              },
+              "birthDate": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "componentStatementIDs": {
+                "type":  "keyword" # Types.Array(Types::String).optional
+              },
+              "deathDate": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "dissolutionDate": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "entityType": {
+                "type":  "keyword" # EntityTypes
+              },
+              "foundingDate": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "hasPepStatus": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "identifiers": { # Types.Array(Identifier).optional
+                "type": "nested",
+                "properties": {
+                  "id": {
+                    "type":  "keyword" # Types::String.optional
+                  },
+                  "scheme": {
+                    "type":  "keyword" # Types::String.optional
+                  },
+                  "schemeName": {
+                    "type":  "keyword" # Types::String.optional
+                  },
+                  "uri": {
+                    "type":  "keyword" # Types::String.optional
+                  },
+                }
+              },
+              "incorporatedInJurisdiction": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "interestedParty": { # InterestedParty.optional
+                "type": "nested",
+                "properties": {
+                  "describedByEntityStatement": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "describedByPersonStatement": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "unspecified": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                }
+              },
+              "interests": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "isComponent": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "name": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "names": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "nationalities": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "pepStatusDetails": { # PepStatusDetails.optional
+                "type": "nested",
+                "properties": {
+                  "reason": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "missingInfoReason": {
+                    "type": "keyword" # UnspecifiedReasons
+                  },
+                  "jurisdiction": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "startDate": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "endDate": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "source": { # Source.optional
                     "type": "nested",
                     "properties": {
-                      "country_registered": {
-                        "type": "keyword"
+                      "type": {
+                        "type": "keyword" # SourceTypes
                       },
-                      "legal_authority": {
-                        "type": "keyword"
+                      "description": {
+                        "type": "keyword" # Types::String.optional
                       },
-                      "legal_form": {
-                        "type": "keyword"
+                      "url": {
+                        "type": "keyword" # Types::String.optional
                       },
-                      "place_registered": {
-                        "type": "keyword"
+                      "retrievedAt": {
+                        "type": "keyword" # Types::String.optional
                       },
-                      "registration_number": {
-                        "type": "keyword"
-                      },
-                    }
-                  },
-                  "kind": {
-                    "type": "keyword"
-                  },
-                  "linked_psc_name": {
-                    "type": "text",
-                    "fields": {
-                      "raw": { 
-                        "type":  "keyword"
-                      }
-                    }
-                  },
-                  "links": {
-                    "type": "nested",
-                    "properties": {
-                      "self": {
-                        "type": "keyword"
-                      },
-                      "statement": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "name": {
-                    "type": "text",
-                    "fields": {
-                      "raw": { 
-                        "type":  "keyword"
-                      }
-                    }
-                  },
-                  "name_elements": {
-                    "type": "nested",
-                    "properties": {
-                      "forename": {
-                        "type": "text",
-                        "fields": {
-                          "raw": { 
-                            "type":  "keyword"
-                          }
+                      "assertedBy": { # Agent.optional
+                        "type": "nested",
+                        "properties": {
+                          "name": {
+                            "type": "keyword" # Types::String.optional
+                          },
+                          "url": {
+                            "type": "keyword" # Types::String.optional
+                          },
                         }
                       },
-                      "other_forenames": {
-                        "type": "text",
-                        "fields": {
-                          "raw": { 
-                            "type":  "keyword"
-                          }
-                        }
-                      },
-                      "surname": {
-                        "type": "text",
-                        "fields": {
-                          "raw": { 
-                            "type":  "keyword"
-                          }
-                        }
-                      },
-                      "title": {
-                        "type": "text",
-                        "fields": {
-                          "raw": { 
-                            "type":  "keyword"
-                          }
-                        }
-                      }
                     }
-                  },
-                  "nationality": {
-                    "type": "keyword"
-                  },
-                  "natures_of_control": {
-                    "type": "keyword", # array
-                  },
-                  "notified_on": {
-                    "type": "date"
-                  },
-                  "restrictions_notice_withdrawal_reason": {
-                    "type": "keyword"
-                  },
-                  "statement": {
-                    "type": "keyword"
                   }
                 }
-              }
+              },
+              },
+              "personType": {
+                "type":  "keyword" # PersonTypes
+              },
+              "placeOfBirth": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "placeOfResidence": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "publicationDetails": { # PublicationDetails.optional
+                "type": "nested",
+                "properties": {
+                  "publicationDate": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "bodsVersion": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "license": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "publisher": { # Publisher
+                    "type": "nested",
+                    "properties": {
+                      "name": {
+                        "type": "keyword" # Types::String.optional
+                      },
+                      "url": {
+                        "type": "keyword" # Types::String.optional
+                      },
+                    }
+                  },
+                }
+              },
+              "replacesStatements": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "source": { # Source.optional
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type": "keyword" # SourceTypes
+                  },
+                  "description": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "url": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "retrievedAt": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "assertedBy": { # Agent.optional
+                    "type": "nested",
+                    "properties": {
+                      "name": {
+                        "type": "keyword" # Types::String.optional
+                      },
+                      "url": {
+                        "type": "keyword" # Types::String.optional
+                      },
+                    }
+                  },
+                }
+              },
+              "statementID": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "statementType": {
+                "type":  "keyword" # StatementTypes
+              },
+              "statementDate": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "subject": { # Subject.optional
+                "type": "nested",
+                "properties": {
+                  "describedByEntityStatement": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                }
+              },
+              "taxResidencies": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "unspecifiedEntityDetails": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "unspecifiedPersonDetails": {
+                "type":  "keyword" # Types::String.optional
+              },
+              "uri": {
+                "type":  "keyword" # Types::String.optional
+              },
             }
           }
         }
