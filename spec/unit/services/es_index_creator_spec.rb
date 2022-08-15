@@ -1,0 +1,18 @@
+require 'register_bods_v2/services/es_index_creator'
+
+RSpec.describe RegisterBodsV2::Services::EsIndexCreator do
+  subject { described_class.new(client: client, es_index: index) }
+
+  let(:client) { double 'client', indices: double('indices') }
+  let(:index) { double 'index' }
+
+  describe '#create_es_index' do
+    it 'calls client' do
+      expect(client.indices).to receive(:create).with a_hash_including(
+        index: index
+      )
+
+      subject.create_es_index
+    end
+  end
+end

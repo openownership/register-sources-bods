@@ -165,7 +165,6 @@ module RegisterBodsV2
                   }
                 }
               },
-              },
               "personType": {
                 "type":  "keyword" # PersonTypes
               },
