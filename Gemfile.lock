@@ -19,7 +19,7 @@ PATH
   remote: .
   specs:
     register_bods_v2 (0.1.0)
-      activesupport (~> 6.1.6.1)
+      activesupport (~> 6.1)
       dry-struct (~> 1.4.0)
       dry-types (~> 1.5.1)
       elasticsearch (~> 7.10.1)
@@ -159,8 +159,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  register_common!
   register_bods_v2!
+  register_common!
   rspec (~> 3.0)
   webmock
 

@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'elasticsearch', '~> 7.10.1'
-  spec.add_dependency 'activesupport', '~> 6.1.6.1'
+  spec.add_dependency 'activesupport', '~> 6.1'
   spec.add_dependency 'dry-types', '~> 1.5.1'
   spec.add_dependency 'dry-struct', '~> 1.4.0'
 end

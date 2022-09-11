@@ -14,27 +14,22 @@ module RegisterBodsV2
         @index = index
       end
 
-      def get(etag)
+      def get(statement_id)
         process_results(
           client.search(
             index: index,
             body: {
               query: {
-                nested: {
-                  path: "data",
-                  query: {
-                    bool: {
-                      must: [
-                        {
-                          match: {
-                            "data.etag": {
-                              query: etag
-                            }
-                          }
+                bool: {
+                  must: [
+                    {
+                      match: {
+                        statementID: {
+                          query: statement_id
                         }
-                      ]
+                      }
                     }
-                  }
+                  ]
                 }
               }
             }
@@ -69,7 +64,7 @@ module RegisterBodsV2
       attr_reader :client, :index
 
       def calculate_id(record)
-        "#{record.company_number}:#{record.data.etag}"
+        record.statementID
       end
 
       def process_results(results)
