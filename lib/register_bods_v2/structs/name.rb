@@ -1,13 +1,14 @@
 require 'register_bods_v2/types'
+require 'register_bods_v2/enums/name_types'
 
 module RegisterBodsV2
   class Name < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :type, Types::String.optional
-    attribute :fullName, Types::String.optional
-    attribute :familyName, Types::String.optional
-    attribute :givenName, Types::String.optional
-    attribute :patronymicName, Types::String.optional
+    attribute? :type, NameTypes
+    attribute? :fullName, Types::String
+    attribute? :familyName, Types::String
+    attribute? :givenName, Types::String
+    attribute? :patronymicName, Types::String
   end
 end

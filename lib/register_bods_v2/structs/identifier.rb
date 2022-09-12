@@ -4,9 +4,9 @@ module RegisterBodsV2
   class Identifier < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :id, Types::String.optional
-    attribute :scheme, Types::String.optional
-    attribute :schemeName, Types::String.optional
-    attribute :uri, Types::String.optional
+    attribute? :id, Types::String
+    attribute? :scheme, Types::String
+    attribute? :schemeName, Types::String
+    attribute? :uri, Types::String
   end
 end

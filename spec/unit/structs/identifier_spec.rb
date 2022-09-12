@@ -20,7 +20,7 @@ RSpec.describe RegisterBodsV2::Identifier do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      { id: nil }
     end
 
     it 'raises and error' do

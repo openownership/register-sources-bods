@@ -6,7 +6,7 @@ RSpec.describe RegisterBodsV2::Name do
   context 'when params are valid' do
     let(:params) do
       {
-        type: '',
+        type: 'individual',
         fullName: '',
         familyName: '',
         givenName: '',
@@ -21,7 +21,7 @@ RSpec.describe RegisterBodsV2::Name do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      { type: 'invalid' }
     end
 
     it 'raises and error' do

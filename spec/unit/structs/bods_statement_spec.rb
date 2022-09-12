@@ -11,16 +11,29 @@ RSpec.describe RegisterBodsV2::BodsStatement do
         statementDate: '',
         isComponent: '',
         personType: 'knownPerson',
-        unspecifiedPersonDetails: '',
-        names: '',
-        identifiers: '',
-        nationalities: '',
-        placeOfBirth: '',
+        unspecifiedPersonDetails: {
+          description: 'some description',
+          reason: 'no-beneficial-owners',
+        },
+        names: [
+          { type: 'individual', fullName: 'Mike', familyName: 'Jones', }
+        ],
+        identifiers: [
+          { id: 'id1' }
+        ],
+        nationalities: [
+          { name: 'France', code: 'FR' }
+        ],
+        placeOfBirth: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
         birthDate: '',
         deathDate: '',
-        placeOfResidence: '',
-        taxResidencies: '',
-        addresses: '',
+        placeOfResidence: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
+        taxResidencies: [
+          { name: 'France', code: 'FR' }
+        ],
+        addresses: [
+          { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' }
+        ],
         hasPepStatus: '',
         pepStatusDetails: nil,
         publicationDetails: {

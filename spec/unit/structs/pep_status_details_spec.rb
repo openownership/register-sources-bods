@@ -8,7 +8,7 @@ RSpec.describe RegisterBodsV2::PepStatusDetails do
       {
         reason: '',
         missingInfoReason: 'no-beneficial-owners',
-        jurisdiction: '',
+        jurisdiction: { name: 'France', code: 'FR' },
         startDate: '',
         endDate: '',
         source: {
@@ -28,7 +28,7 @@ RSpec.describe RegisterBodsV2::PepStatusDetails do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      { missingInfoReason: 'invalid' }
     end
 
     it 'raises and error' do
