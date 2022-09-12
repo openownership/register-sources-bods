@@ -4,31 +4,34 @@ require 'register_bods_v2/enums/entity_types'
 require 'register_bods_v2/enums/statement_types'
 require 'register_bods_v2/structs/annotation'
 require 'register_bods_v2/structs/address'
+require 'register_bods_v2/structs/unspecified_entity_details'
 require 'register_bods_v2/structs/identifier'
+require 'register_bods_v2/structs/jurisdiction'
 require 'register_bods_v2/structs/publication_details'
 require 'register_bods_v2/structs/source'
+require 'register_bods_v2/structs/statement_date'
 
 module RegisterBodsV2
   class EntityStatement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :statementID, Types::String.optional
+    attribute :statementID, Types::String
     attribute :statementType, StatementTypes
-    attribute :statementDate, Types::String.optional
-    attribute :isComponent, Types::String.optional
+    attribute? :statementDate, StatementDate
+    attribute :isComponent, Types::Nominal::Bool
     attribute :entityType, EntityTypes
-    attribute :unspecifiedEntityDetails, Types::String.optional
-    attribute :name, Types::String.optional
-    attribute :alternateNames, Types::String.optional
-    attribute :incorporatedInJurisdiction, Types::String.optional
-    attribute :identifiers, Types.Array(Identifier).optional
-    attribute :foundingDate, Types::String.optional
-    attribute :dissolutionDate, Types::String.optional
-    attribute :addresses, Types.Array(Address).optional
-    attribute :uri, Types::String.optional
-    attribute :replacesStatements, Types::String.optional
-    attribute :publicationDetails, PublicationDetails.optional
-    attribute :source, Source.optional
-    attribute :annotations, Types.Array(Annotation)
+    attribute? :unspecifiedEntityDetails, UnspecifiedEntityDetails
+    attribute? :name, Types::String
+    attribute? :alternateNames, Types::String
+    attribute? :incorporatedInJurisdiction, Jurisdiction
+    attribute? :identifiers, Types.Array(Identifier)
+    attribute? :foundingDate, StatementDate
+    attribute? :dissolutionDate, StatementDate
+    attribute? :addresses, Types.Array(Address)
+    attribute? :uri, Types::String
+    attribute? :replacesStatements, Types.Array(Types::String)
+    attribute :publicationDetails, PublicationDetails
+    attribute? :source, Source
+    attribute? :annotations, Types.Array(Annotation)
   end
 end

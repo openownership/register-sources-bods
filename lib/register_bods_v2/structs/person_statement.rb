@@ -20,7 +20,7 @@ module RegisterBodsV2
     attribute :statementID, Types::String.optional # TODO: Statement Identitifer
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
-    attribute :isComponent,  Types::Nominal::Bool
+    attribute :isComponent, Types::Nominal::Bool
     attribute :personType, PersonTypes
     attribute? :unspecifiedPersonDetails, UnspecifiedPersonDetails
     attribute? :names, Types.Array(Name)
@@ -37,6 +37,6 @@ module RegisterBodsV2
     attribute :publicationDetails, PublicationDetails
     attribute? :source, Source
     attribute? :annotations, Types.Array(Annotation)
-    attribute? :replacesStatements, Types::String.optional
+    attribute? :replacesStatements, Types.Array(Types::String)
   end
 end

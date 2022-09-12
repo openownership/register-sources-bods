@@ -8,8 +8,8 @@ RSpec.describe RegisterBodsV2::BodsStatement do
       {
         statementID: '',
         statementType: 'personStatement',
-        statementDate: '',
-        isComponent: '',
+        statementDate: '2022-09-03',
+        isComponent: false,
         personType: 'knownPerson',
         unspecifiedPersonDetails: {
           description: 'some description',
@@ -25,8 +25,8 @@ RSpec.describe RegisterBodsV2::BodsStatement do
           { name: 'France', code: 'FR' }
         ],
         placeOfBirth: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
-        birthDate: '',
-        deathDate: '',
+        birthDate: '2022-09-04',
+        deathDate: '2022-09-09',
         placeOfResidence: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
         taxResidencies: [
           { name: 'France', code: 'FR' }
@@ -53,7 +53,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
           assertedBy: nil,
         },
         annotations: [],
-        replacesStatements: ''
+        replacesStatements: []
       }
     end
 
@@ -68,18 +68,21 @@ RSpec.describe RegisterBodsV2::BodsStatement do
         statementID: '',
         statementType: 'entityStatement',
         statementDate: '',
-        isComponent: '',
+        isComponent: false,
         entityType: 'legalEntity',
-        unspecifiedEntityDetails: '',
+        unspecifiedEntityDetails: {
+          description: 'some description',
+          reason: 'no-beneficial-owners',
+        },
         name: '',
         alternateNames: '',
-        incorporatedInJurisdiction: '',
+        incorporatedInJurisdiction: { name: 'France', code: 'FR' },
         identifiers: [],
         foundingDate: '',
         dissolutionDate: '',
         addresses: [],
         uri: '',
-        replacesStatements: '',
+        replacesStatements: [],
         publicationDetails: {
           publicationDate: '',
           bodsVersion: '',
@@ -110,8 +113,8 @@ RSpec.describe RegisterBodsV2::BodsStatement do
       {
         statementID: '',
         statementType: 'ownershipOrControlStatement',
-        statementDate: '',
-        isComponent: '',
+        statementDate: '2022-06-01',
+        isComponent: false,
         componentStatementIDs: [],
         subject: {
           describedByEntityStatement: '',
@@ -121,7 +124,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
           describedByPersonStatement: '',
           unspecified: ''
         },
-        interests: '',
+        interests: [],
         publicationDetails: {
           publicationDate: '',
           bodsVersion: '',
@@ -139,7 +142,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
           assertedBy: nil,
         },
         annotations: [],
-        replacesStatements: '',
+        replacesStatements: [],
       }
     end
 

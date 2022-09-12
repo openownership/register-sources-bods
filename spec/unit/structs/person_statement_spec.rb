@@ -8,8 +8,8 @@ RSpec.describe RegisterBodsV2::PersonStatement do
       {
         statementID: '',
         statementType: 'personStatement',
-        statementDate: '',
-        isComponent: '',
+        statementDate: '2022-09-07',
+        isComponent: false,
         personType: 'knownPerson',
         unspecifiedPersonDetails: {
           description: 'some description',
@@ -53,7 +53,7 @@ RSpec.describe RegisterBodsV2::PersonStatement do
           assertedBy: nil,
         },
         annotations: [],
-        replacesStatements: ''
+        replacesStatements: []
       }
     end
 

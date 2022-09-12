@@ -8,8 +8,8 @@ RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
       {
         statementID: '',
         statementType: 'ownershipOrControlStatement',
-        statementDate: '',
-        isComponent: '',
+        statementDate: '2022-03-02',
+        isComponent: false,
         componentStatementIDs: [],
         subject: {
           describedByEntityStatement: '',
@@ -19,7 +19,7 @@ RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
           describedByPersonStatement: '',
           unspecified: ''
         },
-        interests: '',
+        interests: [],
         publicationDetails: {
           publicationDate: '',
           bodsVersion: '',
@@ -37,7 +37,7 @@ RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
           assertedBy: nil,
         },
         annotations: [],
-        replacesStatements: '',
+        replacesStatements: [],
       }
     end
 
