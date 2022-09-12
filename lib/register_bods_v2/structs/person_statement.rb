@@ -3,6 +3,7 @@ require 'register_bods_v2/types'
 require 'register_bods_v2/enums/person_types'
 require 'register_bods_v2/enums/statement_types'
 require 'register_bods_v2/structs/statement_date'
+require 'register_bods_v2/structs/address'
 require 'register_bods_v2/structs/annotation'
 require 'register_bods_v2/structs/country'
 require 'register_bods_v2/structs/identifier'
@@ -19,7 +20,7 @@ module RegisterBodsV2
     attribute :statementID, Types::String.optional # TODO: Statement Identitifer
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
-    attribute :isComponent, Types::String.optional
+    attribute :isComponent,  Types::Nominal::Bool
     attribute :personType, PersonTypes
     attribute? :unspecifiedPersonDetails, UnspecifiedPersonDetails
     attribute? :names, Types.Array(Name)
