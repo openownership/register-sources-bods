@@ -6,11 +6,11 @@ RSpec.describe RegisterBodsV2::Share do
   context 'when params are valid' do
     let(:params) do
       {
-        exact: '',
-        maximum: '',
-        minimum: '',
-        exclusiveMinimum: '',
-        exclusiveMaximum: '',
+        exact: 53.3,
+        maximum: 60.2,
+        minimum: 29.5,
+        exclusiveMinimum: false,
+        exclusiveMaximum: false,
       }
     end
 
@@ -21,7 +21,7 @@ RSpec.describe RegisterBodsV2::Share do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      { exact: 'invalid' }
     end
 
     it 'raises and error' do

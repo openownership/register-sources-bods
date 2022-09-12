@@ -8,17 +8,17 @@ RSpec.describe RegisterBodsV2::Interest do
       {
         type: 'shareholding',
         interestLevel: 'direct',
-        beneficialOwnershipOrControl: '',
+        beneficialOwnershipOrControl: false,
         details: '',
         share: {
-          exact: '',
-          maximum: '',
-          minimum: '',
-          exclusiveMinimum: '',
-          exclusiveMaximum: '',
+          exact: 53.3,
+          maximum: 60.2,
+          minimum: 29.5,
+          exclusiveMinimum: false,
+          exclusiveMaximum: false,
         },
-        startDate: '',
-        endDate: ''
+        startDate: '2022-03-01',
+        endDate: '2022-05-09'
       }
     end
 
@@ -29,7 +29,7 @@ RSpec.describe RegisterBodsV2::Interest do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      { type: 'something' }
     end
 
     it 'raises and error' do

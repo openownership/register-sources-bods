@@ -8,12 +8,12 @@ module RegisterBodsV2
   class Interest < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :type, InterestTypes.optional
-    attribute :interestLevel, InterestLevels.optional
-    attribute :beneficialOwnershipOrControl, Types::String.optional
-    attribute :details, Types::String.optional
-    attribute :share, Share.optional
-    attribute :startDate, Types::String.optional
-    attribute :endDate, Types::String.optional
+    attribute? :type, InterestTypes
+    attribute? :interestLevel, InterestLevels
+    attribute? :beneficialOwnershipOrControl, Types::Nominal::Bool
+    attribute? :details, Types::String
+    attribute? :share, Share
+    attribute? :startDate, Types::String
+    attribute? :endDate, Types::String
   end
 end
