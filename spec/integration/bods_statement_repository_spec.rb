@@ -97,4 +97,27 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
       expect(results).to eq [entity_statement]
     end
   end
+
+  describe '#list_matching_at_least_one_identifier' do
+    it 'retrieves by identifier' do
+      records = [
+        person_statement,
+        entity_statement,
+        ownership_or_control_statement
+      ]
+
+      subject.store(records)
+
+      sleep 1 # eventually consistent, give time
+
+      results = subject.list_matching_at_least_one_identifier([person_statement.identifiers.first])
+      expect(results).to eq [person_statement]
+
+      results = subject.list_matching_at_least_one_identifier(person_statement.identifiers)
+      expect(results).to eq [person_statement]
+      
+      results = subject.list_matching_at_least_one_identifier(person_statement.identifiers + entity_statement.identifiers)
+      expect(results).to eq [person_statement, entity_statement]
+    end
+  end
 end

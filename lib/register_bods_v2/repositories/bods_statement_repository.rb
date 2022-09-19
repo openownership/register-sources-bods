@@ -75,6 +75,37 @@ module RegisterBodsV2
         ).map(&:record)
       end
 
+      def list_matching_at_least_one_identifier(identifiers)
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                nested: {
+                  path: "identifiers",
+                  query: {
+                    bool: {
+                      should: identifiers.map { |identifier|
+                        {
+                          bool: {
+                            must: [
+                              { match: { "identifiers.id": { query: identifier.id } } },
+                              { match: { "identifiers.scheme": { query: identifier.scheme } } },
+                              { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
+                              { match: { "identifiers.uri": { query: identifier.uri } } },
+                            ].select { |sel| sel[:match].values.first[:query] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       def store(records)
         return true if records.empty?
 

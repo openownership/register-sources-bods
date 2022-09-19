@@ -16,7 +16,12 @@
       "id": "id2",
       "scheme": "scheme",
       "schemeName": "schemeName"
-    }
+    },
+    {
+      "id": "another-id2",
+      "scheme": "scheme2",
+      "schemeName": "schemeName2"
+    }    
   ],
   "nationalities": [
     { "name": "France", "code": "FR" }
