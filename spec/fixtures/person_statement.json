@@ -1,0 +1,50 @@
+{
+  "statementID": "ps1",
+  "statementType": "personStatement",
+  "statementDate": "2022-09-07",
+  "isComponent": false,
+  "personType": "knownPerson",
+  "unspecifiedPersonDetails": {
+    "description": "some description",
+    "reason": "no-beneficial-owners"
+  },
+  "names": [
+    { "type": "individual", "fullName": "Mike", "familyName": "Jones" }
+  ],
+  "identifiers": [
+    { "id": "id1" }
+  ],
+  "nationalities": [
+    { "name": "France", "code": "FR" }
+  ],
+  "placeOfBirth": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
+  "birthDate": "",
+  "deathDate": "",
+  "placeOfResidence": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
+  "taxResidencies": [
+    { "name": "France", "code": "FR" }
+  ],
+  "addresses": [
+    { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" }
+  ],
+  "hasPepStatus": "",
+  "pepStatusDetails": null,
+  "publicationDetails": {
+    "publicationDate": "",
+    "bodsVersion": "",
+    "license": "",
+    "publisher": {
+      "name": "",
+      "url": ""
+    }
+  },
+  "source": {
+    "type": "officialRegister",
+    "description": "",
+    "url": "",
+    "retrievedAt": "",
+    "assertedBy": null
+  },
+  "annotations": [],
+  "replacesStatements": []
+}

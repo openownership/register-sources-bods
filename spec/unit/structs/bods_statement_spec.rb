@@ -1,3 +1,4 @@
+require 'json'
 require 'register_bods_v2/structs/bods_statement'
 
 RSpec.describe RegisterBodsV2::BodsStatement do
@@ -5,56 +6,10 @@ RSpec.describe RegisterBodsV2::BodsStatement do
 
   context 'when statementType is personStatement' do
     let(:params) do
-      {
-        statementID: '',
-        statementType: 'personStatement',
-        statementDate: '2022-09-03',
-        isComponent: false,
-        personType: 'knownPerson',
-        unspecifiedPersonDetails: {
-          description: 'some description',
-          reason: 'no-beneficial-owners',
-        },
-        names: [
-          { type: 'individual', fullName: 'Mike', familyName: 'Jones', }
-        ],
-        identifiers: [
-          { id: 'id1' }
-        ],
-        nationalities: [
-          { name: 'France', code: 'FR' }
-        ],
-        placeOfBirth: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
-        birthDate: '2022-09-04',
-        deathDate: '2022-09-09',
-        placeOfResidence: { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' },
-        taxResidencies: [
-          { name: 'France', code: 'FR' }
-        ],
-        addresses: [
-          { type: 'placeOfBirth', postCode: 'ABC', country: 'FR', address: 'free address field' }
-        ],
-        hasPepStatus: '',
-        pepStatusDetails: nil,
-        publicationDetails: {
-          publicationDate: '',
-          bodsVersion: '',
-          license: '',
-          publisher: {
-            name: '',
-            url: ''
-          }
-        },
-        source: {
-          type: 'officialRegister',
-          description: '',
-          url: '',
-          retrievedAt: '',
-          assertedBy: nil,
-        },
-        annotations: [],
-        replacesStatements: []
-      }
+      JSON.parse(
+        File.read('spec/fixtures/person_statement.json'),
+        symbolize_names: true
+      )
     end
 
     it 'maps statement correctly' do
@@ -64,43 +19,10 @@ RSpec.describe RegisterBodsV2::BodsStatement do
 
   context 'when statementType is entityStatement' do
     let(:params) do
-      {
-        statementID: '',
-        statementType: 'entityStatement',
-        statementDate: '',
-        isComponent: false,
-        entityType: 'legalEntity',
-        unspecifiedEntityDetails: {
-          description: 'some description',
-          reason: 'no-beneficial-owners',
-        },
-        name: '',
-        alternateNames: '',
-        incorporatedInJurisdiction: { name: 'France', code: 'FR' },
-        identifiers: [],
-        foundingDate: '',
-        dissolutionDate: '',
-        addresses: [],
-        uri: '',
-        replacesStatements: [],
-        publicationDetails: {
-          publicationDate: '',
-          bodsVersion: '',
-          license: '',
-          publisher: {
-            name: '',
-            url: ''
-          }
-        },
-        source: {
-          type: 'officialRegister',
-          description: '',
-          url: '',
-          retrievedAt: '',
-          assertedBy: nil,
-        },
-        annotations: [],
-      }
+      JSON.parse(
+        File.read('spec/fixtures/entity_statement.json'),
+        symbolize_names: true
+      )
     end
 
     it 'maps statement correctly' do
@@ -110,40 +32,10 @@ RSpec.describe RegisterBodsV2::BodsStatement do
 
   context 'when statementType is ownershipOrControlStatement' do
     let(:params) do
-      {
-        statementID: '',
-        statementType: 'ownershipOrControlStatement',
-        statementDate: '2022-06-01',
-        isComponent: false,
-        componentStatementIDs: [],
-        subject: {
-          describedByEntityStatement: '',
-        },
-        interestedParty: {
-          describedByEntityStatement: '',
-          describedByPersonStatement: '',
-          unspecified: ''
-        },
-        interests: [],
-        publicationDetails: {
-          publicationDate: '',
-          bodsVersion: '',
-          license: '',
-          publisher: {
-            name: '',
-            url: ''
-          }
-        },
-        source: {
-          type: 'officialRegister',
-          description: '',
-          url: '',
-          retrievedAt: '',
-          assertedBy: nil,
-        },
-        annotations: [],
-        replacesStatements: [],
-      }
+      JSON.parse(
+        File.read('spec/fixtures/ownership_or_control_statement.json'),
+        symbolize_names: true
+      )
     end
 
     it 'maps statement correctly' do

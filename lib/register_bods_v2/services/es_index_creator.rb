@@ -15,8 +15,22 @@ module RegisterBodsV2
         client.indices.create index: es_index, body: {
           mappings: {
             properties: {
-              "addresses": {
-                "type":  "keyword" # Types::String.optional
+              "addresses": { # Array[Address]
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type":  "keyword"
+                  },
+                  "address": {
+                    "type":  "keyword"
+                  },
+                  "postCode": {
+                    "type":  "keyword"
+                  },
+                  "country": {
+                    "type":  "keyword"
+                  },
+                }
               },
               "alternateNames": {
                 "type":  "keyword" # Types::String.optional
@@ -86,7 +100,15 @@ module RegisterBodsV2
                 }
               },
               "incorporatedInJurisdiction": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "name": {
+                    "type": "keyword"
+                  },
+                  "code": {
+                    "type": "keyword"
+                  },
+                }
               },
               "interestedParty": { # InterestedParty.optional
                 "type": "nested",
@@ -98,7 +120,15 @@ module RegisterBodsV2
                     "type": "keyword" # Types::String.optional
                   },
                   "unspecified": {
-                    "type": "keyword" # Types::String.optional
+                    "type": "nested",
+                    "properties": {
+                      "reason": {
+                        "type": "keyword" # UnspecifiedReasons
+                      },
+                      "description": {
+                        "type": "keyword" # Types::String.optional
+                      },
+                    }
                   },
                 }
               },
@@ -111,11 +141,36 @@ module RegisterBodsV2
               "name": {
                 "type":  "keyword" # Types::String.optional
               },
-              "names": {
-                "type":  "keyword" # Types::String.optional
+              "names": { # Array[Name]
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type": "keyword" # NameTypes
+                  },
+                  "fullName": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "familyName": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "givenName": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                  "patronymicName": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                }
               },
-              "nationalities": {
-                "type":  "keyword" # Types::String.optional
+              "nationalities": { # Array[Country]
+                "type": "nested",
+                "properties": {
+                  "name": {
+                    "type": "keyword"
+                  },
+                  "code": {
+                    "type": "keyword"
+                  },
+                }
               },
               "pepStatusDetails": { # PepStatusDetails.optional
                 "type": "nested",
@@ -169,10 +224,38 @@ module RegisterBodsV2
                 "type":  "keyword" # PersonTypes
               },
               "placeOfBirth": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type":  "keyword"
+                  },
+                  "address": {
+                    "type":  "keyword"
+                  },
+                  "postCode": {
+                    "type":  "keyword"
+                  },
+                  "country": {
+                    "type":  "keyword"
+                  },
+                }
               },
               "placeOfResidence": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type":  "keyword"
+                  },
+                  "address": {
+                    "type":  "keyword"
+                  },
+                  "postCode": {
+                    "type":  "keyword"
+                  },
+                  "country": {
+                    "type":  "keyword"
+                  },
+                }
               },
               "publicationDetails": { # PublicationDetails.optional
                 "type": "nested",
@@ -248,13 +331,37 @@ module RegisterBodsV2
                 }
               },
               "taxResidencies": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "name": {
+                    "type": "keyword"
+                  },
+                  "code": {
+                    "type": "keyword"
+                  },
+                }
               },
               "unspecifiedEntityDetails": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "reason": {
+                    "type": "keyword" # UnspecifiedReasons
+                  },
+                  "description": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                }
               },
               "unspecifiedPersonDetails": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "reason": {
+                    "type": "keyword" # UnspecifiedReasons
+                  },
+                  "description": {
+                    "type": "keyword" # Types::String.optional
+                  },
+                }
               },
               "uri": {
                 "type":  "keyword" # Types::String.optional

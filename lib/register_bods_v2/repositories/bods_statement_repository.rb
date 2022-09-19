@@ -37,6 +37,42 @@ module RegisterBodsV2
         ).first&.record
       end
 
+      def list_all
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: {}
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
+      def list_matching_identifiers(identifiers)
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: {
+                  must: [
+                    {
+                      match: {
+                        statementID: {
+                          query: statement_id
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       def store(records)
         return true if records.empty?
 
@@ -53,6 +89,7 @@ module RegisterBodsV2
         result = client.bulk(body: operations)
 
         if result['errors']
+          print result, "\n\n"
           raise ElasticsearchError, errors: result['errors']
         end
 
@@ -79,7 +116,7 @@ module RegisterBodsV2
       end
 
       def map_es_record(record)
-        BodsStatement.new(record)
+        BodsStatement[record.compact]
       end
     end
   end

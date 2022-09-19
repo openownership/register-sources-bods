@@ -1,3 +1,4 @@
+require 'json'
 require 'register_bods_v2/structs/ownership_or_control_statement'
 
 RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
@@ -5,40 +6,10 @@ RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
 
   context 'when params are valid' do
     let(:params) do
-      {
-        statementID: '',
-        statementType: 'ownershipOrControlStatement',
-        statementDate: '2022-03-02',
-        isComponent: false,
-        componentStatementIDs: [],
-        subject: {
-          describedByEntityStatement: '',
-        },
-        interestedParty: {
-          describedByEntityStatement: '',
-          describedByPersonStatement: '',
-          unspecified: ''
-        },
-        interests: [],
-        publicationDetails: {
-          publicationDate: '',
-          bodsVersion: '',
-          license: '',
-          publisher: {
-            name: '',
-            url: ''
-          }
-        },
-        source: {
-          type: 'officialRegister',
-          description: '',
-          url: '',
-          retrievedAt: '',
-          assertedBy: nil,
-        },
-        annotations: [],
-        replacesStatements: [],
-      }
+      JSON.parse(
+        File.read('spec/fixtures/ownership_or_control_statement.json'),
+        symbolize_names: true
+      )
     end
 
     it 'builds struct correctly' do

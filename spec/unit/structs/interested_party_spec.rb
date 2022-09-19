@@ -8,7 +8,10 @@ RSpec.describe RegisterBodsV2::InterestedParty do
       {
         describedByEntityStatement: '',
         describedByPersonStatement: '',
-        unspecified: ''
+        unspecified: {
+          description: 'some description',
+          reason: 'no-beneficial-owners',
+        }
       }
     end
 
@@ -19,7 +22,11 @@ RSpec.describe RegisterBodsV2::InterestedParty do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      {
+        unspecified: {
+          reason: 'invalid',
+        }
+      }
     end
 
     it 'raises and error' do

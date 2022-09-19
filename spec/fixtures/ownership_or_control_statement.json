@@ -1,0 +1,37 @@
+{
+  "statementID": "ocs1",
+  "statementType": "ownershipOrControlStatement",
+  "statementDate": "2022-03-02",
+  "isComponent": false,
+  "componentStatementIDs": [],
+  "subject": {
+    "describedByEntityStatement": ""
+  },
+  "interestedParty": {
+    "describedByEntityStatement": "",
+    "describedByPersonStatement": "",
+    "unspecified": {
+      "description": "some description",
+      "reason": "no-beneficial-owners"
+    }
+  },
+  "interests": [],
+  "publicationDetails": {
+    "publicationDate": "",
+    "bodsVersion": "",
+    "license": "",
+    "publisher": {
+      "name": "",
+      "url": ""
+    }
+  },
+  "source": {
+    "type": "officialRegister",
+    "description": "",
+    "url": "",
+    "retrievedAt": "",
+    "assertedBy": null
+  },
+  "annotations": [],
+  "replacesStatements": []
+}
