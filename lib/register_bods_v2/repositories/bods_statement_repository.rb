@@ -50,22 +50,24 @@ module RegisterBodsV2
         ).map(&:record)
       end
 
-      def list_matching_identifiers(identifiers)
+      def list_for_identifier(identifier)
         process_results(
           client.search(
             index: index,
             body: {
               query: {
-                bool: {
-                  must: [
-                    {
-                      match: {
-                        statementID: {
-                          query: statement_id
-                        }
-                      }
+                nested: {
+                  path: "identifiers",
+                  query: {
+                    bool: {
+                      must: [
+                        { match: { "identifiers.id": { query: identifier.id } } },
+                        { match: { "identifiers.scheme": { query: identifier.scheme } } },
+                        { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
+                        { match: { "identifiers.uri": { query: identifier.uri } } },
+                      ].select { |sel| sel[:match].values.first[:query] }
                     }
-                  ]
+                  }
                 }
               }
             }

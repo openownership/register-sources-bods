@@ -73,4 +73,28 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
       expect(subject.get("missing")).to be_nil
     end
   end
+
+  describe '#list_for_identifier' do
+    it 'retrieves by identifier' do
+      records = [
+        person_statement,
+        entity_statement,
+        ownership_or_control_statement
+      ]
+
+      subject.store(records)
+
+      sleep 1 # eventually consistent, give time
+
+      # when given single identifier
+      results = subject.list_for_identifier(person_statement.identifiers.first)
+      expect(results).not_to be_empty
+      expect(results).to eq [person_statement]
+
+      # when given single identifier
+      results = subject.list_for_identifier(entity_statement.identifiers.first)
+      expect(results).not_to be_empty
+      expect(results).to eq [entity_statement]
+    end
+  end
 end

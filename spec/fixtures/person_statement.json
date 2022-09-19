@@ -12,7 +12,11 @@
     { "type": "individual", "fullName": "Mike", "familyName": "Jones" }
   ],
   "identifiers": [
-    { "id": "id1" }
+    {
+      "id": "id2",
+      "scheme": "scheme",
+      "schemeName": "schemeName"
+    }
   ],
   "nationalities": [
     { "name": "France", "code": "FR" }
