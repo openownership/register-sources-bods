@@ -133,7 +133,47 @@ module RegisterBodsV2
                 }
               },
               "interests": {
-                "type":  "keyword" # Types::String.optional
+                "type": "nested",
+                "properties": {
+                  "type": {
+                    "type": "keyword"
+                  },
+                  "interestLevel": {
+                    "type": "keyword"
+                  },
+                  "beneficialOwnershipOrControl": {
+                    "type": "boolean"
+                  },
+                  "details": {
+                    "type": "keyword"
+                  },
+                  "share": {
+                    "type": "nested",
+                    "properties": {
+                      "exact": {
+                        "type": "float"
+                      },
+                      "maximum": {
+                        "type": "float"
+                      },
+                      "minimum": {
+                        "type": "float"
+                      },
+                      "exclusiveMinimum": {
+                        "type": "boolean"
+                      },
+                      "exclusiveMaximum": {
+                        "type": "boolean"
+                      },
+                    }
+                  },
+                  "startDate": {
+                    "type": "keyword"
+                  },
+                  "endDate": {
+                    "type": "keyword"
+                  },
+                }
               },
               "isComponent": {
                 "type":  "keyword" # Types::String.optional
