@@ -1,3 +1,4 @@
+require 'json'
 require 'xxhash'
 
 require 'register_bods_v2/repositories/bods_statement_repository'
@@ -24,8 +25,9 @@ module RegisterBodsV2
       end
 
       def publish_new_records(records)
-        producer.produce(records)
+        records.each { |record| print record.to_h.to_json, "\n" }
 
+        producer.produce(records)
         producer.finalize
 
         repository.store(records)
