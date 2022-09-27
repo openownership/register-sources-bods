@@ -16,7 +16,7 @@ module RegisterBodsV2
     attribute :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute? :statementDate,	StatementDate
-    attribute :isComponent, Types::Nominal::Bool
+    attribute :isComponent, Types::Params::Bool
     attribute? :componentStatementIDs, Types.Array(Types::String)
     attribute :subject, Subject
     attribute :interestedParty, InterestedParty

@@ -36,7 +36,7 @@
   "addresses": [
     { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" }
   ],
-  "hasPepStatus": "",
+  "hasPepStatus": false,
   "pepStatusDetails": null,
   "publicationDetails": {
     "publicationDate": "",

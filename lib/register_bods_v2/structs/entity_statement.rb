@@ -18,7 +18,7 @@ module RegisterBodsV2
     attribute :statementID, Types::String
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
-    attribute :isComponent, Types::Nominal::Bool
+    attribute :isComponent, Types::Params::Bool
     attribute :entityType, EntityTypes
     attribute? :unspecifiedEntityDetails, UnspecifiedEntityDetails
     attribute? :name, Types::String

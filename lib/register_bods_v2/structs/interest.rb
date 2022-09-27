@@ -10,7 +10,7 @@ module RegisterBodsV2
 
     attribute? :type, InterestTypes
     attribute? :interestLevel, InterestLevels
-    attribute? :beneficialOwnershipOrControl, Types::Nominal::Bool
+    attribute? :beneficialOwnershipOrControl, Types::Params::Bool
     attribute? :details, Types::String
     attribute? :share, Share
     attribute? :startDate, Types::String

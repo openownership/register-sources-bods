@@ -7,7 +7,7 @@ module RegisterBodsV2
     attribute? :exact, Types::Coercible::Float
     attribute? :maximum, Types::Coercible::Float
     attribute? :minimum, Types::Coercible::Float
-    attribute? :exclusiveMinimum, Types::Nominal::Bool
-    attribute? :exclusiveMaximum, Types::Nominal::Bool
+    attribute? :exclusiveMinimum, Types::Params::Bool
+    attribute? :exclusiveMaximum, Types::Params::Bool
   end
 end

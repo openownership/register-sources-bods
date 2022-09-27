@@ -20,7 +20,7 @@ module RegisterBodsV2
     attribute :statementID, Types::String.optional # TODO: Statement Identitifer
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
-    attribute :isComponent, Types::Nominal::Bool
+    attribute :isComponent, Types::Params::Bool
     attribute :personType, PersonTypes
     attribute? :unspecifiedPersonDetails, UnspecifiedPersonDetails
     attribute? :names, Types.Array(Name)
@@ -32,7 +32,7 @@ module RegisterBodsV2
     attribute? :placeOfResidence, Address
     attribute? :taxResidencies, Types.Array(Country)
     attribute? :addresses, Types.Array(Address)
-    attribute? :hasPepStatus, Types::Nominal::Bool
+    attribute? :hasPepStatus, Types::Params::Bool
     attribute? :pepStatusDetails, PepStatusDetails
     attribute :publicationDetails, PublicationDetails
     attribute? :source, Source

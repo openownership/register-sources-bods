@@ -19,7 +19,7 @@ RSpec.describe RegisterBodsV2::Publishers::PersonStatement do
     context 'when record does not already exist' do
       it 'persists record to repository and publishes' do
         expect(repository).to receive(:get).with(
-          "10818997938848191461"
+          "18339314454075286224"
         ).and_return nil
         expect(repository).to receive(:list_matching_at_least_one_identifier).with(
           record.identifiers
@@ -41,7 +41,7 @@ RSpec.describe RegisterBodsV2::Publishers::PersonStatement do
         existing_record = double 'record'
 
         expect(repository).to receive(:get).with(
-          "10818997938848191461"
+          "18339314454075286224"
         ).and_return nil
         expect(repository).to receive(:list_matching_at_least_one_identifier).with(
           record.identifiers
@@ -64,7 +64,7 @@ RSpec.describe RegisterBodsV2::Publishers::PersonStatement do
         existing_record = double 'record'
 
         expect(repository).to receive(:get).with(
-          "10818997938848191461"
+          "18339314454075286224"
         ).and_return existing_record
         expect(repository).not_to receive(:list_matching_at_least_one_identifier)
         expect(repository).not_to receive(:store)
