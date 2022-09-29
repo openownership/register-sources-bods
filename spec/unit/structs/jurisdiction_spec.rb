@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/jurisdiction'
+require 'register_sources_bods/structs/jurisdiction'
 
-RSpec.describe RegisterBodsV2::Jurisdiction do
+RSpec.describe RegisterSourcesBods::Jurisdiction do
   subject { described_class }
 
   context 'when params are valid' do

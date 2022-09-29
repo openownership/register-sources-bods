@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/country'
+require 'register_sources_bods/structs/country'
 
-RSpec.describe RegisterBodsV2::Country do
+RSpec.describe RegisterSourcesBods::Country do
   subject { described_class }
 
   context 'when params are valid' do

@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/agent'
+require 'register_sources_bods/structs/agent'
 
-RSpec.describe RegisterBodsV2::Agent do
+RSpec.describe RegisterSourcesBods::Agent do
   subject { described_class }
 
   context 'when params are valid' do

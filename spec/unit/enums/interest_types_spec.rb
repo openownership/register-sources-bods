@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/interest_types'
+require 'register_sources_bods/enums/interest_types'
 
-RSpec.describe RegisterBodsV2::InterestTypes do
+RSpec.describe RegisterSourcesBods::InterestTypes do
   subject { described_class }
 
   context 'when value is valid' do

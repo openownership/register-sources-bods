@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module RegisterBodsV2
+module RegisterSourcesBods
   UNITTEST = 1
 end
 
-require "register_bods_v2"
-require 'register_bods_v2/config'
+require "register_sources_bods"
+require 'register_sources_bods/config'
 require 'webmock/rspec'
 
 RSpec.configure do |config|
@@ -26,7 +26,7 @@ RSpec.configure do |config|
     allow_localhost: true,
     allow: [
       'chromedriver.storage.googleapis.com',
-      'register_bods_v2_elasticsearch_test'
+      'register_sources_bods_elasticsearch_test'
     ]
   )
 end

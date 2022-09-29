@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/person_types'
+require 'register_sources_bods/enums/person_types'
 
-RSpec.describe RegisterBodsV2::PersonTypes do
+RSpec.describe RegisterSourcesBods::PersonTypes do
   subject { described_class }
 
   context 'when value is valid' do

@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/share'
+require 'register_sources_bods/structs/share'
 
-RSpec.describe RegisterBodsV2::Share do
+RSpec.describe RegisterSourcesBods::Share do
   subject { described_class }
 
   context 'when params are valid' do

@@ -1,11 +1,11 @@
 require 'elasticsearch'
-require 'register_bods_v2/repositories/bods_statement_repository'
-require 'register_bods_v2/services/es_index_creator'
-require 'register_bods_v2/structs/person_statement'
-require 'register_bods_v2/structs/entity_statement'
-require 'register_bods_v2/structs/ownership_or_control_statement'
+require 'register_sources_bods/repositories/bods_statement_repository'
+require 'register_sources_bods/services/es_index_creator'
+require 'register_sources_bods/structs/person_statement'
+require 'register_sources_bods/structs/entity_statement'
+require 'register_sources_bods/structs/ownership_or_control_statement'
 
-RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
+RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
   subject { described_class.new(client: es_client, index: index) }
 
   let(:index) { SecureRandom.uuid }
@@ -18,7 +18,7 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
   end
 
   let(:person_statement) do
-    RegisterBodsV2::PersonStatement.new(
+    RegisterSourcesBods::PersonStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
         symbolize_names: true
@@ -27,7 +27,7 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
   end
 
   let(:entity_statement) do
-    RegisterBodsV2::EntityStatement.new(
+    RegisterSourcesBods::EntityStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/entity_statement.json'),
         symbolize_names: true
@@ -36,7 +36,7 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
   end
 
   let(:ownership_or_control_statement) do
-    RegisterBodsV2::OwnershipOrControlStatement.new(
+    RegisterSourcesBods::OwnershipOrControlStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/ownership_or_control_statement.json'),
         symbolize_names: true
@@ -45,7 +45,7 @@ RSpec.describe RegisterBodsV2::Repositories::BodsStatementRepository do
   end
 
   before do
-    index_creator = RegisterBodsV2::Services::EsIndexCreator.new(
+    index_creator = RegisterSourcesBods::Services::EsIndexCreator.new(
       es_index: index,
       client: es_client
     )

@@ -1,9 +1,9 @@
-require 'register_bods_v2/services/publisher'
-require 'register_bods_v2/structs/entity_statement'
-require 'register_bods_v2/structs/person_statement'
-require 'register_bods_v2/structs/ownership_or_control_statement'
+require 'register_sources_bods/services/publisher'
+require 'register_sources_bods/structs/entity_statement'
+require 'register_sources_bods/structs/person_statement'
+require 'register_sources_bods/structs/ownership_or_control_statement'
 
-RSpec.describe RegisterBodsV2::Services::Publisher do
+RSpec.describe RegisterSourcesBods::Services::Publisher do
   subject do
     described_class.new(
       entity_statement_publisher: entity_statement_publisher,
@@ -19,7 +19,7 @@ RSpec.describe RegisterBodsV2::Services::Publisher do
   describe '#publish' do
     context 'when record is person statement' do
       let(:statement) do
-        RegisterBodsV2::BodsStatement[
+        RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/person_statement.json'),
             symbolize_names: true
@@ -36,7 +36,7 @@ RSpec.describe RegisterBodsV2::Services::Publisher do
 
     context 'when record is entity statement' do
       let(:statement) do
-        RegisterBodsV2::BodsStatement[
+        RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/entity_statement.json'),
             symbolize_names: true
@@ -53,7 +53,7 @@ RSpec.describe RegisterBodsV2::Services::Publisher do
 
     context 'when record is ownership or control statement' do
       let(:statement) do
-        RegisterBodsV2::BodsStatement[
+        RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/ownership_or_control_statement.json'),
             symbolize_names: true
@@ -73,7 +73,7 @@ RSpec.describe RegisterBodsV2::Services::Publisher do
         let(:statement) { { statementType: 'personStatement' } }
       
         it 'raises an error' do
-          expect { subject.publish statement }.to raise_error RegisterBodsV2::UnknownRecordKindError
+          expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
         end
       end
 
@@ -81,7 +81,7 @@ RSpec.describe RegisterBodsV2::Services::Publisher do
         let(:statement) { { statementType: 'invalid' } }
       
         it 'raises an error' do
-          expect { subject.publish statement }.to raise_error RegisterBodsV2::UnknownRecordKindError
+          expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
         end
       end
     end

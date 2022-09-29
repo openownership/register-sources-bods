@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/interest_levels'
+require 'register_sources_bods/enums/interest_levels'
 
-RSpec.describe RegisterBodsV2::InterestLevels do
+RSpec.describe RegisterSourcesBods::InterestLevels do
   subject { described_class }
 
   context 'when value is valid' do

@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/name_types'
+require 'register_sources_bods/enums/name_types'
 
-RSpec.describe RegisterBodsV2::NameTypes do
+RSpec.describe RegisterSourcesBods::NameTypes do
   subject { described_class }
 
   context 'when value is valid' do

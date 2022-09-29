@@ -1,6 +1,6 @@
-require 'register_bods_v2/publishers/entity_statement'
+require 'register_sources_bods/publishers/entity_statement'
 
-RSpec.describe RegisterBodsV2::Publishers::EntityStatement do
+RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
   subject { described_class.new(repository: repository, producer: producer) }
 
   let(:repository) { double 'repository' }
@@ -8,7 +8,7 @@ RSpec.describe RegisterBodsV2::Publishers::EntityStatement do
 
   describe '#publish' do
     let(:record) do
-      RegisterBodsV2::EntityStatement[
+      RegisterSourcesBods::EntityStatement[
         **JSON.parse(
           File.read('spec/fixtures/entity_statement.json'),
           symbolize_names: true

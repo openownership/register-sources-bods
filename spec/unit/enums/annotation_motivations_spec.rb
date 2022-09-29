@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/annotation_motivations'
+require 'register_sources_bods/enums/annotation_motivations'
 
-RSpec.describe RegisterBodsV2::AnnotationMotivations do
+RSpec.describe RegisterSourcesBods::AnnotationMotivations do
   subject { described_class }
 
   context 'when value is valid' do

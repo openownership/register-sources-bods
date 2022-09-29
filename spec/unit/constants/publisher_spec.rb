@@ -1,11 +1,11 @@
-require 'register_bods_v2/constants/publisher'
+require 'register_sources_bods/constants/publisher'
 
-RSpec.describe RegisterBodsV2 do
+RSpec.describe RegisterSourcesBods do
   subject { described_class }
 
   it 'has publisher constants defined' do
     expect(described_class.const_defined?(:BODS_VERSION)).to be true
     expect(described_class.const_defined?(:BODS_LICENSE)).to be true
-    expect(described_class::PUBLISHER).to be_a RegisterBodsV2::Publisher
+    expect(described_class::PUBLISHER).to be_a RegisterSourcesBods::Publisher
   end
 end
