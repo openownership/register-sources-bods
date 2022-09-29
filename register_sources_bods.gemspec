@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Josh Williams"]
   spec.email = ["josh@spacesnottabs.com"]
 
-  spec.summary = "Library for storing and retrieving Open Corporates data."
+  spec.summary = "Library for storing, retrieving, and publishing BODS statements."
   spec.description = spec.summary
   spec.homepage = "https://github.com/openownership/register-sources-bods"
   spec.required_ruby_version = ">= 2.7"
