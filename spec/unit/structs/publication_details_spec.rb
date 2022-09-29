@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/publication_details'
+require 'register_sources_bods/structs/publication_details'
 
-RSpec.describe RegisterBodsV2::PublicationDetails do
+RSpec.describe RegisterSourcesBods::PublicationDetails do
   subject { described_class }
 
   context 'when params are valid' do

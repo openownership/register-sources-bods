@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/source_types'
+require 'register_sources_bods/enums/source_types'
 
-RSpec.describe RegisterBodsV2::SourceTypes do
+RSpec.describe RegisterSourcesBods::SourceTypes do
   subject { described_class }
 
   context 'when value is valid' do

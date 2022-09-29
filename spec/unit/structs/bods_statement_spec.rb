@@ -1,7 +1,7 @@
 require 'json'
-require 'register_bods_v2/structs/bods_statement'
+require 'register_sources_bods/structs/bods_statement'
 
-RSpec.describe RegisterBodsV2::BodsStatement do
+RSpec.describe RegisterSourcesBods::BodsStatement do
   subject { described_class }
 
   context 'when statementType is personStatement' do
@@ -13,7 +13,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
     end
 
     it 'maps statement correctly' do
-      expect(subject[params]).to be_a RegisterBodsV2::PersonStatement
+      expect(subject[params]).to be_a RegisterSourcesBods::PersonStatement
     end
   end
 
@@ -26,7 +26,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
     end
 
     it 'maps statement correctly' do
-      expect(subject[params]).to be_a RegisterBodsV2::EntityStatement
+      expect(subject[params]).to be_a RegisterSourcesBods::EntityStatement
     end
   end
 
@@ -39,7 +39,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
     end
 
     it 'maps statement correctly' do
-      expect(subject[params]).to be_a RegisterBodsV2::OwnershipOrControlStatement
+      expect(subject[params]).to be_a RegisterSourcesBods::OwnershipOrControlStatement
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe RegisterBodsV2::BodsStatement do
     end
 
     it 'raises and error' do
-      expect { subject[params] }.to raise_error RegisterBodsV2::UnknownRecordKindError
+      expect { subject[params] }.to raise_error RegisterSourcesBods::UnknownRecordKindError
     end
   end
 end

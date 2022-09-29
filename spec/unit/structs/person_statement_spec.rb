@@ -1,7 +1,7 @@
 require 'json'
-require 'register_bods_v2/structs/person_statement'
+require 'register_sources_bods/structs/person_statement'
 
-RSpec.describe RegisterBodsV2::PersonStatement do
+RSpec.describe RegisterSourcesBods::PersonStatement do
   subject { described_class }
 
   context 'when params are valid' do

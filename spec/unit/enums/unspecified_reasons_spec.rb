@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/unspecified_reasons'
+require 'register_sources_bods/enums/unspecified_reasons'
 
-RSpec.describe RegisterBodsV2::UnspecifiedReasons do
+RSpec.describe RegisterSourcesBods::UnspecifiedReasons do
   subject { described_class }
 
   context 'when value is valid' do

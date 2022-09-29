@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/address_types'
+require 'register_sources_bods/enums/address_types'
 
-RSpec.describe RegisterBodsV2::AddressTypes do
+RSpec.describe RegisterSourcesBods::AddressTypes do
   subject { described_class }
 
   context 'when value is valid' do

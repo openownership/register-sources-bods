@@ -1,6 +1,6 @@
-require 'register_bods_v2/publishers/ownership_or_control_statement'
+require 'register_sources_bods/publishers/ownership_or_control_statement'
 
-RSpec.describe RegisterBodsV2::Publishers::OwnershipOrControlStatement do
+RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
   subject { described_class.new(repository: repository, producer: producer) }
 
   let(:repository) { double 'repository' }
@@ -8,7 +8,7 @@ RSpec.describe RegisterBodsV2::Publishers::OwnershipOrControlStatement do
 
   describe '#publish' do
     let(:record) do
-      RegisterBodsV2::OwnershipOrControlStatement[
+      RegisterSourcesBods::OwnershipOrControlStatement[
         **JSON.parse(
           File.read('spec/fixtures/ownership_or_control_statement.json'),
           symbolize_names: true

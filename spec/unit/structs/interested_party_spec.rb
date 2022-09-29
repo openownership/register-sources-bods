@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/interested_party'
+require 'register_sources_bods/structs/interested_party'
 
-RSpec.describe RegisterBodsV2::InterestedParty do
+RSpec.describe RegisterSourcesBods::InterestedParty do
   subject { described_class }
 
   context 'when params are valid' do

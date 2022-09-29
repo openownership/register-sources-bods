@@ -1,7 +1,7 @@
 require 'json'
-require 'register_bods_v2/structs/ownership_or_control_statement'
+require 'register_sources_bods/structs/ownership_or_control_statement'
 
-RSpec.describe RegisterBodsV2::OwnershipOrControlStatement do
+RSpec.describe RegisterSourcesBods::OwnershipOrControlStatement do
   subject { described_class }
 
   context 'when params are valid' do

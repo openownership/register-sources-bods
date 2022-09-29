@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/replaces_statements'
+require 'register_sources_bods/structs/replaces_statements'
 
-RSpec.describe RegisterBodsV2::ReplacesStatements do
+RSpec.describe RegisterSourcesBods::ReplacesStatements do
   subject { described_class }
 
   context 'when params are valid' do

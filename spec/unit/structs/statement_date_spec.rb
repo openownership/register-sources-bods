@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/statement_date'
+require 'register_sources_bods/structs/statement_date'
 
-RSpec.describe RegisterBodsV2::StatementDate do
+RSpec.describe RegisterSourcesBods::StatementDate do
   subject { described_class }
 
   context 'when params are valid' do

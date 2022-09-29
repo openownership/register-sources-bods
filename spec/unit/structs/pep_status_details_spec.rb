@@ -1,6 +1,6 @@
-require 'register_bods_v2/structs/pep_status_details'
+require 'register_sources_bods/structs/pep_status_details'
 
-RSpec.describe RegisterBodsV2::PepStatusDetails do
+RSpec.describe RegisterSourcesBods::PepStatusDetails do
   subject { described_class }
 
   context 'when params are valid' do

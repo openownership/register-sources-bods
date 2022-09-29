@@ -1,7 +1,7 @@
 require 'json'
-require 'register_bods_v2/structs/entity_statement'
+require 'register_sources_bods/structs/entity_statement'
 
-RSpec.describe RegisterBodsV2::EntityStatement do
+RSpec.describe RegisterSourcesBods::EntityStatement do
   subject { described_class }
 
   context 'when params are valid' do

@@ -1,6 +1,6 @@
-require 'register_bods_v2/enums/statement_types'
+require 'register_sources_bods/enums/statement_types'
 
-RSpec.describe RegisterBodsV2::StatementTypes do
+RSpec.describe RegisterSourcesBods::StatementTypes do
   subject { described_class }
 
   context 'when value is valid' do
