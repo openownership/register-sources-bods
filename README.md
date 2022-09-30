@@ -1,6 +1,6 @@
 # Register Sources BODS
 
-Register Sources BODS is designed for inclusion as a library for use with any BODS data source. See https://standard.openownership.org/en/0.2.0/ for an example of their data standard.
+Register Sources BODS is designed for inclusion as a library for use with any BODS data source. See https://standard.openownership.org/en/0.2.0/ for an example of the data standard.
 
 There are three primary purposes for this library:
 
