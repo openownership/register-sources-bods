@@ -20,10 +20,10 @@ PATH
   remote: .
   specs:
     register_sources_bods (0.1.0)
-      activesupport (~> 6.1)
-      dry-struct (~> 1.4.0)
-      dry-types (~> 1.5.1)
-      elasticsearch (~> 7.10.1)
+      activesupport (>= 6, < 8)
+      dry-struct (>= 1, < 2)
+      dry-types (>= 1, < 2)
+      elasticsearch (>= 7.10, < 8)
       xxhash
 
 GEM
