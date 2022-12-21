@@ -12,6 +12,6 @@ module RegisterSourcesBods
       log: false
     )
 
-    ES_BODS_V2_INDEX = 'bods_v2'
+    ES_BODS_V2_INDEX = 'bods_v2_dev'
   end
 end
