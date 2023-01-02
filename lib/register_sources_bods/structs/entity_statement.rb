@@ -15,7 +15,7 @@ module RegisterSourcesBods
   class EntityStatement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :statementID, Types::String
+    attribute? :statementID, Types::String
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
     attribute :isComponent, Types::Params::Bool

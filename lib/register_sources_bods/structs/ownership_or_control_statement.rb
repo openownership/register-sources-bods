@@ -13,7 +13,7 @@ module RegisterSourcesBods
   class OwnershipOrControlStatement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :statementID, Types::String.optional
+    attribute? :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute? :statementDate,	StatementDate
     attribute :isComponent, Types::Params::Bool
