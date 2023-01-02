@@ -21,7 +21,7 @@ module RegisterSourcesBods
     attribute :subject, Subject
     attribute :interestedParty, InterestedParty
     attribute? :interests, Types.Array(Interest)
-    attribute :publicationDetails, PublicationDetails
+    attribute? :publicationDetails, PublicationDetails
     attribute? :source, Source
     attribute? :annotations, Types.Array(Annotation)
     attribute? :replacesStatements, Types.Array(Types::String)

@@ -30,7 +30,7 @@ module RegisterSourcesBods
     attribute? :addresses, Types.Array(Address)
     attribute? :uri, Types::String
     attribute? :replacesStatements, Types.Array(Types::String)
-    attribute :publicationDetails, PublicationDetails
+    attribute? :publicationDetails, PublicationDetails
     attribute? :source, Source
     attribute? :annotations, Types.Array(Annotation)
   end
