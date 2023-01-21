@@ -29,12 +29,11 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.7)
+    activesupport (7.0.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     aws-eventstream (1.2.0)
@@ -124,7 +123,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jmespath (1.6.1)
-    minitest (5.16.3)
+    minitest (5.17.0)
     multi_json (1.15.0)
     multipart-post (2.2.3)
     net-http-persistent (4.0.1)
@@ -160,7 +159,6 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     xxhash (0.5.0)
-    zeitwerk (2.6.0)
 
 PLATFORMS
   x86_64-linux
