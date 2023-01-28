@@ -1,4 +1,4 @@
-require 'register_sources_bods/publishers/person_statement'
+require 'register_sources_bods/builders/person_statement'
 
 RSpec.describe RegisterSourcesBods::Publishers::PersonStatement do
   subject { described_class.new(repository:, producer:) }

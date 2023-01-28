@@ -1,4 +1,4 @@
-require 'register_sources_bods/publishers/ownership_or_control_statement'
+require 'register_sources_bods/builders/ownership_or_control_statement'
 
 RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
   subject { described_class.new(repository:, producer:) }
