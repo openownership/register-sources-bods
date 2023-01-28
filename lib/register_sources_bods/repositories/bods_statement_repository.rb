@@ -37,6 +37,31 @@ module RegisterSourcesBods
         ).first&.record
       end
 
+      def get_bulk(statement_ids)
+        return [] unless statement_ids
+
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: {
+                  must: [
+                    {
+                      match: {
+                        statementID: {
+                          query: statement_ids
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       def list_all
         process_results(
           client.search(
@@ -76,6 +101,8 @@ module RegisterSourcesBods
       end
 
       def list_matching_at_least_one_identifier(identifiers)
+        return [] if identifiers.empty?
+
         process_results(
           client.search(
             index: index,

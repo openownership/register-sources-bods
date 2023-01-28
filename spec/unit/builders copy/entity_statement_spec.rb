@@ -1,4 +1,4 @@
-require 'register_sources_bods/publishers/entity_statement'
+require 'register_sources_bods/id_generators/entity_statement'
 
 RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
   subject { described_class.new(repository: repository, producer: producer) }
