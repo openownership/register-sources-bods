@@ -69,6 +69,14 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       expect(results).not_to be_empty
       expect(results.sort_by(&:statementID)).to eq records.sort_by(&:statementID)
 
+      # When retrieving
+      result = subject.get(person_statement.statementID)
+      expect(result).to eq person_statement
+
+      # When retrieving many
+      result = subject.get_bulk([person_statement, entity_statement].map(&:statementID))
+      expect(result.sort_by(&:statementID)).to eq [person_statement, entity_statement].sort_by(&:statementID)
+
       # When records do not exist
       expect(subject.get("missing")).to be_nil
     end
