@@ -46,15 +46,15 @@ module RegisterSourcesBods
             body: {
               query: {
                 bool: {
-                  must: [
+                  should: statement_ids.map { |statement_id|
                     {
-                      match: {
-                        statementID: {
-                          query: statement_ids
-                        }
+                      bool: {
+                        must: [
+                          { match: { "statementID": { query: statement_id } } }
+                        ]
                       }
                     }
-                  ]
+                  }
                 }
               }
             }
