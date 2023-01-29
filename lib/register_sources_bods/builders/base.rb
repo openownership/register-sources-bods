@@ -14,5 +14,6 @@ module RegisterSourcesBods
       def generate_statement_id(record)
         id_generator.generate_id record
       end
+    end
   end
 end

@@ -1,3 +1,4 @@
+require 'register_sources_bods/constants/errors'
 require 'register_sources_bods/builders/entity_statement'
 require 'register_sources_bods/builders/person_statement'
 require 'register_sources_bods/builders/ownership_or_control_statement'
@@ -26,9 +27,9 @@ module RegisterSourcesBods
       end
 
       def build(record, records_for_identifiers)
-        builders[record.statementType].build(record, records_for_identifiers)
+        builders.fetch(record.statementType).build(record, records_for_identifiers)
       rescue KeyError
-        raise UnknownRecordKindError
+        raise Errors::UnknownRecordKindError
       end
 
       private
