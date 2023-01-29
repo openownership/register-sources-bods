@@ -6,84 +6,50 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Services::Publisher do
   subject do
     described_class.new(
-      entity_statement_publisher:,
-      person_statement_publisher:,
-      ownership_or_control_statement_publisher:,
+      repository: repository,
+      producer: producer,
+      builder: builder,
+      id_generator: id_generator
     )
   end
 
-  let(:entity_statement_publisher) { double 'entity_statement_publisher' }
-  let(:person_statement_publisher) { double 'person_statement_publisher' }
-  let(:ownership_or_control_statement_publisher) { double 'ownership_or_control_statement_publisher' }
+  let(:repository) { double 'repository' }
+  let(:producer) { double 'producer' }
+  let(:builder) { double 'builder' }
+  let(:id_generator) { double 'id_generator' }
+
+  let(:statement) do
+    RegisterSourcesBods::BodsStatement[
+      JSON.parse(
+        File.read('spec/fixtures/person_statement.json'),
+        symbolize_names: true
+      )
+    ]
+  end
+
+  let(:statement_id) { 'abc1' }
+
+  before do
+    expect(repository).to receive(:list_matching_at_least_one_identifier).with(statement.identifiers).and_return []
+    allow(id_generator).to receive(:generate_id).with(statement).and_return statement_id
+    expect(repository).to receive(:get_bulk).with([statement_id]).and_return []
+    expect(builder).to receive(:build).with(statement, []).and_return statement
+    expect(producer).to receive(:produce).with([statement])
+    expect(producer).to receive(:finalize)
+    expect(repository).to receive(:store).with([statement])
+  end
 
   describe '#publish' do
-    context 'when record is person statement' do
-      let(:statement) do
-        RegisterSourcesBods::BodsStatement[
-          JSON.parse(
-            File.read('spec/fixtures/person_statement.json'),
-            symbolize_names: true,
-          )
-        ]
-      end
-
-      it 'calls person_statement_publisher with statement' do
-        expect(person_statement_publisher).to receive(:publish).with(statement)
-
-        subject.publish statement
-      end
+    it 'stores and produces statement' do
+      result = subject.publish statement
+      expect(result).to eq statement
     end
+  end
 
-    context 'when record is entity statement' do
-      let(:statement) do
-        RegisterSourcesBods::BodsStatement[
-          JSON.parse(
-            File.read('spec/fixtures/entity_statement.json'),
-            symbolize_names: true,
-          )
-        ]
-      end
-
-      it 'calls entity_statement_publisher with statement' do
-        expect(entity_statement_publisher).to receive(:publish).with(statement)
-
-        subject.publish statement
-      end
-    end
-
-    context 'when record is ownership or control statement' do
-      let(:statement) do
-        RegisterSourcesBods::BodsStatement[
-          JSON.parse(
-            File.read('spec/fixtures/ownership_or_control_statement.json'),
-            symbolize_names: true,
-          )
-        ]
-      end
-
-      it 'calls ownership_or_control_statement_publisher with statement' do
-        expect(ownership_or_control_statement_publisher).to receive(:publish).with(statement)
-
-        subject.publish statement
-      end
-    end
-
-    context 'when record is not valid bods statement' do
-      context 'with valid type but invalid other params' do
-        let(:statement) { { statementType: 'personStatement' } }
-
-        it 'raises an error' do
-          expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
-        end
-      end
-
-      context 'with invalid type' do
-        let(:statement) { { statementType: 'invalid' } }
-
-        it 'raises an error' do
-          expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
-        end
-      end
+  describe '#publish_many' do
+    it 'stores and produces statements' do
+      results = subject.publish_many [statement]
+      expect(results).to eq [statement]
     end
   end
 end

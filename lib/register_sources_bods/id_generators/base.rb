@@ -10,5 +10,6 @@ module RegisterSourcesBods
       def generate_statement_id(attributes)
         XXhash.xxh64(attributes).to_s
       end
+    end
   end
 end

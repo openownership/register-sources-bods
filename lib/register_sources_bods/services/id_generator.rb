@@ -1,3 +1,4 @@
+require 'register_sources_bods/constants/errors'
 require 'register_sources_bods/id_generators/entity_statement'
 require 'register_sources_bods/id_generators/person_statement'
 require 'register_sources_bods/id_generators/ownership_or_control_statement'
@@ -23,9 +24,9 @@ module RegisterSourcesBods
       end
 
       def generate_id(record)
-        id_generators[record.statementType].generate_id record
+        id_generators.fetch(record.statementType).generate_id record
       rescue KeyError
-        raise UnknownRecordKindError
+        raise Errors::UnknownRecordKindError
       end
 
       private

@@ -51,7 +51,7 @@ RSpec.describe RegisterSourcesBods::BodsStatement do
     end
 
     it 'raises and error' do
-      expect { subject[params] }.to raise_error RegisterSourcesBods::UnknownRecordKindError
+      expect { subject[params] }.to raise_error RegisterSourcesBods::Errors::UnknownRecordKindError
     end
   end
 end

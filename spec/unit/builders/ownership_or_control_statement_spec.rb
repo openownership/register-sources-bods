@@ -1,12 +1,11 @@
 require 'register_sources_bods/builders/ownership_or_control_statement'
 
-RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
-  subject { described_class.new(repository:, producer:) }
+RSpec.describe RegisterSourcesBods::Builders::OwnershipOrControlStatement do
+  subject { described_class.new(id_generator) }
 
-  let(:repository) { double 'repository' }
-  let(:producer) { double 'producer' }
+  let(:id_generator) { double 'id_generator' }
 
-  describe '#publish' do
+  describe '#build' do
     let(:record) do
       RegisterSourcesBods::OwnershipOrControlStatement[
         **JSON.parse(
@@ -16,38 +15,49 @@ RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
       ]
     end
 
+    let(:statement_id) { '12345' }
+
+    before do
+      expect(id_generator).to receive(:generate_id).with(record).and_return statement_id
+    end
+
     context 'when record does not already exist' do
+      let(:existing_identifiers) { [] }
+
       it 'persists record to repository and publishes' do
-        expect(repository).to receive(:get).with(
-          "10539710627700352393",
-        ).and_return nil
-        allow(repository).to receive(:store)
-        allow(producer).to receive(:produce)
-        allow(producer).to receive(:finalize)
+        mapped_record = subject.build(record, existing_identifiers)
 
-        mapped_record = subject.publish record
+        expect(mapped_record.statementID).to eq statement_id
+      end
+    end
 
-        expect(repository).to have_received(:store).with([mapped_record])
-        expect(producer).to have_received(:produce).with([mapped_record])
-        expect(producer).to have_received(:finalize)
+    context 'when different record for identifiers already exists' do
+      let(:existing_identifiers) do
+        [
+          RegisterSourcesBods::OwnershipOrControlStatement[record.to_h.merge(statementID: 'diffid')]
+        ]
+      end
+
+      it 'produces new record with a replace statement' do
+        mapped_record = subject.build(record, existing_identifiers)
+
+        expect(mapped_record.statementID).to eq statement_id
+        expect(mapped_record).not_to eq existing_identifiers[0]
       end
     end
 
     context 'when same record already exists' do
+      let(:existing_identifiers) do
+        [
+          RegisterSourcesBods::OwnershipOrControlStatement[record.to_h.merge(statementID: statement_id)]
+        ]
+      end
+
       it 'returns existing record but does not store or produce record' do
-        existing_record = double 'record'
+        mapped_record = subject.build(record, existing_identifiers)
 
-        expect(repository).to receive(:get).with(
-          "10539710627700352393",
-        ).and_return existing_record
-        expect(repository).not_to receive(:list_matching_at_least_one_identifier)
-        expect(repository).not_to receive(:store)
-        expect(producer).not_to receive(:produce)
-        expect(producer).not_to receive(:finalize)
-
-        mapped_record = subject.publish record
-
-        expect(mapped_record).to eq existing_record
+        expect(mapped_record.statementID).to eq statement_id
+        expect(mapped_record).to eq existing_identifiers[0]
       end
     end
   end

@@ -1,12 +1,11 @@
 require 'register_sources_bods/builders/entity_statement'
 
-RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
-  subject { described_class.new(repository:, producer:) }
+RSpec.describe RegisterSourcesBods::Builders::EntityStatement do
+  subject { described_class.new(id_generator) }
 
-  let(:repository) { double 'repository' }
-  let(:producer) { double 'producer' }
+  let(:id_generator) { double 'id_generator' }
 
-  describe '#publish' do
+  describe '#build' do
     let(:record) do
       RegisterSourcesBods::EntityStatement[
         **JSON.parse(
@@ -16,64 +15,49 @@ RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
       ]
     end
 
+    let(:statement_id) { '12345' }
+
+    before do
+      expect(id_generator).to receive(:generate_id).with(record).and_return statement_id
+    end
+
     context 'when record does not already exist' do
+      let(:existing_identifiers) { [] }
+
       it 'persists record to repository and publishes' do
-        expect(repository).to receive(:get).with(
-          "4992649895118953860",
-        ).and_return nil
-        expect(repository).to receive(:list_matching_at_least_one_identifier).with(
-          record.identifiers,
-        ).and_return []
-        allow(repository).to receive(:store)
-        allow(producer).to receive(:produce)
-        allow(producer).to receive(:finalize)
+        mapped_record = subject.build(record, existing_identifiers)
 
-        mapped_record = subject.publish record
-
-        expect(repository).to have_received(:store).with([mapped_record])
-        expect(producer).to have_received(:produce).with([mapped_record])
-        expect(producer).to have_received(:finalize)
+        expect(mapped_record.statementID).to eq statement_id
       end
     end
 
     context 'when different record for identifiers already exists' do
+      let(:existing_identifiers) do
+        [
+          RegisterSourcesBods::EntityStatement[record.to_h.merge(statementID: 'diffid')]
+        ]
+      end
+
       it 'produces new record with a replace statement' do
-        double 'record'
+        mapped_record = subject.build(record, existing_identifiers)
 
-        expect(repository).to receive(:get).with(
-          "4992649895118953860",
-        ).and_return nil
-        expect(repository).to receive(:list_matching_at_least_one_identifier).with(
-          record.identifiers,
-        ).and_return [record]
-        allow(repository).to receive(:store)
-        allow(producer).to receive(:produce)
-        allow(producer).to receive(:finalize)
-
-        mapped_record = subject.publish record
-
-        expect(mapped_record.replacesStatements).to eq [record.statementID]
-        expect(repository).to have_received(:store).with([mapped_record])
-        expect(producer).to have_received(:produce).with([mapped_record])
-        expect(producer).to have_received(:finalize)
+        expect(mapped_record.statementID).to eq statement_id
+        expect(mapped_record).not_to eq existing_identifiers[0]
       end
     end
 
     context 'when same record already exists' do
+      let(:existing_identifiers) do
+        [
+          RegisterSourcesBods::EntityStatement[record.to_h.merge(statementID: statement_id)]
+        ]
+      end
+
       it 'returns existing record but does not store or produce record' do
-        existing_record = double 'record'
+        mapped_record = subject.build(record, existing_identifiers)
 
-        expect(repository).to receive(:get).with(
-          "4992649895118953860",
-        ).and_return existing_record
-        expect(repository).not_to receive(:list_matching_at_least_one_identifier)
-        expect(repository).not_to receive(:store)
-        expect(producer).not_to receive(:produce)
-        expect(producer).not_to receive(:finalize)
-
-        mapped_record = subject.publish record
-
-        expect(mapped_record).to eq existing_record
+        expect(mapped_record.statementID).to eq statement_id
+        expect(mapped_record).to eq existing_identifiers[0]
       end
     end
   end

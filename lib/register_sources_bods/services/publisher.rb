@@ -17,7 +17,7 @@ module RegisterSourcesBods
       end
 
       def publish(record)
-        publish_many([record])
+        publish_many([record]).first
       end
 
       def publish_many(records)
@@ -37,7 +37,6 @@ module RegisterSourcesBods
         records_for_all_identifiers += remaining_records
 
         # Deduplicate into existing_records and pending_records
-        id_map = {}
         existing_records = records.map do |record|
           records_for_all_identifiers.find do |existing_record|
             existing_record.statementID == id_generator.generate_id(record)

@@ -7,9 +7,10 @@ module RegisterSourcesBods
     class OwnershipOrControlStatement < Base
       def build(record, records_for_identifiers)
         statement_id = generate_statement_id(record)
-        old_statement_ids = records_for_identifiers.map(&:statementID)
 
-        return if old_statement_ids.include? statement_id
+        existing_statement = records_for_identifiers.find { |record| record.statementID == statement_id }
+
+        return existing_statement if existing_statement
 
         RegisterSourcesBods::OwnershipOrControlStatement[
           record.to_h.merge(
