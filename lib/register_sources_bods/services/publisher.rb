@@ -51,6 +51,7 @@ module RegisterSourcesBods
         return existing_records if pending_records.empty?
 
         # Build pending records, adding replaces statements for existing where necessary
+        pending_ids = {}
         pending_records = pending_records.map do |record|
           records_for_identifiers = records_for_all_identifiers.select do |possible_record|
             next unless record.respond_to?(:identifiers)
@@ -58,8 +59,13 @@ module RegisterSourcesBods
             !(record.identifiers & possible_record.identifiers).empty?
           end
 
-          builder.build(record, records_for_identifiers)
-        end
+          pending_record = builder.build(record, records_for_identifiers)
+
+          next if pending_ids[pending_record.statementID]
+          pending_ids[pending_record.statementID] = true
+
+          pending_record
+        end.compact
 
         # Send pending records into stream
         producer.produce(pending_records)
