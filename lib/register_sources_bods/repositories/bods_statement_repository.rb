@@ -106,6 +106,54 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
+      def list_for_subject_or_interested_party(subject_statement_id: nil, interested_party_statement_id: nil, match_both: false)
+        raise 'must provide at least one' unless subject_statement_id || interested_party_statement_id
+
+        conditions = []
+
+        if subject_statement_id
+          conditions << {
+            nested: {
+              path: "subject",
+              query: {
+                bool: {
+                  must: [
+                    { match: { "subject.describedByEntityStatement": { query: subject_statement_id } } },
+                  ]
+                }
+              }
+            }
+          }
+        end
+        
+        if interested_party_statement_id
+          conditions << {
+            nested: {
+              path: "interestedParty",
+              query: {
+                bool: {
+                  should: [
+                    { match: { "interestedParty.describedByEntityStatement": { query: interested_party_statement_id } } },
+                    { match: { "interestedParty.describedByPersonStatement": { query: interested_party_statement_id } } },
+                  ]
+                }
+              }
+            }
+          }
+        end
+
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: match_both ? { must: conditions } : { should: conditions }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       def store(records)
         return true if records.empty?
 
