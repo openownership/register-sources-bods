@@ -10,7 +10,9 @@ module RegisterSourcesBods
       private
 
       def unique_attributes(record) 
-        record.to_h.reject { |k, _v| [:statementID, :publicationDetails, :source].include? k }
+        record_h = record.to_h
+
+        record_h.reject { |k, _v| [:statementID, :publicationDetails, :source, :replacesStatements].include? k }
       end
     end
   end

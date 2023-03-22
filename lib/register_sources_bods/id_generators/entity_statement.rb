@@ -10,7 +10,11 @@ module RegisterSourcesBods
       private
 
       def unique_attributes(record)
-        record.to_h.reject { |k, _v| [:statementID, :statementDate, :publicationDetails, :source].include? k }
+        record_h = record.to_h
+
+        record_h[:identifiers].reject! { |identifier| identifier[:schemeName] == 'OpenOwnership Register' }
+
+        record_h.reject { |k, _v| [:statementID, :statementDate, :publicationDetails, :source, :replacesStatements].include? k }
       end
     end
   end
