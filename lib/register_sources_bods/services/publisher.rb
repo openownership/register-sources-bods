@@ -1,6 +1,6 @@
 
 require 'register_sources_bods/repositories/bods_statement_repository'
-# require 'register_sources_bods/services/records_producer'
+require 'register_sources_bods/services/records_producer'
 require 'register_sources_bods/services/builder'
 require 'register_sources_bods/services/id_generator'
 require 'register_sources_bods/structs/bods_statement'
@@ -11,7 +11,7 @@ module RegisterSourcesBods
       def initialize(repository: nil, producer: nil, builder: nil, id_generator: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
           client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT)
-        @producer = producer # || Services::RecordsProducer.new
+        @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
         @id_generator = id_generator || Services::IdGenerator.new
       end
