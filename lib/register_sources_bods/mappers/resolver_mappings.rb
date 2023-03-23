@@ -11,7 +11,7 @@ require 'active_support/core_ext/time'
 require 'active_support/core_ext/string/conversions'
 
 module RegisterSourcesBods
-  module BodsMapping
+  module Mappers
     module ResolverMappings
       OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
 
