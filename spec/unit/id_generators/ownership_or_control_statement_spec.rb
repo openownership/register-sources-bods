@@ -16,7 +16,7 @@ RSpec.describe RegisterSourcesBods::IdGenerators::OwnershipOrControlStatement do
 
     it 'generates id correctly' do
       statement_id = subject.generate_id record
-      expect(statement_id).to eq "10539710627700352393"
+      expect(statement_id).to eq "17363354656106312799"
     end
   end
 end

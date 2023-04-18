@@ -22,7 +22,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
         symbolize_names: true
-      )
+      ).compact
     )
   end
 
