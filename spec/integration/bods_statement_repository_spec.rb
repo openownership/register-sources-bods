@@ -21,8 +21,13 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
     RegisterSourcesBods::PersonStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
+<<<<<<< HEAD
         symbolize_names: true,
       ),
+=======
+        symbolize_names: true
+      ).compact
+>>>>>>> 3265eb5... Register Prototype V1
     )
   end
 

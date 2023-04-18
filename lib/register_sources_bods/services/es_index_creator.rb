@@ -22,7 +22,12 @@ module RegisterSourcesBods
                     type: "keyword",
                   },
                   address: {
-                    type: "keyword",
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                   postCode: {
                     type: "keyword",
@@ -33,7 +38,12 @@ module RegisterSourcesBods
                 },
               },
               alternateNames: {
-                type: "keyword", # Types::String.optional
+                type: "text",
+                fields: {
+                  raw: { 
+                    type:  "keyword"
+                  }
+                }
               },
               annotations: { # Types.Array(Annotation)
                 type: "nested",
@@ -179,7 +189,12 @@ module RegisterSourcesBods
                 type: "keyword", # Types::String.optional
               },
               name: {
-                type: "keyword", # Types::String.optional
+                type: "text",
+                fields: {
+                  raw: { 
+                    type:  "keyword"
+                  }
+                }
               },
               names: { # Array[Name]
                 type: "nested",
@@ -188,16 +203,36 @@ module RegisterSourcesBods
                     type: "keyword", # NameTypes
                   },
                   fullName: {
-                    type: "keyword", # Types::String.optional
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                   familyName: {
-                    type: "keyword", # Types::String.optional
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                   givenName: {
-                    type: "keyword", # Types::String.optional
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                   patronymicName: {
-                    type: "keyword", # Types::String.optional
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                 },
               },
@@ -205,7 +240,12 @@ module RegisterSourcesBods
                 type: "nested",
                 properties: {
                   name: {
-                    type: "keyword",
+                    type: "text",
+                    fields: {
+                      raw: { 
+                        type:  "keyword"
+                      }
+                    }
                   },
                   code: {
                     type: "keyword",
@@ -269,8 +309,13 @@ module RegisterSourcesBods
                   type: {
                     type: "keyword",
                   },
-                  address: {
-                    type: "keyword",
+                  "address": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
                   },
                   postCode: {
                     type: "keyword",
@@ -286,8 +331,13 @@ module RegisterSourcesBods
                   type: {
                     type: "keyword",
                   },
-                  address: {
-                    type: "keyword",
+                  "address": {
+                    "type": "text",
+                    "fields": {
+                      "raw": { 
+                        "type":  "keyword"
+                      }
+                    }
                   },
                   postCode: {
                     type: "keyword",
