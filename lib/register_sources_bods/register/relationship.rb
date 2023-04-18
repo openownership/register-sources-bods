@@ -6,9 +6,14 @@ module RegisterSourcesBods
             def initialize(statement)
                 @statement = statement
                 @provenance = Provenance.new(statement)
+
+                @source = nil
+                @target = nil
             end
 
-            attr_reader 
+            attr_reader :provenance
+
+            attr_accessor :source, :target, :sourced_relationships
 
             def _id
 
@@ -37,33 +42,23 @@ module RegisterSourcesBods
             def sample_date
 
             end
-  
-            def source_id
-
-            end
-            
-            def sourced_relationships
-
-            end
 
             def started_date
 
             end
 
-            def source
+            def type
 
             end
 
-            def target
+            # ASSOCIATIONS
 
+            def source_id
+                source&.id
             end
 
             def target_id
-
-            end
-
-            def type
-
+                target&.id
             end
         end
     end

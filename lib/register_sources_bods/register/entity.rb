@@ -1,14 +1,20 @@
 module RegisterSourcesBods
     module Register
         class Entity
-            # entity
-            # master_entity
-            # merged_entities
-            # relationships_
             def initialize(statement)
                 @statement = statement
-                # resolver response
+
+                @master_entity = nil
+                @merged_entities = []
+                @relationships_as_source = []
+                @relationships_as_target = []
+
+                @resolver_response = nil
             end
+
+            attr_reader :statement
+
+            attr_accessor :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities, :resolver_response
 
             # Mapping methods
 
@@ -198,31 +204,6 @@ module RegisterSourcesBods
             # --------------
             # ASSOCIATIONS
 
-            def relationships_as_source
-                # ./app/controllers/entities_controller.rb:            entity.relationships_as_source +
-                # ./app/helpers/entity_helper.rb:    links = entity.relationships_as_source
-                # ./app/helpers/entity_helper.rb:    controlled_count = entity.relationships_as_source.where(ended_date: nil).size
-            end
-
-            def relationships_as_target
-                # ./app/models/inferred_relationship_graph.rb:    immediate_relationships = entity.relationships_as_target
-            end
-
-            def master_entity
-                # ./app/controllers/relationships_controller.rb:    source_entity.master_entity.presence || source_entity
-                # ./app/controllers/entities_controller.rb:    return false if entity.master_entity.blank?
-                # ./app/controllers/entities_controller.rb:      id: entity.master_entity.id.to_s,
-                # ./app/models/relationship.rb:    super.master_entity.presence || super
-                # ./app/helpers/entity_helper.rb:      || entity.master_entity.present?
-            end
-
-            def merged_entities
-                # ./app/controllers/entities_controller.rb:    @merged_entities = entity.merged_entities.page(params[:merged_page]).per(10)
-                # ./app/step_processing/calculate_relationships_as_source_v2.rb:          source_ids = entity.merged_entities.empty? ? [id] : ([id] + entity.merged_entities.map(&:id).map(&:to_s))
-                # ./app/step_processing/calculate_relationships_as_source.rb:          entity.merged_entities.empty? ? [id] : ([id] + entity.merged_entities.map(&:id).map(&:to_s))
-                # ./app/step_processing/calculate_relationships_as_source.rb:          source_ids = entity.merged_entities.empty? ? [id] : ([id] + entity.merged_entities.map(&:id).map(&:to_s))
-            end
-
             def merged_entities_count
                 # ./app/views/entities/show.html.haml:                    = t(".merged_note_html", count: @entity.merged_entities_count, report_incorrect_data_url: report_incorrect_data_url)
                 merged_entities.count
@@ -249,10 +230,6 @@ module RegisterSourcesBods
             def todo_decorate
                 # ./app/decorators/entity_graph_decorator.rb:    entity = node.entity.decorate(context: context)
             end
-
-            private
-
-            attr_reader :statement
         end
     end
 end

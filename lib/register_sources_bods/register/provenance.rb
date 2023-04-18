@@ -14,11 +14,11 @@ module RegisterSourcesBods
             end
 
             def retrieved_at
-
+                nil
             end
 
             def imported_at
-
+                nil
             end
 
             private
