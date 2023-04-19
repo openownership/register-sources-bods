@@ -16,7 +16,7 @@ RSpec.describe RegisterSourcesBods::IdGenerators::PersonStatement do
 
     it 'generates id correctly' do
       statement_id = subject.generate_id record
-      expect(statement_id).to eq "18339314454075286224"
+      expect(statement_id).to eq "9883722852789572130"
     end
   end
 end

@@ -23,9 +23,17 @@ module RegisterSourcesBods
       def publish_many(records)
         return [] if records.empty?
 
+        print "records before: ", records, "\n\n"
+
+        records_before = records.dup
+
         # Check records are Bods statements
         records = records.map { |record| BodsStatement[record.to_h.compact] }
 
+        print "records after: ", records, "\n\n"
+
+        print "records equal: ", records == records_before, "\n"
+        
         # Retrieve records with same identifiers or statement id
         all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
         records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers)

@@ -27,8 +27,8 @@
     { "name": "France", "code": "FR" }
   ],
   "placeOfBirth": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
-  "birthDate": "",
-  "deathDate": "",
+  "birthDate": "1990-05-03",
+  "deathDate": null,
   "placeOfResidence": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
   "taxResidencies": [
     { "name": "France", "code": "FR" }
