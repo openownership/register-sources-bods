@@ -1,29 +1,27 @@
 module RegisterSourcesBods
     module Register
         class Provenance
-            def initialize(statement)
-                @statement = statement
+            def initialize(bods_statement)
+                @bods_statement = bods_statement
             end
 
-            def source_url
+            attr_reader :bods_statement
 
+            def source_url
+                bods_statement&.source&.url
             end
 
             def source_name
-
+                bods_statement&.source&.description
             end
 
             def retrieved_at
-                nil
+                bods_statement&.source&.retrievedAt
             end
 
             def imported_at
-                nil
+                bods_statement&.source&.retrievedAt
             end
-
-            private
-
-            attr_reader :statement
         end
     end
 end

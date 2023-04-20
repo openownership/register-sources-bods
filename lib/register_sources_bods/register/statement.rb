@@ -12,19 +12,19 @@ module RegisterSourcesBods
             attr_accessor :entity
 
             def _id
-
+                nil
             end
 
             def type
-
+                nil
             end
 
             def date
-
+                nil
             end
 
             def ended_date
-
+                nil
             end
 
             # ASSOCIATIONS

@@ -4,8 +4,8 @@ require 'iso8601'
 module RegisterSourcesBods
     module Register
         class Entity
-            def initialize(statement)
-                @statement = statement
+            def initialize(bods_statement)
+                @bods_statement = bods_statement
 
                 @master_entity = nil
                 @merged_entities = []
@@ -15,16 +15,16 @@ module RegisterSourcesBods
                 @resolver_response = nil
             end
 
-            attr_reader :statement
+            attr_reader :bods_statement
 
             attr_accessor :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities, :resolver_response
 
             def address
-                statement.addresses&.first&.address
+                bods_statement.addresses&.first&.address
             end
 
             def company_number
-                statement.identifiers.find { |ident| ident.scheme == "GB-COH" }&.id
+                bods_statement.identifiers.find { |ident| ident.scheme == "GB-COH" }&.id
             end
 
             def company_number?
@@ -32,15 +32,16 @@ module RegisterSourcesBods
             end
 
             def company_type
+                nil
             end
 
             def country
                 country_code =
-                    if statement.statementType == RegisterSourcesBods::StatementTypes['personStatement']
+                    if bods_statement.statementType == RegisterSourcesBods::StatementTypes['personStatement']
                         # TODO: Multiple supported but just reading first
-                        statement&.nationalities&.first&.code
+                        bods_statement.nationalities&.first&.code
                     else
-                        statement&.incorporatedInJurisdiction&.code 
+                        bods_statement.incorporatedInJurisdiction&.code 
                     end
 
                 return unless country_code
@@ -53,18 +54,19 @@ module RegisterSourcesBods
             end
 
             def country_of_residence
+                nil
             end
 
             def dissolution_date
-                return unless statement.respond_to?(:dissolutionDate)
+                return unless bods_statement.respond_to?(:dissolutionDate)
 
-                statement.dissolutionDate
+                bods_statement.dissolutionDate
             end
 
             def dob
-                return unless statement.respond_to?(:birthDate)
+                return unless bods_statement.respond_to?(:birthDate)
 
-                dob = statement.birthDate
+                dob = bods_statement.birthDate
 
                 return unless dob
 
@@ -76,13 +78,13 @@ module RegisterSourcesBods
             end
 
             def identifiers
-                statement.identifiers
+                bods_statement.identifiers
             end
 
             def incorporation_date
-                return unless statement.respond_to?(:foundingDate)
+                return unless bods_statement.respond_to?(:foundingDate)
 
-                statement.foundingDate
+                bods_statement.foundingDate
             end
 
             def incorporation_date?
@@ -101,7 +103,7 @@ module RegisterSourcesBods
 
                 RegisterSourcesBods::Jurisdiction.new(name: country.name, code: country.alpha2)
 
-                statement&.incorporatedInJurisdiction&.code
+                bods_statement.incorporatedInJurisdiction&.code
             end
 
             def jurisdiction_code?
@@ -112,9 +114,9 @@ module RegisterSourcesBods
             end
 
             def natural_person?
-                return false unless statement
+                return false unless bods_statement
 
-                statement.statementType == RegisterSourcesBods::StatementTypes['personStatement']
+                bods_statement.statementType == RegisterSourcesBods::StatementTypes['personStatement']
             end
 
             def self_updated_at
@@ -124,10 +126,11 @@ module RegisterSourcesBods
             end
 
             def unknown_reason
+                nil
             end
 
             def from_denmark_cvr_v2?
-                statement.identifiers.any? { |e| e.scheme == 'DK-CVR' }
+                bods_statement.identifiers.any? { |e| e.scheme == 'DK-CVR' }
             end
 
             def merged_entities_count

@@ -62,14 +62,16 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def list_all
+      def list_all(query: nil)
+        query ||= {
+          bool: {}
+        }
+
         process_results(
           client.search(
             index: index,
             body: {
-              query: {
-                bool: {}
-              }
+              query: query
             }
           )
         ).map(&:record)
