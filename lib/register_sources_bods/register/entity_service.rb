@@ -1,8 +1,8 @@
 module RegisterSourcesBods
     module Register
         class EntityService
-            def initialize(entity_searcher:, statement_repository:)
-                @entity_searcher = entity_searcher
+            def initialize(entity_query_builder:, statement_repository:)
+                @entity_query_builder = entity_query_builder
                 @statement_repository = statement_repository
             end
 
@@ -49,7 +49,7 @@ module RegisterSourcesBods
 
             private
 
-            attr_reader :entity_searcher, :statement_repository
+            attr_reader :entity_query_builder, :statement_repository
         end
     end
 end

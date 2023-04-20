@@ -26,13 +26,13 @@ module RegisterSourcesBods
             end
 
             def id
-                statement.statementID
+                bods_statement.statementID
             end
 
             def interests
-                return unless statement.respond_to?(:interests)
+                return unless bods_statement.respond_to?(:interests)
 
-                statement.interests
+                bods_statement.interests
             end
 
             def is_indirect
@@ -40,7 +40,7 @@ module RegisterSourcesBods
             end
 
             def keys_for_uniq_grouping
-                [source.id.to_s, target.id.to_s] + interests.to_a.map(&:type).sort
+                [source_id, target_id].compact.map(&:to_s) + interests.to_a.map(&:type).sort
             end
 
             def sample_date
