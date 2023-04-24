@@ -1,13 +1,18 @@
+require 'register_sources_bods/register/statement_loader'
+
 module RegisterSourcesBods
     module Register
         class EntityService
             def initialize(entity_query_builder: nil, statement_repository:)
                 @entity_query_builder = entity_query_builder
+                @statement_loader = StatementLoader.new(statement_repository: statement_repository)
                 @statement_repository = statement_repository
             end
 
             def find(statement_id)
-                repository.get(statement_id)
+                result = statement_loader.load_statements([statement_id])
+
+                result.entities[statement_id] || result.relationships[statement_id]
             end
 
             def find_by_entity_id(entity_id)
@@ -31,25 +36,38 @@ module RegisterSourcesBods
                     }]
                 end
 
-                records = repository.list_matching_at_least_one_identifier(identifiers)
+                records = statement_repository.list_matching_at_least_one_identifier(identifiers)
 
-                # find record which hasn't been replaced
-                replaced = records.flat_map { |record| record.replacesStatements }.compact.uniq
+                statement_ids = records.map(&:statementID).uniq
 
-                records.filter { |record| !replaced.include?(record.statementID) }
+                result = statement_loader.load_statements(statement_ids)
+
+                statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
             end
 
             def list_matching_at_least_one_identifier(identifiers)
-                repository.list_matching_at_least_one_identifier(identifiers)
+                records = statement_repository.list_matching_at_least_one_identifier(identifiers)
+
+                statement_ids = records.map(&:statementID).uniq
+
+                result = statement_loader.load_statements(statement_ids)
+
+                statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
             end
 
             def list_for_subject_or_interested_party(**kwargs)
-                repository.list_for_subject_or_interested_party(**kwargs)
+                records = statement_repository.list_for_subject_or_interested_party(**kwargs)
+
+                statement_ids = records.map(&:statementID).uniq
+
+                result = statement_loader.load_statements(statement_ids)
+
+                statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
             end
 
             private
 
-            attr_reader :entity_query_builder, :statement_repository
+            attr_reader :entity_query_builder, :statement_repository, :statement_loader
         end
     end
 end

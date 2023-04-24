@@ -1,9 +1,11 @@
+require 'register_sources_bods/register/statements_mapper'
+
 module RegisterSourcesBods
     module Register
         class StatementLoader
-            def initialize(statement_repository:, statements_mapper:)
+            def initialize(statement_repository:, statements_mapper: nil)
                 @statement_repository = statement_repository
-                @statements_mapper = statements_mapper
+                @statements_mapper = statements_mapper || StatementsMapper.new
             end
 
             def load_statements(statement_ids)
@@ -16,18 +18,20 @@ module RegisterSourcesBods
                 while !next_statement_ids.empty?
                     statements = single_loader(next_statement_ids, processed_ids: processed_ids)
 
-                    all_statements.merge!(statement)
+                    all_statements.merge!(statements)
 
-                    processed_ids = (processed_ids + next_statement_ids + statement.map(&:statementID)).uniq
+                    processed_ids = (processed_ids + next_statement_ids + statements.values.map(&:statementID)).uniq
 
                     next_statement_ids = []
 
-                    next_statement_ids += statements.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
-                    next_statement_ids += statements.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
-                    next_statement_ids += statements.map(&:source).compact.map(&:describedByEntityStatement).compact
+                    next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
+                    next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
+                    next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
 
                     next_statement_ids = next_statement_ids.uniq - processed_ids
                 end
+
+                print "\n\nAll statements found: \n", all_statements, "\n\n\n"
 
                 statements_mapper.map_statements all_statements
             end
@@ -56,12 +60,14 @@ module RegisterSourcesBods
 
                 # load additional statements using identifiers
                 identifiers = statements.map do |statement|
+                    next unless statement.respond_to?(:identifiers)
+                    
                     statement.identifiers.find do |identifier|
                         identifier.schemeName == "OpenOwnership Register"
                     end
                 end.compact
 
-                statements = statement_repository.list_matching_at_least_one_identifier(identifiers)
+                statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
 
                 statements.map { |statement| [statement.statementID, statement] }.to_h
             end

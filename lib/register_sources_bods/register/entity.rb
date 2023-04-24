@@ -23,6 +23,10 @@ module RegisterSourcesBods
                 bods_statement.addresses&.first&.address
             end
 
+            def addresses
+                bods_statement.addresses
+            end
+
             def company_number
                 bods_statement.identifiers.find { |ident| ident.scheme == "GB-COH" }&.id
             end

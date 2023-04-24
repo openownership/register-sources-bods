@@ -18,7 +18,7 @@ module RegisterSourcesBods
                     when StatementTypes['entityStatement']
                         entities[bods_statement.statementID] = Register::Entity.new(bods_statement)
                     when StatementTypes['ownershipOrControlStatement']
-                        entities[bods_statement.statementID] = Register::Relationship.new(bods_statement)
+                        relationships[bods_statement.statementID] = Register::Relationship.new(bods_statement)
                     end
                 end
 
@@ -27,7 +27,7 @@ module RegisterSourcesBods
                     bods_statement = relationship.bods_statement
 
                     subject_statement_id = bods_statement.subject&.describedByEntityStatement
-                    interested_party = bods_statement.interested_party
+                    interested_party = bods_statement.interestedParty
                     interested_party_statement_id = interested_party&.describedByEntityStatement || interested_party&.describedByPersonStatement
 
                     # TODO: check direction of source and target
@@ -43,6 +43,8 @@ module RegisterSourcesBods
 
                 # add merged entities and master entitiy
                 entities.values.each do |entity|
+                    next unless entity.respond_to?(:identifiers)
+
                     register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
 
                     next unless register_identifier&.uri
