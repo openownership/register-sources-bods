@@ -74,7 +74,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#id' do
         it 'returns id' do
-            expect(subject.id).to be_nil
+            expect(subject.id).to eq "ps1"
         end
     end
 
@@ -125,13 +125,13 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#self_updated_at' do
         it 'returns self_updated_at' do
-            expect(subject.self_updated_at).to be_nil
+            expect(subject.self_updated_at).to eq ''
         end
     end
 
     describe '#type' do
         it 'returns type' do
-            expect(subject.type).to be_nil
+            expect(subject.type).to eq "personStatement"
         end
     end
 

@@ -43,26 +43,26 @@ module RegisterSourcesBods
                 query = build_normalise_query(search_params[:q])
 
                 {
-                bool: {
-                    should: [
-                        {
-                            match: {
-                                name: {
-                                    query: query,
+                    bool: {
+                        should: [
+                            {
+                                match: {
+                                    name: {
+                                        query: query,
+                                    },
                                 },
                             },
-                        },
-                        {
-                            match: {
-                                name_transliterated: {
-                                    query: query,
+                            {
+                                match: {
+                                    name_transliterated: {
+                                        query: query,
+                                    },
                                 },
                             },
-                        },
-                    ],
-                    minimum_should_match: 1,
-                    filter: build_filters(search_params),
-                },
+                        ],
+                        minimum_should_match: 1,
+                        filter: build_filters(search_params),
+                    },
                 }
             end
 

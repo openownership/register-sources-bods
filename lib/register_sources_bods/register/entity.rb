@@ -12,7 +12,7 @@ module RegisterSourcesBods
                 @relationships_as_source = []
                 @relationships_as_target = []
 
-                @resolver_response = nil
+                @resolver_response = nil # TODO: remove resolver response
             end
 
             attr_reader :bods_statement
@@ -74,7 +74,7 @@ module RegisterSourcesBods
             end
 
             def id
-                
+                bods_statement.statementID
             end
 
             def identifiers
@@ -120,9 +120,11 @@ module RegisterSourcesBods
             end
 
             def self_updated_at
+                bods_statement&.publicationDetails&.publicationDate
             end
 
             def type
+                bods_statement.statementType
             end
 
             def unknown_reason

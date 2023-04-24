@@ -1,7 +1,7 @@
 module RegisterSourcesBods
     module Register
         class EntityService
-            def initialize(entity_query_builder:, statement_repository:)
+            def initialize(entity_query_builder: nil, statement_repository:)
                 @entity_query_builder = entity_query_builder
                 @statement_repository = statement_repository
             end
@@ -24,11 +24,11 @@ module RegisterSourcesBods
 
             def find_by_entity_uris(uris)
                 identifiers = uris.uniq.map do |uri|
-                RegisterSourcesBods::Identifier[{
-                    id: uri,
-                    schemeName: "OpenOwnership Register",
-                    uri: uri
-                }]
+                    RegisterSourcesBods::Identifier[{
+                        id: uri,
+                        schemeName: "OpenOwnership Register",
+                        uri: uri
+                    }]
                 end
 
                 records = repository.list_matching_at_least_one_identifier(identifiers)

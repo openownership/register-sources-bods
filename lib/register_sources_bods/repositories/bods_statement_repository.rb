@@ -135,6 +135,51 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
+      def list_associated(statement_ids)
+        conditions = []
+
+        statement_ids.map do |statement_id|
+          conditions += [
+            {
+              nested: {
+                path: "subject",
+                query: {
+                  bool: {
+                    must: [
+                      { match: { "subject.describedByEntityStatement": { query: statement_id } } },
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              nested: {
+                path: "interestedParty",
+                query: {
+                  bool: {
+                    should: [
+                      { match: { "interestedParty.describedByEntityStatement": { query: statement_id } } },
+                      { match: { "interestedParty.describedByPersonStatement": { query: statement_id } } },
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        end
+
+        process_results(
+          client.search(
+            index: index,
+            body: {
+              query: {
+                bool: { should: conditions }
+              }
+            }
+          )
+        ).map(&:record)
+      end
+
       def list_for_subject_or_interested_party(subject_statement_id: nil, interested_party_statement_id: nil, match_both: false)
         raise 'must provide at least one' unless subject_statement_id || interested_party_statement_id
 
