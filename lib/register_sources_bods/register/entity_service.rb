@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'register_sources_bods/enums/statement_types'
 require 'register_sources_bods/register/statement_loader'
 require 'register_sources_bods/register/entity_query_builder'
 require 'register_sources_bods/register/paginated_array'
@@ -43,8 +44,10 @@ module RegisterSourcesBods
             end
 
             def count_legal_entities
-                # TODO: implement
-                10
+                # TODO: fix legal entities
+                query = entity_query_builder.build_statement_type_query StatementTypes['entityStatement']
+
+                statement_repository.count(query)
             end
 
             # merged_page, source_page
