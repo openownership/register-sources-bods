@@ -3,6 +3,16 @@ module RegisterSourcesBods
         class EntityQueryBuilder
             EXCLUDED_TERMS_REGEX = /\b(llp|llc|plc|inc|ltd|limited)\b/i
 
+            def build_statement_type_query(statement_type)
+                {
+                    bool: {
+                        filter: [
+                            build_term_query(:statementType, statement_type),
+                        ].compact,
+                    },
+                }
+            end
+
             def build_query(search_params)
                 query = build_normalise_query(search_params[:q])
 

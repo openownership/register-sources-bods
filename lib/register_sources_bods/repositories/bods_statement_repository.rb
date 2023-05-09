@@ -291,6 +291,17 @@ module RegisterSourcesBods
         Register::PaginatedArray.new(res, current_page: page, records_per_page: per_page, limit_value: nil, total_count: res.total_count, aggs: res.aggs)
       end
 
+      def count(query)
+        res = client.count(
+          index: index,
+          body: {
+            query: query
+          }.compact
+        )
+
+        res["count"]
+      end
+
       private
 
       attr_reader :client, :index
