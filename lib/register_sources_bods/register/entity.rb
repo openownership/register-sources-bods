@@ -113,6 +113,8 @@ module RegisterSourcesBods
             end
 
             def jurisdiction_code
+                return unless bods_statement.respond_to?(:incorporatedInJurisdiction)
+
                 bods_statement&.incorporatedInJurisdiction&.code
             end
 
