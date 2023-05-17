@@ -113,18 +113,7 @@ module RegisterSourcesBods
             end
 
             def jurisdiction_code
-                return unless resolver_response
-
-                jurisdiction_code = resolver_response.jurisdiction_code
-                return unless jurisdiction_code
-            
-                code, = jurisdiction_code.split('_')
-                country = ISO3166::Country[code]
-                return nil if country.blank?
-
-                RegisterSourcesBods::Jurisdiction.new(name: country.name, code: country.alpha2)
-
-                bods_statement.incorporatedInJurisdiction&.code
+                bods_statement&.incorporatedInJurisdiction&.code
             end
 
             def jurisdiction_code?
