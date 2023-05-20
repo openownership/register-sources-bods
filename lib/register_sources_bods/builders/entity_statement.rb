@@ -9,16 +9,14 @@ module RegisterSourcesBods
 
       def build(record, records_for_identifiers)
         statement_id = generate_statement_id(record)
-        old_statement_ids = records_for_identifiers.map(&:statementID)
-
-        existing_statement = records_for_identifiers.find { |record| record.statementID == statement_id }
-
-        return existing_statement if existing_statement
         
-        # TODO: merging records from different sources
-        first_record = records_for_identifiers.sort_by { |record| record.publicationDetails.publicationDate }.first
-        entity_id = first_record ? first_record.statementID : statement_id
-        identifiers = record.identifiers + [register_identifier(entity_id)]
+        identifiers = record.identifiers
+
+        register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
+        if !register_identifier
+          identifiers << register_identifier(statement_id)
+          identifiers = identifiers.sort_by { |i| i.schemeName }
+        end
 
         publication_date = Time.now.utc.to_date.to_s
 
