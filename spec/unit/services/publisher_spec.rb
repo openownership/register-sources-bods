@@ -32,8 +32,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
   before do
     expect(repository).to receive(:list_matching_at_least_one_identifier).with(statement.identifiers).and_return []
     allow(id_generator).to receive(:generate_id).with(statement).and_return statement_id
-    expect(repository).to receive(:get_bulk).with([statement_id]).and_return []
-    expect(builder).to receive(:build).with(statement, []).and_return statement
+    expect(builder).to receive(:build).with(statement, replaces_ids: []).and_return statement
     expect(producer).to receive(:produce).with([statement])
     expect(producer).to receive(:finalize)
     expect(repository).to receive(:store).with([statement])

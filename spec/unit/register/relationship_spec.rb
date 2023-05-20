@@ -26,7 +26,7 @@ RSpec.describe RegisterSourcesBods::Register::Relationship do
 
     describe '#ended_date' do
         it 'returns ended_date' do
-            expect(subject.ended_date).to eq "2017-03-30"
+            expect(subject.ended_date).to eq ISO8601::Date.new("2017-03-30")
         end
     end
 
@@ -71,13 +71,13 @@ RSpec.describe RegisterSourcesBods::Register::Relationship do
 
     describe '#sample_date' do
         it 'returns sample_date' do
-            expect(subject.sample_date).to eq "2016-07-27"
+            expect(subject.sample_date).to eq ISO8601::Date.new("2016-07-27")
         end
     end
 
     describe '#started_date' do
         it 'returns started_date' do
-            expect(subject.started_date).to eq "2016-07-27"
+            expect(subject.started_date).to eq ISO8601::Date.new("2016-07-27")
         end
     end
 

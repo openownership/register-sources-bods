@@ -39,7 +39,7 @@ module RegisterSourcesBods
       attr_reader :builder, :repository, :producer, :id_generator
 
       def publish_records_with_identifiers(records)
-        return if records.empty?
+        return [] if records.empty?
 
         # Retrieve records with same identifiers
         all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
@@ -49,7 +49,7 @@ module RegisterSourcesBods
         identifier_links = {}
 
         # Add link to other identifiers
-        [records_for_all_identifiers, records].each do |r|
+        (records_for_all_identifiers + records).each do |r|
           r.identifiers.to_a.each do |identifier|
             identifier_links[identifier] ||= Set.new
             r.identifiers.to_a.each do |identifier2|
@@ -69,24 +69,26 @@ module RegisterSourcesBods
         [
           [records_for_all_identifiers, true],
           [records, false]
-        ].each do |r, published|
-          first_identifier = r.identifiers.to_a.first
+        ].each do |recs, published|
+          recs.each do |r|
+            first_identifier = r.identifiers.to_a.first
 
-          next unless first_identifier
+            next unless first_identifier
 
-          identifier_index = identifier_links[first_identifier].first
+            identifier_index = identifier_links[first_identifier].first
 
-          records_by_identifier[identifier_index] ||= {
-            published: [], # TODO: republish if identifiers have changed
-            pending: [],
-            replaced: Set.new
-          }
+            records_by_identifier[identifier_index] ||= {
+              published: [], # TODO: republish if identifiers have changed
+              pending: [],
+              replaced: Set.new
+            }
 
-          records_by_identifier[identifier_index][published ? :published : :pending] << r
+            records_by_identifier[identifier_index][published ? :published : :pending] << r
 
-          if published
-            r.replacesStatements.each do |statement_id|
-              records_by_identifier[identifier_index][:replaced] << statement_id
+            if published
+              r.replacesStatements.each do |statement_id|
+                records_by_identifier[identifier_index][:replaced] << statement_id
+              end
             end
           end
         end
@@ -146,7 +148,7 @@ module RegisterSourcesBods
       end
 
       def publish_records_without_identifiers(records)
-        return if records.empty?
+        return [] if records.empty?
 
         # Retrieve records by statementID
         record_ids = records.map { |record| id_generator.generate_id record }.uniq
@@ -178,11 +180,11 @@ module RegisterSourcesBods
         return if records.empty?
 
         # Send pending records into stream
-        producer.produce(pending_records)
+        producer.produce(records)
         producer.finalize
 
         # Store pending records
-        repository.store(pending_records)
+        repository.store(records)
       end
     end
   end

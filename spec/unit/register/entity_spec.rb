@@ -113,7 +113,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#name' do
         it 'returns name' do
-            expect(subject.name).to be_nil
+            expect(subject.name).to eq 'Mike'
         end
     end
 

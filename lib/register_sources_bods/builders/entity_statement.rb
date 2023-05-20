@@ -10,12 +10,12 @@ module RegisterSourcesBods
       def build(record, replaces_ids: [])
         statement_id = generate_statement_id(record)
 
-        identifiers = record.identifiers
+        identifiers = record.identifiers.to_a
 
         register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
         if !register_identifier
           identifiers << register_identifier(statement_id)
-          identifiers = identifiers.sort_by { |i| i.schemeName }
+          identifiers = identifiers.sort_by { |i| i.schemeName || i.scheme }
         end
 
         publication_date = Time.now.utc.to_date.to_s
