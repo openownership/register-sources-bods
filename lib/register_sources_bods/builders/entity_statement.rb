@@ -1,12 +1,11 @@
 require 'register_sources_bods/builders/base'
 require 'register_sources_bods/structs/entity_statement'
+require 'register_sources_bods/constants/identifiers'
 require 'register_sources_bods/constants/publisher'
 
 module RegisterSourcesBods
   module Builders
     class EntityStatement < Base
-      REGISTER_SCHEME_NAME = 'OpenOwnership Register'
-
       def build(record, replaces_ids: [])
         statement_id = generate_statement_id(record)
 
