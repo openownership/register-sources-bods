@@ -22,42 +22,24 @@ RSpec.describe RegisterSourcesBods::Builders::PersonStatement do
     end
 
     context 'when record does not already exist' do
-      let(:existing_identifiers) { [] }
+      let(:replaces_ids) { [] }
 
       it 'persists record to repository and publishes' do
-        mapped_record = subject.build(record, existing_identifiers)
+        mapped_record = subject.build(record, replaces_ids: replaces_ids)
 
         expect(mapped_record.statementID).to eq statement_id
+        expect(mapped_record.replacesStatements).to be_empty
       end
     end
 
     context 'when different record for identifiers already exists' do
-      let(:existing_identifiers) do
-        [
-          RegisterSourcesBods::PersonStatement[record.to_h.merge(statementID: 'diffid')]
-        ]
-      end
+      let(:replaces_ids) { ['diffid'] }
 
       it 'produces new record with a replace statement' do
-        mapped_record = subject.build(record, existing_identifiers)
+        mapped_record = subject.build(record, replaces_ids: replaces_ids)
 
         expect(mapped_record.statementID).to eq statement_id
-        expect(mapped_record).not_to eq existing_identifiers[0]
-      end
-    end
-
-    context 'when same record already exists' do
-      let(:existing_identifiers) do
-        [
-          RegisterSourcesBods::PersonStatement[record.to_h.merge(statementID: statement_id)]
-        ]
-      end
-
-      it 'returns existing record but does not store or produce record' do
-        mapped_record = subject.build(record, existing_identifiers)
-
-        expect(mapped_record.statementID).to eq statement_id
-        expect(mapped_record).to eq existing_identifiers[0]
+        expect(mapped_record.replacesStatements).to eq replaces_ids
       end
     end
   end
