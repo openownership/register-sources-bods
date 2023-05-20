@@ -60,7 +60,7 @@ module RegisterSourcesBods
 
         # Sort identifiers
         identifier_links = identifier_links.map do |identifier, linked|
-          [identifier, linked.to_a.sort_by { |i| i.schemeName }]
+          [identifier, linked.to_a.sort_by { |i| i.schemeName || i.scheme }]
         end.to_h
 
         # Associate records sharing an identifier

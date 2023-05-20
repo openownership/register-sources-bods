@@ -14,8 +14,9 @@ module RegisterSourcesBods
         register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
         if !register_identifier
           identifiers << register_identifier(statement_id)
-          identifiers = identifiers.sort_by { |i| i.schemeName || i.scheme }
         end
+
+        identifiers = identifiers.sort_by { |i| i.schemeName || i.scheme }
 
         publication_date = Time.now.utc.to_date.to_s
 
