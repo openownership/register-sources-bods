@@ -5,7 +5,7 @@ module RegisterSourcesBods
         @id_generator = id_generator
       end
 
-      # def build(record, records_for_identifiers)
+      # def build(record, replaces_ids: [])
 
       private
 

@@ -5,12 +5,8 @@ require 'register_sources_bods/constants/publisher'
 module RegisterSourcesBods
   module Builders
     class OwnershipOrControlStatement < Base
-      def build(record, records_for_identifiers)
+      def build(record, replaces_ids: [])
         statement_id = generate_statement_id(record)
-
-        existing_statement = records_for_identifiers.find { |record| record.statementID == statement_id }
-
-        return existing_statement if existing_statement
 
         RegisterSourcesBods::OwnershipOrControlStatement[
           record.to_h.merge(

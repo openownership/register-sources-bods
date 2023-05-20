@@ -7,9 +7,9 @@ module RegisterSourcesBods
     class EntityStatement < Base
       REGISTER_SCHEME_NAME = 'OpenOwnership Register'
 
-      def build(record, records_for_identifiers)
+      def build(record, replaces_ids: [])
         statement_id = generate_statement_id(record)
-        
+
         identifiers = record.identifiers
 
         register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
@@ -25,7 +25,7 @@ module RegisterSourcesBods
             statementID: statement_id,
             statementDate: record.statementDate || publication_date,
             identifiers: identifiers,
-            replacesStatements: old_statement_ids,
+            replacesStatements: replaces_ids,
             publicationDetails: RegisterSourcesBods::PublicationDetails.new(
               publicationDate: publication_date,
               bodsVersion: RegisterSourcesBods::BODS_VERSION,
