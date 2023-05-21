@@ -1,5 +1,6 @@
 require 'countries'
 require 'iso8601'
+require 'register_sources_bods/register/paginated_array'
 
 module RegisterSourcesBods
     module Register
@@ -8,7 +9,7 @@ module RegisterSourcesBods
                 @bods_statement = bods_statement
 
                 @master_entity = nil
-                @merged_entities = []
+                @merged_entities = Register::PaginatedArray.new([])
                 @relationships_as_source = []
                 @relationships_as_target = []
 
