@@ -50,10 +50,6 @@ module RegisterSourcesBods
                 statement_repository.list_matching_at_least_one_identifier(identifiers)
             end
 
-            def load_duplicate_people(person_entities)
-                
-            end
-
             def single_loader(statement_ids, processed_ids: [])
                 statement_ids = statement_ids.uniq - processed_ids
 
