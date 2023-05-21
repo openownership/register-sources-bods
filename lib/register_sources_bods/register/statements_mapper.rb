@@ -3,6 +3,7 @@ require 'register_sources_bods/structs/bods_statement'
 require 'register_sources_bods/register/entity'
 require 'register_sources_bods/register/relationship'
 require 'register_sources_bods/register/unknown_person_builder'
+require 'register_sources_bods/register/paginated_array'
 
 module RegisterSourcesBods
     module Register
