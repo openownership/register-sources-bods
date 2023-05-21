@@ -28,6 +28,48 @@ module RegisterSourcesBods
                     end
                 end
 
+                # add merged entities and master entitiy
+                replaced_ids = Set.new
+                entities.values.each do |entity|
+                    next unless entity.bods_statement.respond_to?(:replacesStatements)
+
+                    replaced_ids += entity.bods_statement.replacesStatements
+                end
+
+                # compute master entities
+                master_entities = {}
+                entities.values.each do |entity|
+                    next if replaced_ids.include?(entity.id)
+
+                    next unless entity.respond_to?(:identifiers)
+
+                    register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
+
+                    next unless register_identifier&.uri
+
+                    master_entities[register_identifier&.uri] = entity.id
+                end
+                
+                # add master_entities and merged entities
+                entities.values.each do |entity|
+                    next unless entity.respond_to?(:identifiers)
+
+                    register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
+
+                    next unless register_identifier&.uri
+
+                    master_statement_id = master_entities[register_identifier&.uri]
+
+                    master_entity = entities[master_statement_id]
+
+                    next unless master_entity
+
+                    if master_statement_id != entity.id
+                        # master_entity.merged_entities << entity
+                        entity.master_entity = master_entity
+                    end
+                end
+
                 # add source and target for register
                 relationships.values.each do |relationship|
                     bods_statement = relationship.bods_statement
@@ -41,38 +83,20 @@ module RegisterSourcesBods
 
                     source = interested_party_statement_id && entities[interested_party_statement_id]
                     if source
+                        source = source.master_entity || source
                         source.relationships_as_source = [source.relationships_as_source, relationship].compact.flatten.uniq
                         relationship.source = source
                     end
 
                     target = subject_statement_id && entities[subject_statement_id]
                     if target
+                        target = target.master_entity || target
                         target.relationships_as_target = [target.relationships_as_target, relationship].compact.flatten.uniq
                         relationship.target = target
                     end
                 end
 
-                # add merged entities and master entitiy
-                entities.values.each do |entity|
-                    next unless entity.respond_to?(:identifiers)
-
-                    register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
-
-                    next unless register_identifier&.uri
-
-                    # extract statement id from uri
-                    master_statement_id = register_identifier.uri.split("/").last
-
-                    master_entity = entities[master_statement_id]
-
-                    next unless master_entity
-
-                    if master_statement_id != entity.id
-                        master_entity.merged_entities << entity
-                        entity.master_entity = master_entity
-                    end
-                end
-
+                entities = entities.filter { |_, entity| !entity.master_entity }
                 OpenStruct.new(entities: entities, relationships: relationships)
             end
 
