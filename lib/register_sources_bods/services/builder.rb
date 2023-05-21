@@ -26,8 +26,8 @@ module RegisterSourcesBods
         }
       end
 
-      def build(record, records_for_identifiers)
-        builders.fetch(record.statementType).build(record, records_for_identifiers)
+      def build(record, replaces_ids: [])
+        builders.fetch(record.statementType).build(record, replaces_ids: replaces_ids)
       rescue KeyError
         raise Errors::UnknownRecordKindError
       end
