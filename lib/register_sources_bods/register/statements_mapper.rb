@@ -67,6 +67,8 @@ module RegisterSourcesBods
                     if master_statement_id != entity.id
                         # master_entity.merged_entities << entity
                         entity.master_entity = master_entity
+                    else
+                        entity.replaced_bods_statements << entity.bods_statement
                     end
                 end
 
@@ -77,9 +79,6 @@ module RegisterSourcesBods
                     subject_statement_id = bods_statement.subject&.describedByEntityStatement
                     interested_party = bods_statement.interestedParty
                     interested_party_statement_id = interested_party&.describedByEntityStatement || interested_party&.describedByPersonStatement
-
-                    # TODO: check direction of source and target
-                    # TODO: include master entity
 
                     source = interested_party_statement_id && entities[interested_party_statement_id]
                     if source

@@ -12,6 +12,7 @@ module RegisterSourcesBods
                 @merged_entities = Register::PaginatedArray.new([])
                 @relationships_as_source = []
                 @relationships_as_target = []
+                @replaced_bods_statements = []
 
                 @resolver_response = nil # TODO: remove resolver response
                 @tmp = {}
@@ -19,7 +20,11 @@ module RegisterSourcesBods
 
             attr_reader :bods_statement
 
-            attr_accessor :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities, :resolver_response
+            attr_accessor :replaced_bods_statements, :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities, :resolver_response
+
+            def all_bods_statements
+                [bods_statement] + replaced_bods_statements
+            end
 
             def [](k)
                 @tmp[k]

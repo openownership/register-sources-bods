@@ -16,6 +16,10 @@ module RegisterSourcesBods
 
             attr_accessor :source, :target, :sourced_relationships
 
+            def all_bods_statements
+                [bods_statement]
+            end
+
             def [](k)
                 @tmp[k]
             end
