@@ -100,17 +100,18 @@ module RegisterSourcesBods
                   query: {
                     bool: {
                       must: [
-                        { match: { 'identifiers.id': { query: identifier.id } } },
-                        { match: { 'identifiers.scheme': { query: identifier.scheme } } },
-                        { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
-                        { match: { 'identifiers.uri': { query: identifier.uri } } },
-                      ].select { |sel| sel[:match].values.first[:query] },
-                    },
-                  },
-                },
+                        { match: { "identifiers.id": { query: identifier.id } } },
+                        { match: { "identifiers.scheme": { query: identifier.scheme } } },
+                        { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
+                        { match: { "identifiers.uri": { query: identifier.uri } } },
+                      ].select { |sel| sel[:match].values.first[:query] }
+                    }
+                  }
+                }
               },
-            },
-          ),
+              size: 10_000,
+            }
+          )
         ).map(&:record)
       end
 
@@ -137,13 +138,14 @@ module RegisterSourcesBods
                             ].select { |sel| sel[:match].values.first[:query] },
                           },
                         }
-                      end,
-                    },
-                  },
-                },
+                      }
+                    }
+                  }
+                }
               },
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
@@ -186,7 +188,8 @@ module RegisterSourcesBods
             body: {
               query: {
                 bool: { should: conditions }
-              }
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
@@ -233,10 +236,11 @@ module RegisterSourcesBods
             index:,
             body: {
               query: {
-                bool: match_both ? { must: conditions } : { should: conditions },
+                bool: match_both ? { must: conditions } : { should: conditions }
               },
-            },
-          ),
+              size: 10_000,
+            }
+          )
         ).map(&:record)
       end
 

@@ -59,7 +59,19 @@ module RegisterSourcesBods
         end
 
         # Sort identifiers
-        identifier_links = identifier_links.map do |identifier, linked|
+        identifier_links = identifier_links.map do |identifier, linked|          
+          while true do
+            new_linked = linked
+
+            linked.each do |linked_identifier|
+              new_linked += identifier_links[linked_identifier]
+            end
+
+            break if new_linked == linked
+
+            linked = new_linked
+          end
+
           [identifier, linked.to_a.sort_by { |i| i.schemeName || i.scheme }]
         end.to_h
 
