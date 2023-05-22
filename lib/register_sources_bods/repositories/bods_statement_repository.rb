@@ -108,7 +108,8 @@ module RegisterSourcesBods
                     }
                   }
                 }
-              }
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
@@ -141,7 +142,8 @@ module RegisterSourcesBods
                     }
                   }
                 }
-              }
+              },
+              size: 10_000
             }
           )
         ).map(&:record)
@@ -186,7 +188,8 @@ module RegisterSourcesBods
             body: {
               query: {
                 bool: { should: conditions }
-              }
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
@@ -234,7 +237,8 @@ module RegisterSourcesBods
             body: {
               query: {
                 bool: match_both ? { must: conditions } : { should: conditions }
-              }
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
