@@ -315,7 +315,7 @@ module RegisterSourcesBods
       end
 
       def process_results(results)
-        print "Elasticsearch: ", results, "\n\n"
+        # print "Elasticsearch: ", results, "\n\n"
         hits = results.dig('hits', 'hits') || []
         hits = hits.sort { |hit| hit['_score'] }.reverse
         total_count = results.dig('hits', 'total', 'value') || 0

@@ -101,7 +101,9 @@ module RegisterSourcesBods
             end
 
             def id
-                bods_statement.statementID
+                ident = identifiers.find { |identifier| identifier.schemeName == "OpenOwnership Register" }
+
+                ident ? ident.id.split('/').last : bods_statement.statementID
             end
 
             def identifiers
