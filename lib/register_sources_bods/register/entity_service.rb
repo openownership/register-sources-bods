@@ -95,8 +95,6 @@ module RegisterSourcesBods
             def list_matching_at_least_one_identifier(identifiers)
                 records = statement_repository.list_matching_at_least_one_identifier(identifiers)
 
-                print "GOT RECORDS:\n", records.map(&:to_json).join("\n"), "\n\n"
-
                 statement_ids = records.map(&:statementID).uniq
 
                 result = statement_loader.load_statements(statement_ids)
