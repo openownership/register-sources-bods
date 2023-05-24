@@ -54,8 +54,8 @@ module RegisterSourcesBods
         # Retrieve records with same identifiers
         all_identifiers = records.map(&:identifiers).flatten
 
-        cached_identifiers = all_identifiers.filter { |identifier| cache.key? identifier }
-        remaining_identifiers = all_identifiers.reject { |identifier| cache.key? identifier }
+        cached_identifiers = all_identifiers.map { |identifier| @cache[identifier] }.compact.map(&:to_a).flatten.uniq
+        remaining_identifiers = all_identifiers.reject { |identifier| @cache.key? identifier }
 
         records_for_all_identifiers = (
           repository.list_matching_at_least_one_identifier(remaining_identifiers) +
