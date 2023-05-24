@@ -130,7 +130,7 @@ module RegisterSourcesBods
                       should: [
                         { terms: { "identifiers.id": identifiers.map(&:id).compact } },
                         { terms: { "identifiers.uri": identifiers.map(&:uri).compact } },
-                      ].select { |k, v| !v.empty? }
+                      ].filter { |a| !a[:terms].values.first.empty? }
                     }
                   }
                 }
