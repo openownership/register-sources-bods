@@ -68,7 +68,8 @@ module RegisterSourcesBods
                     }
                   }
                 }
-              }
+              },
+              size: 10_000,
             }
           )
         ).map(&:record)
