@@ -50,7 +50,7 @@ module RegisterSourcesBods
       end
 
       def get_bulk(statement_ids)
-        return [] unless statement_ids
+        return [] unless statement_ids && !statement_ids.empty?
 
         process_results(
           client.search(
