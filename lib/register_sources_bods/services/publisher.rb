@@ -46,7 +46,7 @@ module RegisterSourcesBods
         publish_id = SecureRandom.hex(6)
         time_started = Time.now.to_f
 
-        logger.info "#{publish_id}: Publishing #{records.length} records with identifiers: ", records.map(&:identifiers).flatten.map(&:to_json), "\n"
+        logger.info "#{publish_id}: Publishing #{records.length} records with identifiers: #{records.map(&:identifiers).flatten.map(&:to_json)} \n"
 
         # Retrieve records with same identifiers
         all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
@@ -161,7 +161,7 @@ module RegisterSourcesBods
           latest_records += (h[:published] + pending_records).filter { |r| unreplaced_statement_ids.include?(r.statementID) }
         end
 
-        logger.info "#{publish_id} Publishing #{pending_records.count} records with identifiers: ", pending_records.map(&:identifiers).flatten.map(&:to_json), "\n"
+        logger.info "#{publish_id} Publishing #{pending_records.count} records with identifiers: #{pending_records.map(&:identifiers).flatten.map(&:to_json)}\n"
 
         publish_new(pending_records)
 
