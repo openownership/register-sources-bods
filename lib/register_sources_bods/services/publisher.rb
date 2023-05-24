@@ -10,6 +10,7 @@ module RegisterSourcesBods
   module Services
     class Publisher
       REGISTER_SCHEME_NAME = 'OpenOwnership Register'
+      LOTS_OF_IDENTIFIERS = 10
 
       def initialize(repository: nil, producer: nil, builder: nil, id_generator: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
@@ -18,6 +19,7 @@ module RegisterSourcesBods
         @builder = builder || Services::Builder.new
         @id_generator = id_generator || Services::IdGenerator.new
         @logger = Logger.new(STDOUT)
+        @cache = {}
       end
 
       def publish(record)
@@ -50,8 +52,18 @@ module RegisterSourcesBods
         logger.info "#{publish_id}: Publishing #{records.length} records with identifiers: #{records.map(&:identifiers).flatten.map(&:to_h)} \n"
 
         # Retrieve records with same identifiers
-        all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
-        records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers)
+        all_identifiers = records.map(&:identifiers).flatten
+
+        cached_identifiers = all_identifiers.map { |identifier| @cache[identifier] }.compact.map(&:to_a).flatten.uniq
+
+        logger.info "#{publish_id} Cached identifiers: #{cached_identifiers} \n"
+
+        remaining_identifiers = all_identifiers.reject { |identifier| @cache.key? identifier }
+
+        records_for_all_identifiers = (
+          repository.list_matching_at_least_one_identifier(remaining_identifiers) +
+          repository.get_bulk(cached_identifiers)
+        )
 
         # generate lists of identifiers
         identifier_links = {}
@@ -132,6 +144,13 @@ module RegisterSourcesBods
             unreplaced_statement_ids << r.statementID
           end
 
+          # Cache identifier statement ids for any with lots of identifiers
+          if identifiers.length >= LOTS_OF_IDENTIFIERS
+            identifiers.each do |identifier|
+              @cache[identifier] = unreplaced_statement_ids
+            end
+          end
+
           h[:pending].each do |pending|
             # Update the list of identifiers in our pending record, in case other records
             # included additional identifiers that should still be tracked for this entity.
@@ -150,6 +169,11 @@ module RegisterSourcesBods
 
             # This statement has replaced any existing statements and is now the latest
             unreplaced_statement_ids = Set.new([built.statementID])
+            if identifiers.length >= LOTS_OF_IDENTIFIERS
+              identifiers.each do |identifier|
+                @cache[identifier] = unreplaced_statement_ids
+              end
+            end
 
             # Mark statement as seen so it is not published twice
             seen_statement_ids[built.statementID] = true
@@ -163,6 +187,11 @@ module RegisterSourcesBods
         end
 
         logger.info "#{publish_id} Publishing #{pending_records.count} records with identifiers: #{pending_records.map(&:identifiers).flatten.map(&:to_h)}\n"
+
+        # Deduplicate against existing records
+        # pending_statement_ids = pending_records.map(&:statementID)
+        # existing_pending = repository.get_bulk(statement_ids).map(&:statementID)
+        # pending_records = pending_records.reject { |record| existing_pending.include? record.statementID }
 
         publish_new(pending_records)
 
