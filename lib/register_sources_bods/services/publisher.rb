@@ -1,4 +1,5 @@
-
+require 'securerandom'
+require 'logger'
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/records_producer'
 require 'register_sources_bods/services/builder'
@@ -16,6 +17,7 @@ module RegisterSourcesBods
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
         @id_generator = id_generator || Services::IdGenerator.new
+        @logger = Logger.new(STDOUT)
       end
 
       def publish(record)
@@ -36,10 +38,16 @@ module RegisterSourcesBods
 
       private
 
-      attr_reader :builder, :repository, :producer, :id_generator
+      attr_reader :builder, :repository, :producer, :id_generator, :logger
 
       def publish_records_with_identifiers(records)
         return [] if records.empty?
+
+        publish_id = SecureRandom.hex(6)
+        time_started = Time.now.to_f
+
+        logger.info "#{publish_id}: Publishing records: #{records.map(&:to_h).map(&:to_json)}\n\n"
+        logger.info "#{publish_id}: Publishing #{records.length} records with identifiers: #{records.map(&:identifiers).flatten.map(&:to_h)} \n"
 
         # Retrieve records with same identifiers
         all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
@@ -154,7 +162,11 @@ module RegisterSourcesBods
           latest_records += (h[:published] + pending_records).filter { |r| unreplaced_statement_ids.include?(r.statementID) }
         end
 
+        logger.info "#{publish_id} Publishing #{pending_records.count} records with identifiers: #{pending_records.map(&:identifiers).flatten.map(&:to_h)}\n"
+
         publish_new(pending_records)
+
+        logger.info "#{publish_id} Returning #{latest_records.count} latest_records\nTook #{Time.now.to_f - time_started} seconds\n\n"
 
         latest_records
       end
