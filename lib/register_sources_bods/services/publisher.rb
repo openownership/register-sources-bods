@@ -55,6 +55,9 @@ module RegisterSourcesBods
         all_identifiers = records.map(&:identifiers).flatten
 
         cached_identifiers = all_identifiers.map { |identifier| @cache[identifier] }.compact.map(&:to_a).flatten.uniq
+
+        logger.info "#{publish_id} Cached identifiers: #{cached_identifiers} \n"
+
         remaining_identifiers = all_identifiers.reject { |identifier| @cache.key? identifier }
 
         records_for_all_identifiers = (
