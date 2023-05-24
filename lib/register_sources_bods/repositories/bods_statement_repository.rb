@@ -127,18 +127,10 @@ module RegisterSourcesBods
                   path: "identifiers",
                   query: {
                     bool: {
-                      should: identifiers.map do |identifier|
-                        {
-                          bool: {
-                            must: [
-                              { match: { 'identifiers.id': { query: identifier.id } } },
-                              { match: { 'identifiers.scheme': { query: identifier.scheme } } },
-                              { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
-                              { match: { 'identifiers.uri': { query: identifier.uri } } },
-                            ].select { |sel| sel[:match].values.first[:query] },
-                          },
-                        }
-                      }
+                      should: [
+                        { terms: { "identifiers.id": identifiers.map(&:id).compact } },
+                        { terms: { "identifiers.uri": identifiers.map(&:uri).compact } },
+                      ].filter { |a| !a[:terms].values.first.empty? }
                     }
                   }
                 }
