@@ -41,6 +41,8 @@ module RegisterSourcesBods
       def publish_records_with_identifiers(records)
         return [] if records.empty?
 
+        print "Publishing records with identifiers: ", records.map(&:identifiers).map(&:to_json), "\n"
+
         # Retrieve records with same identifiers
         all_identifiers = records.map { |record| record.respond_to?(:identifiers) ? record.identifiers : [] }.flatten
         records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers)
@@ -154,7 +156,11 @@ module RegisterSourcesBods
           latest_records += (h[:published] + pending_records).filter { |r| unreplaced_statement_ids.include?(r.statementID) }
         end
 
+        print "Publishing #{pending_records.count} records with identifiers: ", pending_records.map(&:identifiers).map(&:to_json), "\n"
+
         publish_new(pending_records)
+
+        print "Returning #{latest_records.count} latest_records\n"
 
         latest_records
       end
