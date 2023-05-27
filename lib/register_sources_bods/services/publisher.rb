@@ -145,16 +145,21 @@ module RegisterSourcesBods
           end
 
           # Cache identifier statement ids for any with lots of identifiers
-          if identifiers.length >= LOTS_OF_IDENTIFIERS
-            identifiers.each do |identifier|
-              @cache[identifier] = unreplaced_statement_ids
-            end
-          end
+          # if identifiers.length >= LOTS_OF_IDENTIFIERS
+          #   identifiers.each do |identifier|
+          #     @cache[identifier] = unreplaced_statement_ids
+          #   end
+          # end
 
           h[:pending].each do |pending|
+            new_identifiers = (
+              pending.identifiers +
+              identifiers.reject { |identifier| identifier.schemeName == 'GB Persons Of Significant Control Register' }
+            ).uniq.sort_by { |i| i.schemeName || i.scheme }
+
             # Update the list of identifiers in our pending record, in case other records
             # included additional identifiers that should still be tracked for this entity.
-            pending = BodsStatement[pending.to_h.merge(identifiers: identifiers).compact]
+            pending = BodsStatement[pending.to_h.merge(identifiers: new_identifiers).compact]
 
             # Build our generated record, ready for publishing
             built = builder.build(pending, replaces_ids: unreplaced_statement_ids.to_a)
@@ -165,15 +170,15 @@ module RegisterSourcesBods
             # The builder will add the register identifier if one doesn't already exist in the list
             # In case this happened, the identifiers list is updated here to ensure subsequent records
             # include the same id
-            identifiers = built.identifiers
+            identifiers = (identifiers + built.identifiers).uniq.sort_by { |i| i.schemeName || i.scheme }
 
             # This statement has replaced any existing statements and is now the latest
             unreplaced_statement_ids = Set.new([built.statementID])
-            if identifiers.length >= LOTS_OF_IDENTIFIERS
-              identifiers.each do |identifier|
-                @cache[identifier] = unreplaced_statement_ids
-              end
-            end
+            # if identifiers.length >= LOTS_OF_IDENTIFIERS
+            #   identifiers.each do |identifier|
+            #     @cache[identifier] = unreplaced_statement_ids
+            #   end
+            # end
 
             # Mark statement as seen so it is not published twice
             seen_statement_ids[built.statementID] = true
