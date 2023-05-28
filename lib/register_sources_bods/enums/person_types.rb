@@ -4,6 +4,6 @@ module RegisterSourcesBods
   PersonTypes = Types::String.enum(
     'knownPerson',
     'anonymousPerson',
-    'unknownPerson'
+    'unknownPerson',
   )
 end

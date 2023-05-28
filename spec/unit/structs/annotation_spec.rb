@@ -12,7 +12,7 @@ RSpec.describe RegisterSourcesBods::Annotation do
         motivation: 'commenting',
         description: '',
         transformedContent: '',
-        url: ''
+        url: '',
       }
     end
 
@@ -24,7 +24,7 @@ RSpec.describe RegisterSourcesBods::Annotation do
   context 'when params are invalid' do
     let(:params) do
       {
-        motivation: 'invalid'
+        motivation: 'invalid',
       }
     end
 

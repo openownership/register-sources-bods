@@ -8,7 +8,7 @@ RSpec.describe RegisterSourcesBods::OwnershipOrControlStatement do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/ownership_or_control_statement.json'),
-        symbolize_names: true
+        symbolize_names: true,
       )
     end
 

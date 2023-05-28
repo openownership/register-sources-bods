@@ -6,6 +6,6 @@ module RegisterSourcesBods
     'legalEntity',
     'arrangement',
     'anonymousEntity',
-    'unknownEntity'
+    'unknownEntity',
   )
 end

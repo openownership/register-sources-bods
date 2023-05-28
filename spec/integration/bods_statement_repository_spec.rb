@@ -6,14 +6,14 @@ require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/ownership_or_control_statement'
 
 RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
-  subject { described_class.new(client: es_client, index: index) }
+  subject { described_class.new(client: es_client, index:) }
 
   let(:index) { SecureRandom.uuid }
   let(:es_client) do
     Elasticsearch::Client.new(
-      host: "http://elastic:#{ENV['ELASTICSEARCH_PASSWORD']}@#{ENV['ELASTICSEARCH_HOST']}:#{ENV['ELASTICSEARCH_PORT']}",
+      host: "http://elastic:#{ENV.fetch('ELASTICSEARCH_PASSWORD', nil)}@#{ENV.fetch('ELASTICSEARCH_HOST', nil)}:#{ENV.fetch('ELASTICSEARCH_PORT', nil)}",
       transport_options: { ssl: { verify: false } },
-      log: false
+      log: false,
     )
   end
 
@@ -21,8 +21,8 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
     RegisterSourcesBods::PersonStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -30,8 +30,8 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
     RegisterSourcesBods::EntityStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/entity_statement.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
@@ -39,15 +39,15 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
     RegisterSourcesBods::OwnershipOrControlStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/ownership_or_control_statement.json'),
-        symbolize_names: true
-      )
+        symbolize_names: true,
+      ),
     )
   end
 
   before do
     index_creator = RegisterSourcesBods::Services::EsIndexCreator.new(
       es_index: index,
-      client: es_client
+      client: es_client,
     )
     index_creator.create_es_index
   end
@@ -57,7 +57,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       records = [
         person_statement,
         entity_statement,
-        ownership_or_control_statement
+        ownership_or_control_statement,
       ]
 
       subject.store(records)
@@ -79,7 +79,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       records = [
         person_statement,
         entity_statement,
-        ownership_or_control_statement
+        ownership_or_control_statement,
       ]
 
       subject.store(records)
@@ -103,7 +103,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       records = [
         person_statement,
         entity_statement,
-        ownership_or_control_statement
+        ownership_or_control_statement,
       ]
 
       subject.store(records)
@@ -115,7 +115,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
 
       results = subject.list_matching_at_least_one_identifier(person_statement.identifiers)
       expect(results).to eq [person_statement]
-      
+
       results = subject.list_matching_at_least_one_identifier(person_statement.identifiers + entity_statement.identifiers)
       expect(results).to eq [person_statement, entity_statement]
     end

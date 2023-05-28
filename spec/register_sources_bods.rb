@@ -2,6 +2,6 @@
 
 RSpec.describe RegisterSourcesBods do
   it "has a version number" do
-    expect(RegisterSourcesBods::VERSION).not_to be nil
+    expect(RegisterSourcesBods::VERSION).not_to be_nil
   end
 end

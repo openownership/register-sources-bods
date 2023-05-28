@@ -15,6 +15,6 @@ module RegisterSourcesBods
     'rights-to-surplus-assets-on-dissolution',
     'rights-to-profit-or-income',
     'rights-granted-by-contract',
-    'conditional-rights-granted-by-contract'
+    'conditional-rights-granted-by-contract',
   )
 end

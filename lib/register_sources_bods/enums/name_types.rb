@@ -7,6 +7,6 @@ module RegisterSourcesBods
     'transliteration',
     'former',
     'alternative',
-    'birth'
+    'birth',
   )
 end

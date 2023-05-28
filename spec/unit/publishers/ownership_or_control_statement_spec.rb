@@ -1,7 +1,7 @@
 require 'register_sources_bods/publishers/ownership_or_control_statement'
 
 RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
-  subject { described_class.new(repository: repository, producer: producer) }
+  subject { described_class.new(repository:, producer:) }
 
   let(:repository) { double 'repository' }
   let(:producer) { double 'producer' }
@@ -11,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
       RegisterSourcesBods::OwnershipOrControlStatement[
         **JSON.parse(
           File.read('spec/fixtures/ownership_or_control_statement.json'),
-          symbolize_names: true
+          symbolize_names: true,
         ).compact
       ]
     end
@@ -19,7 +19,7 @@ RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
     context 'when record does not already exist' do
       it 'persists record to repository and publishes' do
         expect(repository).to receive(:get).with(
-          "10539710627700352393"
+          "10539710627700352393",
         ).and_return nil
         allow(repository).to receive(:store)
         allow(producer).to receive(:produce)
@@ -38,7 +38,7 @@ RSpec.describe RegisterSourcesBods::Publishers::OwnershipOrControlStatement do
         existing_record = double 'record'
 
         expect(repository).to receive(:get).with(
-          "10539710627700352393"
+          "10539710627700352393",
         ).and_return existing_record
         expect(repository).not_to receive(:list_matching_at_least_one_identifier)
         expect(repository).not_to receive(:store)

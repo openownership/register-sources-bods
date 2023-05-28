@@ -9,7 +9,7 @@ RSpec.describe RegisterSourcesBods::Identifier do
         id: '',
         scheme: '',
         schemeName: '',
-        uri: ''
+        uri: '',
       }
     end
 

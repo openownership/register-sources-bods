@@ -4,6 +4,6 @@ module RegisterSourcesBods
   StatementTypes = Types::String.enum(
     'personStatement',
     'entityStatement',
-    'ownershipOrControlStatement'
+    'ownershipOrControlStatement',
   )
 end

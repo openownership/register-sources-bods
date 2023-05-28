@@ -1,7 +1,7 @@
 require 'register_sources_bods/publishers/entity_statement'
 
 RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
-  subject { described_class.new(repository: repository, producer: producer) }
+  subject { described_class.new(repository:, producer:) }
 
   let(:repository) { double 'repository' }
   let(:producer) { double 'producer' }
@@ -11,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
       RegisterSourcesBods::EntityStatement[
         **JSON.parse(
           File.read('spec/fixtures/entity_statement.json'),
-          symbolize_names: true
+          symbolize_names: true,
         ).compact
       ]
     end
@@ -19,10 +19,10 @@ RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
     context 'when record does not already exist' do
       it 'persists record to repository and publishes' do
         expect(repository).to receive(:get).with(
-          "4992649895118953860"
+          "4992649895118953860",
         ).and_return nil
         expect(repository).to receive(:list_matching_at_least_one_identifier).with(
-          record.identifiers
+          record.identifiers,
         ).and_return []
         allow(repository).to receive(:store)
         allow(producer).to receive(:produce)
@@ -38,13 +38,13 @@ RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
 
     context 'when different record for identifiers already exists' do
       it 'produces new record with a replace statement' do
-        existing_record = double 'record'
+        double 'record'
 
         expect(repository).to receive(:get).with(
-          "4992649895118953860"
+          "4992649895118953860",
         ).and_return nil
         expect(repository).to receive(:list_matching_at_least_one_identifier).with(
-          record.identifiers
+          record.identifiers,
         ).and_return [record]
         allow(repository).to receive(:store)
         allow(producer).to receive(:produce)
@@ -64,7 +64,7 @@ RSpec.describe RegisterSourcesBods::Publishers::EntityStatement do
         existing_record = double 'record'
 
         expect(repository).to receive(:get).with(
-          "4992649895118953860"
+          "4992649895118953860",
         ).and_return existing_record
         expect(repository).not_to receive(:list_matching_at_least_one_identifier)
         expect(repository).not_to receive(:store)

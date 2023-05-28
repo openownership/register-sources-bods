@@ -27,9 +27,10 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'elasticsearch', '>= 7.10', '< 8'
   spec.add_dependency 'activesupport', '>= 6', '< 8'
-  spec.add_dependency 'xxhash'
-  spec.add_dependency 'dry-types', '>= 1', '< 2'
   spec.add_dependency 'dry-struct', '>= 1', '< 2'
+  spec.add_dependency 'dry-types', '>= 1', '< 2'
+  spec.add_dependency 'elasticsearch', '>= 7.10', '< 8'
+  spec.add_dependency 'xxhash'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

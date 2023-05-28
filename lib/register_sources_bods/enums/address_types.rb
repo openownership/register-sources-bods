@@ -7,6 +7,6 @@ module RegisterSourcesBods
     'registered',
     'service',
     'alternative',
-    'business'
+    'business',
   )
 end

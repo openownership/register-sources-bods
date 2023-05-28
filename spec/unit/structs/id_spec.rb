@@ -6,7 +6,7 @@ RSpec.describe RegisterSourcesBods::Id do
   context 'when params are valid' do
     let(:params) do
       {
-        id: ''
+        id: '',
       }
     end
 

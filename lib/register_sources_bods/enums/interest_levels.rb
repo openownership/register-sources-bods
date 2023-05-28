@@ -4,6 +4,6 @@ module RegisterSourcesBods
   InterestLevels = Types::String.enum(
     'direct',
     'indirect',
-    'unknown'
+    'unknown',
   )
 end
