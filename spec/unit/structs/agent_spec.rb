@@ -7,7 +7,7 @@ RSpec.describe RegisterSourcesBods::Agent do
     let(:params) do
       {
         name: 'residence',
-        url: '123 House'
+        url: '123 House',
       }
     end
 

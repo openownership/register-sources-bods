@@ -6,6 +6,6 @@ module RegisterSourcesBods
     'correcting',
     'identifying',
     'linking',
-    'transformation'
+    'transformation',
   )
 end

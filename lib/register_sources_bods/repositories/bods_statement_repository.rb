@@ -3,7 +3,7 @@ require 'register_sources_bods/structs/bods_statement'
 
 module RegisterSourcesBods
   module Repositories
-    class BodsStatementRepository      
+    class BodsStatementRepository
       UnknownRecordKindError = Class.new(StandardError)
       ElasticsearchError = Class.new(StandardError)
 
@@ -17,7 +17,7 @@ module RegisterSourcesBods
       def get(statement_id)
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 bool: {
@@ -25,35 +25,35 @@ module RegisterSourcesBods
                     {
                       match: {
                         statementID: {
-                          query: statement_id
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          )
+                          query: statement_id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ),
         ).first&.record
       end
 
       def list_all
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
-                bool: {}
-              }
-            }
-          )
+                bool: {},
+              },
+            },
+          ),
         ).map(&:record)
       end
 
       def list_for_identifier(identifier)
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 nested: {
@@ -61,48 +61,48 @@ module RegisterSourcesBods
                   query: {
                     bool: {
                       must: [
-                        { match: { "identifiers.id": { query: identifier.id } } },
-                        { match: { "identifiers.scheme": { query: identifier.scheme } } },
-                        { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
-                        { match: { "identifiers.uri": { query: identifier.uri } } },
-                      ].select { |sel| sel[:match].values.first[:query] }
-                    }
-                  }
-                }
-              }
-            }
-          )
+                        { match: { 'identifiers.id': { query: identifier.id } } },
+                        { match: { 'identifiers.scheme': { query: identifier.scheme } } },
+                        { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
+                        { match: { 'identifiers.uri': { query: identifier.uri } } },
+                      ].select { |sel| sel[:match].values.first[:query] },
+                    },
+                  },
+                },
+              },
+            },
+          ),
         ).map(&:record)
       end
 
       def list_matching_at_least_one_identifier(identifiers)
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 nested: {
                   path: "identifiers",
                   query: {
                     bool: {
-                      should: identifiers.map { |identifier|
+                      should: identifiers.map do |identifier|
                         {
                           bool: {
                             must: [
-                              { match: { "identifiers.id": { query: identifier.id } } },
-                              { match: { "identifiers.scheme": { query: identifier.scheme } } },
-                              { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
-                              { match: { "identifiers.uri": { query: identifier.uri } } },
-                            ].select { |sel| sel[:match].values.first[:query] }
-                          }
+                              { match: { 'identifiers.id': { query: identifier.id } } },
+                              { match: { 'identifiers.scheme': { query: identifier.scheme } } },
+                              { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
+                              { match: { 'identifiers.uri': { query: identifier.uri } } },
+                            ].select { |sel| sel[:match].values.first[:query] },
+                          },
                         }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          )
+                      end,
+                    },
+                  },
+                },
+              },
+            },
+          ),
         ).map(&:record)
       end
 
@@ -118,14 +118,14 @@ module RegisterSourcesBods
               query: {
                 bool: {
                   must: [
-                    { match: { "subject.describedByEntityStatement": { query: subject_statement_id } } },
-                  ]
-                }
-              }
-            }
+                    { match: { 'subject.describedByEntityStatement': { query: subject_statement_id } } },
+                  ],
+                },
+              },
+            },
           }
         end
-        
+
         if interested_party_statement_id
           conditions << {
             nested: {
@@ -133,24 +133,24 @@ module RegisterSourcesBods
               query: {
                 bool: {
                   should: [
-                    { match: { "interestedParty.describedByEntityStatement": { query: interested_party_statement_id } } },
-                    { match: { "interestedParty.describedByPersonStatement": { query: interested_party_statement_id } } },
-                  ]
-                }
-              }
-            }
+                    { match: { 'interestedParty.describedByEntityStatement': { query: interested_party_statement_id } } },
+                    { match: { 'interestedParty.describedByPersonStatement': { query: interested_party_statement_id } } },
+                  ],
+                },
+              },
+            },
           }
         end
 
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
-                bool: match_both ? { must: conditions } : { should: conditions }
-              }
-            }
-          )
+                bool: match_both ? { must: conditions } : { should: conditions },
+              },
+            },
+          ),
         ).map(&:record)
       end
 
@@ -159,11 +159,11 @@ module RegisterSourcesBods
 
         operations = records.map do |record|
           {
-            index:  {
+            index: {
               _index: index,
               _id: calculate_id(record),
-              data: record.to_h
-            }
+              data: record.to_h,
+            },
           }
         end
 

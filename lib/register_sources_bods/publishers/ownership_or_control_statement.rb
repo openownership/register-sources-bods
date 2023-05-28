@@ -7,7 +7,7 @@ module RegisterSourcesBods
       def publish(record)
         unique_attributes = unique_attributes(record)
         statement_id = generate_statement_id(unique_attributes)
-  
+
         existing_record = repository.get(statement_id)
 
         return existing_record if existing_record # record already exists
@@ -20,8 +20,8 @@ module RegisterSourcesBods
                 publicationDate: Time.now.utc.to_date.to_s,
                 bodsVersion: RegisterSourcesBods::BODS_VERSION,
                 license: RegisterSourcesBods::BODS_LICENSE,
-                publisher: RegisterSourcesBods::PUBLISHER
-              )
+                publisher: RegisterSourcesBods::PUBLISHER,
+              ),
             ).compact
           ]
 
@@ -32,7 +32,7 @@ module RegisterSourcesBods
 
       def unique_attributes(record)
         attributes = record.to_h
-        attributes.reject { |k, _v| [:statementID, :publicationDetails, :source].include? k }
+        attributes.except(:statementID, :publicationDetails, :source)
       end
     end
   end

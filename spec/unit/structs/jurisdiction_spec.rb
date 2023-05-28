@@ -7,7 +7,7 @@ RSpec.describe RegisterSourcesBods::Jurisdiction do
     let(:params) do
       {
         name: '',
-        code: ''
+        code: '',
       }
     end
 

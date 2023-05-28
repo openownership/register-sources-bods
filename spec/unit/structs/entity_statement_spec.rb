@@ -8,7 +8,7 @@ RSpec.describe RegisterSourcesBods::EntityStatement do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/entity_statement.json'),
-        symbolize_names: true
+        symbolize_names: true,
       )
     end
 

@@ -8,7 +8,7 @@ RSpec.describe RegisterSourcesBods::PersonStatement do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true
+        symbolize_names: true,
       )
     end
 

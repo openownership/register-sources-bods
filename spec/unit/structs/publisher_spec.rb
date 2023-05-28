@@ -7,7 +7,7 @@ RSpec.describe RegisterSourcesBods::Publisher do
     let(:params) do
       {
         name: '',
-        url: ''
+        url: '',
       }
     end
 

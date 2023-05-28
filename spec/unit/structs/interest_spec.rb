@@ -18,7 +18,7 @@ RSpec.describe RegisterSourcesBods::Interest do
           exclusiveMaximum: false,
         },
         startDate: '2022-03-01',
-        endDate: '2022-05-09'
+        endDate: '2022-05-09',
       }
     end
 

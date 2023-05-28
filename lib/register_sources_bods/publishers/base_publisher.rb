@@ -10,7 +10,8 @@ module RegisterSourcesBods
     class BasePublisher
       def initialize(repository: nil, producer: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT)
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+        )
         @producer = producer || Services::RecordsProducer.new
       end
 

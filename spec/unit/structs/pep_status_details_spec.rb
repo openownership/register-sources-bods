@@ -17,7 +17,7 @@ RSpec.describe RegisterSourcesBods::PepStatusDetails do
           url: '',
           retrievedAt: '',
           assertedBy: nil,
-        }
+        },
       }
     end
 

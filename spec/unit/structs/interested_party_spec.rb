@@ -11,7 +11,7 @@ RSpec.describe RegisterSourcesBods::InterestedParty do
         unspecified: {
           description: 'some description',
           reason: 'no-beneficial-owners',
-        }
+        },
       }
     end
 
@@ -25,7 +25,7 @@ RSpec.describe RegisterSourcesBods::InterestedParty do
       {
         unspecified: {
           reason: 'invalid',
-        }
+        },
       }
     end
 

@@ -11,8 +11,8 @@ RSpec.describe RegisterSourcesBods::PublicationDetails do
         license: '',
         publisher: {
           name: '',
-          url: ''
-        }
+          url: '',
+        },
       }
     end
 

@@ -6,6 +6,6 @@ module RegisterSourcesBods
     'officialRegister',
     'thirdParty',
     'primaryResearch',
-    'verified'
+    'verified',
   )
 end

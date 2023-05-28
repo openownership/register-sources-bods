@@ -13,7 +13,7 @@ module RegisterSourcesBods
       )
         entity_statement_publisher ||= Publishers::EntityStatement.new
         person_statement_publisher ||= Publishers::PersonStatement.new
-        ownership_or_control_statement_publisher ||= Publishers::OwnershipOrControlStatement.new        
+        ownership_or_control_statement_publisher ||= Publishers::OwnershipOrControlStatement.new
 
         @publishers = {
           StatementTypes['personStatement'] => person_statement_publisher,

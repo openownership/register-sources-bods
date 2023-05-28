@@ -7,7 +7,7 @@ RSpec.describe RegisterSourcesBods::Country do
     let(:params) do
       {
         name: '',
-        code: ''
+        code: '',
       }
     end
 

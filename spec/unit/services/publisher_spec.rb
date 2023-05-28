@@ -6,9 +6,9 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Services::Publisher do
   subject do
     described_class.new(
-      entity_statement_publisher: entity_statement_publisher,
-      person_statement_publisher: person_statement_publisher,
-      ownership_or_control_statement_publisher: ownership_or_control_statement_publisher
+      entity_statement_publisher:,
+      person_statement_publisher:,
+      ownership_or_control_statement_publisher:,
     )
   end
 
@@ -22,7 +22,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/person_statement.json'),
-            symbolize_names: true
+            symbolize_names: true,
           )
         ]
       end
@@ -39,7 +39,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/entity_statement.json'),
-            symbolize_names: true
+            symbolize_names: true,
           )
         ]
       end
@@ -56,7 +56,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/ownership_or_control_statement.json'),
-            symbolize_names: true
+            symbolize_names: true,
           )
         ]
       end
@@ -71,7 +71,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     context 'when record is not valid bods statement' do
       context 'with valid type but invalid other params' do
         let(:statement) { { statementType: 'personStatement' } }
-      
+
         it 'raises an error' do
           expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
         end
@@ -79,7 +79,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
 
       context 'with invalid type' do
         let(:statement) { { statementType: 'invalid' } }
-      
+
         it 'raises an error' do
           expect { subject.publish statement }.to raise_error RegisterSourcesBods::UnknownRecordKindError
         end

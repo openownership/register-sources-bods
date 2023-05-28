@@ -4,19 +4,20 @@ require 'register_sources_bods/structs/person_statement'
 module RegisterSourcesBods
   module Publishers
     class PersonStatement < BasePublisher
-      REGISTER_SCHEME_NAME = 'OpenOwnership Register'
+      REGISTER_SCHEME_NAME = 'OpenOwnership Register'.freeze
 
       def publish(record)
         unique_attributes = unique_attributes(record)
         statement_id = generate_statement_id(unique_attributes)
-  
+
         existing_record = repository.get(statement_id)
 
         return existing_record if existing_record # record already exists
 
         records_for_identifiers = repository.list_matching_at_least_one_identifier(
-          record.identifiers)
-        first_record = records_for_identifiers.sort_by { |record| record.publicationDetails.publicationDate }.first
+          record.identifiers,
+        )
+        first_record = records_for_identifiers.min_by { |record| record.publicationDetails.publicationDate }
         entity_id = first_record ? first_record.statementID : statement_id
         identifiers = record.identifiers + [register_identifier(entity_id)]
 
@@ -26,14 +27,14 @@ module RegisterSourcesBods
             record.to_h.merge(
               statementID: statement_id,
               statementDate: record.statementDate || publication_date,
-              identifiers: identifiers,
+              identifiers:,
               replacesStatements: records_for_identifiers.map(&:statementID),
               publicationDetails: RegisterSourcesBods::PublicationDetails.new(
                 publicationDate: publication_date,
                 bodsVersion: RegisterSourcesBods::BODS_VERSION,
                 license: RegisterSourcesBods::BODS_LICENSE,
-                publisher: RegisterSourcesBods::PUBLISHER
-              )
+                publisher: RegisterSourcesBods::PUBLISHER,
+              ),
             ).compact
           ]
 
@@ -44,7 +45,7 @@ module RegisterSourcesBods
 
       def unique_attributes(record)
         attributes = record.to_h
-        attributes.reject { |k, _v| [:statementID, :statementDate, :publicationDetails, :source].include? k }
+        attributes.except(:statementID, :statementDate, :publicationDetails, :source)
       end
 
       def register_identifier(entity_id)
@@ -53,7 +54,7 @@ module RegisterSourcesBods
         RegisterSourcesBods::Identifier.new(
           id: url,
           schemeName: REGISTER_SCHEME_NAME,
-          uri: url
+          uri: url,
         )
       end
     end
