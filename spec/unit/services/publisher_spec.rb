@@ -6,10 +6,10 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Services::Publisher do
   subject do
     described_class.new(
-      repository: repository,
-      producer: producer,
-      builder: builder,
-      id_generator: id_generator
+      repository:,
+      producer:,
+      builder:,
+      id_generator:,
     )
   end
 
@@ -22,7 +22,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     RegisterSourcesBods::BodsStatement[
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true
+        symbolize_names: true,
       ).compact
     ]
   end

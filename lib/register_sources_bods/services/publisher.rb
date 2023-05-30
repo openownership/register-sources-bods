@@ -9,16 +9,17 @@ require 'register_sources_bods/structs/bods_statement'
 module RegisterSourcesBods
   module Services
     class Publisher
-      REGISTER_SCHEME_NAME = 'OpenOwnership Register'
+      REGISTER_SCHEME_NAME = 'OpenOwnership Register'.freeze
       LOTS_OF_IDENTIFIERS = 10
 
       def initialize(repository: nil, producer: nil, builder: nil, id_generator: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT)
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+        )
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
         @id_generator = id_generator || Services::IdGenerator.new
-        @logger = Logger.new(STDOUT)
+        @logger = Logger.new($stdout)
         @cache = {}
       end
 
@@ -60,10 +61,9 @@ module RegisterSourcesBods
 
         remaining_identifiers = all_identifiers.reject { |identifier| @cache.key? identifier }
 
-        records_for_all_identifiers = (
+        records_for_all_identifiers =
           repository.list_matching_at_least_one_identifier(remaining_identifiers)
-          # + repository.get_bulk(cached_identifiers)
-        )
+        # + repository.get_bulk(cached_identifiers)
 
         # generate lists of identifiers
         identifier_links = {}
@@ -79,8 +79,8 @@ module RegisterSourcesBods
         end
 
         # Sort identifiers
-        identifier_links = identifier_links.map do |identifier, linked|          
-          while true do
+        identifier_links = identifier_links.to_h do |identifier, linked|
+          while true
             new_linked = linked
 
             linked.each do |linked_identifier|
@@ -93,14 +93,14 @@ module RegisterSourcesBods
           end
 
           [identifier, linked.to_a.sort_by { |i| i.schemeName || i.scheme }]
-        end.to_h
+        end
 
         # Associate records sharing an identifier
         records_by_identifier = {}
 
         [
           [records_for_all_identifiers, true],
-          [records, false]
+          [records, false],
         ].each do |recs, published|
           recs.each do |r|
             first_identifier = r.identifiers.to_a.first
@@ -112,15 +112,15 @@ module RegisterSourcesBods
             records_by_identifier[identifier_index] ||= {
               published: [], # TODO: republish if identifiers have changed
               pending: [],
-              replaced: Set.new
+              replaced: Set.new,
             }
 
             records_by_identifier[identifier_index][published ? :published : :pending] << r
 
-            if published
-              r.replacesStatements.each do |statement_id|
-                records_by_identifier[identifier_index][:replaced] << statement_id
-              end
+            next unless published
+
+            r.replacesStatements.each do |statement_id|
+              records_by_identifier[identifier_index][:replaced] << statement_id
             end
           end
         end
@@ -216,7 +216,7 @@ module RegisterSourcesBods
 
         # Reject records which had an id in the database
         existing_statement_ids = existing_records.map(&:statementID)
-        pending_records = records.select { |record| !existing_statement_ids.include?(id_generator.generate_id(record)) }
+        pending_records = records.reject { |record| existing_statement_ids.include?(id_generator.generate_id(record)) }
 
         # Build pending records, adding replaces statements for existing where necessary
         pending_ids = {}
@@ -224,6 +224,7 @@ module RegisterSourcesBods
           pending_record = builder.build(record)
 
           next if pending_ids[pending_record.statementID]
+
           pending_ids[pending_record.statementID] = true
 
           pending_record

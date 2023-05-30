@@ -25,7 +25,7 @@ RSpec.describe RegisterSourcesBods::Builders::OwnershipOrControlStatement do
       let(:replaces_ids) { [] }
 
       it 'persists record to repository and publishes' do
-        mapped_record = subject.build(record, replaces_ids: replaces_ids)
+        mapped_record = subject.build(record, replaces_ids:)
 
         expect(mapped_record.statementID).to eq statement_id
         expect(mapped_record.replacesStatements).to be_empty
@@ -38,7 +38,7 @@ RSpec.describe RegisterSourcesBods::Builders::OwnershipOrControlStatement do
       end
 
       it 'produces ignores replaces statements provided' do
-        mapped_record = subject.build(record, replaces_ids: replaces_ids)
+        mapped_record = subject.build(record, replaces_ids:)
 
         expect(mapped_record.statementID).to eq statement_id
         expect(mapped_record.replacesStatements).to be_empty

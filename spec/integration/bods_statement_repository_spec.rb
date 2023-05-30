@@ -21,8 +21,8 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
     RegisterSourcesBods::PersonStatement.new(
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true
-      ).compact
+        symbolize_names: true,
+      ).compact,
     )
   end
 

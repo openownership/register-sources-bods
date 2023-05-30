@@ -9,7 +9,7 @@ RSpec.describe RegisterSourcesBods::IdGenerators::PersonStatement do
       RegisterSourcesBods::PersonStatement[
         **JSON.parse(
           File.read('spec/fixtures/person_statement.json'),
-          symbolize_names: true
+          symbolize_names: true,
         ).compact
       ]
     end

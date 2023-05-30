@@ -1,37 +1,37 @@
 module RegisterSourcesBods
-    module Register
-        class Statement
-            def initialize(bods_statement)
-                @bods_statement = bods_statement
+  module Register
+    class Statement
+      def initialize(bods_statement)
+        @bods_statement = bods_statement
 
-                @entity = nil
-            end
+        @entity = nil
+      end
 
-            attr_reader :bods_statement
+      attr_reader :bods_statement
 
-            attr_accessor :entity
+      attr_accessor :entity
 
-            def _id
-                nil
-            end
+      def _id
+        nil
+      end
 
-            def type
-                nil
-            end
+      def type
+        nil
+      end
 
-            def date
-                nil
-            end
+      def date
+        nil
+      end
 
-            def ended_date
-                nil
-            end
+      def ended_date
+        nil
+      end
 
-            # ASSOCIATIONS
+      # ASSOCIATIONS
 
-            def entity_id
-                entity&.id
-            end
-        end
+      def entity_id
+        entity&.id
+      end
     end
+  end
 end

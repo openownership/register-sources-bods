@@ -14,83 +14,83 @@ RSpec.describe RegisterSourcesBods::Register::Relationship do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/ownership_or_control_statement.json'),
-        symbolize_names: true
+        symbolize_names: true,
       ).compact
     end
 
     describe '#_id' do
-        it 'returns _id' do
-            expect(subject._id).to eq "ocs1"
-        end
+      it 'returns _id' do
+        expect(subject._id).to eq "ocs1"
+      end
     end
 
     describe '#ended_date' do
-        it 'returns ended_date' do
-            expect(subject.ended_date).to eq ISO8601::Date.new("2017-03-30")
-        end
+      it 'returns ended_date' do
+        expect(subject.ended_date).to eq ISO8601::Date.new("2017-03-30")
+      end
     end
 
     describe '#id' do
-        it 'returns id' do
-            expect(subject.id).to eq "ocs1"
-        end
+      it 'returns id' do
+        expect(subject.id).to eq "ocs1"
+      end
     end
 
     describe '#interests' do
-        it 'returns interests' do
-            expect(subject.interests).to eq [
-              RegisterSourcesBods::Interest[{
-                type: "shareholding",
-                interestLevel: nil,
-                beneficialOwnershipOrControl: nil,
-                details: "ownership-of-shares-25-to-50-percent",
-                share: RegisterSourcesBods::Share[{
-                  maximum: 50.0,
-                  minimum: 25.0,
-                  exclusiveMinimum: true,
-                  exclusiveMaximum: false
-                }],
-                startDate: "2016-07-27",
-                endDate: "2017-03-30"
-              }.compact]
-            ]
-        end
+      it 'returns interests' do
+        expect(subject.interests).to eq [
+          RegisterSourcesBods::Interest[{
+            type: "shareholding",
+            interestLevel: nil,
+            beneficialOwnershipOrControl: nil,
+            details: "ownership-of-shares-25-to-50-percent",
+            share: RegisterSourcesBods::Share[{
+              maximum: 50.0,
+              minimum: 25.0,
+              exclusiveMinimum: true,
+              exclusiveMaximum: false,
+            }],
+            startDate: "2016-07-27",
+            endDate: "2017-03-30",
+          }.compact],
+        ]
+      end
     end
 
     describe '#is_indirect' do
-        it 'returns is_indirect' do
-            expect(subject.is_indirect).to eq false
-        end
+      it 'returns is_indirect' do
+        expect(subject.is_indirect).to be false
+      end
     end
 
     describe '#keys_for_uniq_grouping' do
-        it 'returns keys_for_uniq_grouping' do
-            expect(subject.keys_for_uniq_grouping).to eq ["shareholding"]
-        end
+      it 'returns keys_for_uniq_grouping' do
+        expect(subject.keys_for_uniq_grouping).to eq ["shareholding"]
+      end
     end
 
     describe '#sample_date' do
-        it 'returns sample_date' do
-            expect(subject.sample_date).to eq ISO8601::Date.new("2016-07-27")
-        end
+      it 'returns sample_date' do
+        expect(subject.sample_date).to eq ISO8601::Date.new("2016-07-27")
+      end
     end
 
     describe '#started_date' do
-        it 'returns started_date' do
-            expect(subject.started_date).to eq ISO8601::Date.new("2016-07-27")
-        end
+      it 'returns started_date' do
+        expect(subject.started_date).to eq ISO8601::Date.new("2016-07-27")
+      end
     end
 
     describe '#source_id' do
-        it 'returns source_id' do
-            expect(subject.source_id).to eq nil
-        end
+      it 'returns source_id' do
+        expect(subject.source_id).to be_nil
+      end
     end
 
     describe '#target_id' do
-        it 'returns target_id' do
-            expect(subject.target_id).to eq nil
-        end
+      it 'returns target_id' do
+        expect(subject.target_id).to be_nil
+      end
     end
   end
 end

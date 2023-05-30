@@ -9,7 +9,7 @@ RSpec.describe RegisterSourcesBods::IdGenerators::EntityStatement do
       RegisterSourcesBods::EntityStatement[
         **JSON.parse(
           File.read('spec/fixtures/entity_statement.json'),
-          symbolize_names: true
+          symbolize_names: true,
         ).compact
       ]
     end

@@ -13,33 +13,33 @@ require 'active_support/core_ext/string/conversions'
 module RegisterSourcesBods
   module Mappers
     module ResolverMappings
-      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
+      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'.freeze
 
       def addresses
-        return [] unless resolver_response && resolver_response.company
+        return [] unless resolver_response&.company
 
         address = resolver_response.company.registered_address_in_full.presence.try(:gsub, "\n", ", ")
         return [] if address.blank?
 
-        country_code = incorporated_in_jurisdiction ? incorporated_in_jurisdiction.code : nil
+        country_code = incorporated_in_jurisdiction&.code
 
         [
           RegisterSourcesBods::Address[{
             type: RegisterSourcesBods::AddressTypes['registered'],
-            address: address,
-            country: country_code
-          }.compact]
+            address:,
+            country: country_code,
+          }.compact],
         ]
       end
 
       def name
-        return unless resolver_response && resolver_response.company
+        return unless resolver_response&.company
 
         resolver_response.company.name
       end
 
       def open_corporates_identifier
-        return unless resolver_response && resolver_response.resolved
+        return unless resolver_response&.resolved
 
         jurisdiction = resolver_response.jurisdiction_code
         company_number = resolver_response.company_number
@@ -48,7 +48,7 @@ module RegisterSourcesBods
         RegisterSourcesBods::Identifier[{
           id: oc_url,
           schemeName: OPEN_CORPORATES_SCHEME_NAME,
-          uri: oc_url
+          uri: oc_url,
         }]
       end
 
@@ -57,7 +57,7 @@ module RegisterSourcesBods
 
         jurisdiction_code = resolver_response.jurisdiction_code
         return unless jurisdiction_code
-      
+
         code, = jurisdiction_code.split('_')
         country = ISO3166::Country[code]
         return nil if country.blank?
@@ -66,7 +66,7 @@ module RegisterSourcesBods
       end
 
       def founding_date
-        return unless resolver_response && resolver_response.company
+        return unless resolver_response&.company
 
         date = resolver_response.company.incorporation_date&.to_date
 
@@ -79,7 +79,7 @@ module RegisterSourcesBods
       end
 
       def dissolution_date
-        return unless resolver_response && resolver_response.company
+        return unless resolver_response&.company
 
         date = resolver_response.company.dissolution_date&.to_date
 

@@ -6,9 +6,9 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Services::Builder do
   subject do
     described_class.new(
-      entity_statement_builder: entity_statement_builder,
-      person_statement_builder: person_statement_builder,
-      ownership_or_control_statement_builder: ownership_or_control_statement_builder
+      entity_statement_builder:,
+      person_statement_builder:,
+      ownership_or_control_statement_builder:,
     )
   end
 
@@ -24,9 +24,9 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
       let(:statement_type) { RegisterSourcesBods::StatementTypes['personStatement'] }
 
       it 'calls person_statement_builder with statement' do
-        expect(person_statement_builder).to receive(:build).with(statement, replaces_ids: replaces_ids)
+        expect(person_statement_builder).to receive(:build).with(statement, replaces_ids:)
 
-        subject.build(statement, replaces_ids: replaces_ids)
+        subject.build(statement, replaces_ids:)
       end
     end
 
@@ -34,9 +34,9 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
       let(:statement_type) { RegisterSourcesBods::StatementTypes['entityStatement'] }
 
       it 'calls entity_statement_builder with statement' do
-        expect(entity_statement_builder).to receive(:build).with(statement, replaces_ids: replaces_ids)
+        expect(entity_statement_builder).to receive(:build).with(statement, replaces_ids:)
 
-        subject.build(statement, replaces_ids: replaces_ids)
+        subject.build(statement, replaces_ids:)
       end
     end
 
@@ -44,9 +44,9 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
       let(:statement_type) { RegisterSourcesBods::StatementTypes['ownershipOrControlStatement'] }
 
       it 'calls ownership_or_control_statement_builder with statement' do
-        expect(ownership_or_control_statement_builder).to receive(:build).with(statement, replaces_ids: replaces_ids)
+        expect(ownership_or_control_statement_builder).to receive(:build).with(statement, replaces_ids:)
 
-        subject.build(statement, replaces_ids: replaces_ids)
+        subject.build(statement, replaces_ids:)
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
       let(:statement_type) { 'invalid' }
 
       it 'raises an error' do
-        expect { subject.build(statement, replaces_ids: replaces_ids) }.to raise_error RegisterSourcesBods::Errors::UnknownRecordKindError
+        expect { subject.build(statement, replaces_ids:) }.to raise_error RegisterSourcesBods::Errors::UnknownRecordKindError
       end
     end
   end

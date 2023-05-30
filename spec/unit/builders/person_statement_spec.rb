@@ -25,7 +25,7 @@ RSpec.describe RegisterSourcesBods::Builders::PersonStatement do
       let(:replaces_ids) { [] }
 
       it 'persists record to repository and publishes' do
-        mapped_record = subject.build(record, replaces_ids: replaces_ids)
+        mapped_record = subject.build(record, replaces_ids:)
 
         expect(mapped_record.statementID).to eq statement_id
         expect(mapped_record.replacesStatements).to be_empty
@@ -36,7 +36,7 @@ RSpec.describe RegisterSourcesBods::Builders::PersonStatement do
       let(:replaces_ids) { ['diffid'] }
 
       it 'produces new record with a replace statement' do
-        mapped_record = subject.build(record, replaces_ids: replaces_ids)
+        mapped_record = subject.build(record, replaces_ids:)
 
         expect(mapped_record.statementID).to eq statement_id
         expect(mapped_record.replacesStatements).to eq replaces_ids

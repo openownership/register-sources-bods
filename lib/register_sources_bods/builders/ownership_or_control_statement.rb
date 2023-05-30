@@ -15,8 +15,8 @@ module RegisterSourcesBods
               publicationDate: Time.now.utc.to_date.to_s,
               bodsVersion: RegisterSourcesBods::BODS_VERSION,
               license: RegisterSourcesBods::BODS_LICENSE,
-              publisher: RegisterSourcesBods::PUBLISHER
-            )
+              publisher: RegisterSourcesBods::PUBLISHER,
+            ),
           ).compact
         ]
       end

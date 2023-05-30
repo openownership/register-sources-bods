@@ -6,9 +6,9 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Services::IdGenerator do
   subject do
     described_class.new(
-      entity_statement_id_generator: entity_statement_id_generator,
-      person_statement_id_generator: person_statement_id_generator,
-      ownership_or_control_statement_id_generator: ownership_or_control_statement_id_generator
+      entity_statement_id_generator:,
+      person_statement_id_generator:,
+      ownership_or_control_statement_id_generator:,
     )
   end
 

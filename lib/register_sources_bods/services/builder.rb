@@ -17,7 +17,7 @@ module RegisterSourcesBods
         id_generator ||= Services::IdGenerator.new
         entity_statement_builder ||= Builders::EntityStatement.new(id_generator)
         person_statement_builder ||= Builders::PersonStatement.new(id_generator)
-        ownership_or_control_statement_builder ||= Builders::OwnershipOrControlStatement.new(id_generator)     
+        ownership_or_control_statement_builder ||= Builders::OwnershipOrControlStatement.new(id_generator)
 
         @builders = {
           StatementTypes['personStatement'] => person_statement_builder,
@@ -27,7 +27,7 @@ module RegisterSourcesBods
       end
 
       def build(record, replaces_ids: [])
-        builders.fetch(record.statementType).build(record, replaces_ids: replaces_ids)
+        builders.fetch(record.statementType).build(record, replaces_ids:)
       rescue KeyError
         raise Errors::UnknownRecordKindError
       end

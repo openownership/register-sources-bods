@@ -12,7 +12,7 @@ module RegisterSourcesBods
         identifiers = record.identifiers.to_a
 
         register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
-        if !register_identifier
+        unless register_identifier
           identifiers << register_identifier(statement_id)
         end
 
@@ -24,14 +24,14 @@ module RegisterSourcesBods
           record.to_h.merge(
             statementID: statement_id,
             statementDate: record.statementDate || publication_date,
-            identifiers: identifiers,
+            identifiers:,
             replacesStatements: replaces_ids,
             publicationDetails: RegisterSourcesBods::PublicationDetails.new(
               publicationDate: publication_date,
               bodsVersion: RegisterSourcesBods::BODS_VERSION,
               license: RegisterSourcesBods::BODS_LICENSE,
-              publisher: RegisterSourcesBods::PUBLISHER
-            )
+              publisher: RegisterSourcesBods::PUBLISHER,
+            ),
           ).compact
         ]
       end
@@ -42,7 +42,7 @@ module RegisterSourcesBods
         RegisterSourcesBods::Identifier.new(
           id: url,
           schemeName: REGISTER_SCHEME_NAME,
-          uri: url
+          uri: url,
         )
       end
     end

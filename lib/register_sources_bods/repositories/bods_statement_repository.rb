@@ -54,39 +54,39 @@ module RegisterSourcesBods
 
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
                 bool: {
-                  should: statement_ids.map { |statement_id|
+                  should: statement_ids.map do |statement_id|
                     {
                       bool: {
                         must: [
-                          { match: { "statementID": { query: statement_id } } }
-                        ]
-                      }
+                          { match: { statementID: { query: statement_id } } },
+                        ],
+                      },
                     }
-                  }
-                }
+                  end,
+                },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         ).map(&:record)
       end
 
       def list_all(query: nil)
         query ||= {
-          bool: {}
+          bool: {},
         }
 
         process_results(
           client.search(
             index:,
             body: {
-              query: query
-            }
-          )
+              query:,
+            },
+          ),
         ).map(&:record)
       end
 
@@ -101,18 +101,18 @@ module RegisterSourcesBods
                   query: {
                     bool: {
                       must: [
-                        { match: { "identifiers.id": { query: identifier.id } } },
-                        { match: { "identifiers.scheme": { query: identifier.scheme } } },
-                        { match: { "identifiers.schemeName": { query: identifier.schemeName } } },
-                        { match: { "identifiers.uri": { query: identifier.uri } } },
-                      ].select { |sel| sel[:match].values.first[:query] }
-                    }
-                  }
-                }
+                        { match: { 'identifiers.id': { query: identifier.id } } },
+                        { match: { 'identifiers.scheme': { query: identifier.scheme } } },
+                        { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
+                        { match: { 'identifiers.uri': { query: identifier.uri } } },
+                      ].select { |sel| sel[:match].values.first[:query] },
+                    },
+                  },
+                },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         ).map(&:record)
       end
 
@@ -129,16 +129,16 @@ module RegisterSourcesBods
                   query: {
                     bool: {
                       should: [
-                        { terms: { "identifiers.id": identifiers.map(&:id).compact } },
-                        { terms: { "identifiers.uri": identifiers.map(&:uri).compact } },
-                      ].filter { |a| !a[:terms].values.first.empty? }
-                    }
-                  }
-                }
+                        { terms: { 'identifiers.id': identifiers.map(&:id).compact } },
+                        { terms: { 'identifiers.uri': identifiers.map(&:uri).compact } },
+                      ].filter { |a| !a[:terms].values.first.empty? },
+                    },
+                  },
+                },
               },
-              size: 10_000
-            }
-          )
+              size: 10_000,
+            },
+          ),
         ).map(&:record)
       end
 
@@ -153,11 +153,11 @@ module RegisterSourcesBods
                 query: {
                   bool: {
                     must: [
-                      { match: { "subject.describedByEntityStatement": { query: statement_id } } },
-                    ]
-                  }
-                }
-              }
+                      { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
+                    ],
+                  },
+                },
+              },
             },
             {
               nested: {
@@ -165,26 +165,26 @@ module RegisterSourcesBods
                 query: {
                   bool: {
                     should: [
-                      { match: { "interestedParty.describedByEntityStatement": { query: statement_id } } },
-                      { match: { "interestedParty.describedByPersonStatement": { query: statement_id } } },
-                    ]
-                  }
-                }
-              }
-            }
+                      { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
+                      { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
+                    ],
+                  },
+                },
+              },
+            },
           ]
         end
 
         process_results(
           client.search(
-            index: index,
+            index:,
             body: {
               query: {
-                bool: { should: conditions }
+                bool: { should: conditions },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         ).map(&:record)
       end
 
@@ -229,11 +229,11 @@ module RegisterSourcesBods
             index:,
             body: {
               query: {
-                bool: match_both ? { must: conditions } : { should: conditions }
+                bool: match_both ? { must: conditions } : { should: conditions },
               },
               size: 10_000,
-            }
-          )
+            },
+          ),
         ).map(&:record)
       end
 
@@ -265,24 +265,24 @@ module RegisterSourcesBods
           page = page.to_i
           per_page = per_page.to_i
           from = (page - 1) * per_page
-          size = per_page
+          per_page
         else
           page = 1
           per_page = 10
           from = nil
-          size = nil
+          nil
         end
 
         res = process_results(
           client.search(
-            index: index,
+            index:,
             body: {
-              from: from,
+              from:,
               size: per_page,
-              query: query,
-              aggregations: aggs
-            }.compact
-          )
+              query:,
+              aggregations: aggs,
+            }.compact,
+          ),
         )
 
         Register::PaginatedArray.new(res, current_page: page, records_per_page: per_page, limit_value: nil, total_count: res.total_count, aggs: res.aggs)
@@ -290,10 +290,10 @@ module RegisterSourcesBods
 
       def count(query)
         res = client.count(
-          index: index,
+          index:,
           body: {
-            query: query
-          }.compact
+            query:,
+          }.compact,
         )
 
         res["count"]
@@ -319,8 +319,8 @@ module RegisterSourcesBods
 
         SearchResults.new(
           mapped.sort_by(&:score).reverse,
-          total_count: total_count,
-          aggs: results['aggregations']
+          total_count:,
+          aggs: results['aggregations'],
         )
       end
 

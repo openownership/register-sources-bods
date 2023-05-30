@@ -24,10 +24,10 @@ module RegisterSourcesBods
                   address: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   postCode: {
                     type: "keyword",
@@ -40,10 +40,10 @@ module RegisterSourcesBods
               alternateNames: {
                 type: "text",
                 fields: {
-                  raw: { 
-                    type:  "keyword"
-                  }
-                }
+                  raw: {
+                    type: "keyword",
+                  },
+                },
               },
               annotations: { # Types.Array(Annotation)
                 type: "nested",
@@ -191,10 +191,10 @@ module RegisterSourcesBods
               name: {
                 type: "text",
                 fields: {
-                  raw: { 
-                    type:  "keyword"
-                  }
-                }
+                  raw: {
+                    type: "keyword",
+                  },
+                },
               },
               names: { # Array[Name]
                 type: "nested",
@@ -205,34 +205,34 @@ module RegisterSourcesBods
                   fullName: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   familyName: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   givenName: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   patronymicName: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                 },
               },
@@ -242,10 +242,10 @@ module RegisterSourcesBods
                   name: {
                     type: "text",
                     fields: {
-                      raw: { 
-                        type:  "keyword"
-                      }
-                    }
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   code: {
                     type: "keyword",
@@ -309,13 +309,13 @@ module RegisterSourcesBods
                   type: {
                     type: "keyword",
                   },
-                  "address": {
-                    "type": "text",
-                    "fields": {
-                      "raw": { 
-                        "type":  "keyword"
-                      }
-                    }
+                  address: {
+                    type: "text",
+                    fields: {
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   postCode: {
                     type: "keyword",
@@ -331,13 +331,13 @@ module RegisterSourcesBods
                   type: {
                     type: "keyword",
                   },
-                  "address": {
-                    "type": "text",
-                    "fields": {
-                      "raw": { 
-                        "type":  "keyword"
-                      }
-                    }
+                  address: {
+                    type: "text",
+                    fields: {
+                      raw: {
+                        type: "keyword",
+                      },
+                    },
                   },
                   postCode: {
                     type: "keyword",

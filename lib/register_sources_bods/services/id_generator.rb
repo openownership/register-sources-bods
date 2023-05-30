@@ -14,7 +14,7 @@ module RegisterSourcesBods
       )
         entity_statement_id_generator ||= IdGenerators::EntityStatement.new
         person_statement_id_generator ||= IdGenerators::PersonStatement.new
-        ownership_or_control_statement_id_generator ||= IdGenerators::OwnershipOrControlStatement.new        
+        ownership_or_control_statement_id_generator ||= IdGenerators::OwnershipOrControlStatement.new
 
         @id_generators = {
           StatementTypes['personStatement'] => person_statement_id_generator,

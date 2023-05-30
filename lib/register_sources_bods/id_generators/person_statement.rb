@@ -12,7 +12,7 @@ module RegisterSourcesBods
       def unique_attributes(record)
         record_h = record.to_h
 
-        record_h.reject { |k, _v| [:statementID, :statementDate, :publicationDetails, :source, :replacesStatements].include? k }
+        record_h.except(:statementID, :statementDate, :publicationDetails, :source, :replacesStatements)
       end
     end
   end
