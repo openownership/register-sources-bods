@@ -125,7 +125,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       expect(results).to eq [person_statement]
 
       results = subject.list_matching_at_least_one_identifier(person_statement.identifiers + entity_statement.identifiers)
-      expect(results).to eq [person_statement, entity_statement]
+      expect(results).to eq [entity_statement, person_statement]
     end
   end
 end

@@ -61,8 +61,8 @@ module RegisterSourcesBods
         remaining_identifiers = all_identifiers.reject { |identifier| @cache.key? identifier }
 
         records_for_all_identifiers = (
-          repository.list_matching_at_least_one_identifier(remaining_identifiers) +
-          repository.get_bulk(cached_identifiers)
+          repository.list_matching_at_least_one_identifier(remaining_identifiers)
+          # + repository.get_bulk(cached_identifiers)
         )
 
         # generate lists of identifiers
