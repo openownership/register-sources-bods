@@ -22,7 +22,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       **JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
         symbolize_names: true,
-      ),
+      ).compact,
     )
   end
 
@@ -68,6 +68,14 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
 
       expect(results).not_to be_empty
       expect(results.sort_by(&:statementID)).to eq records.sort_by(&:statementID)
+
+      # When retrieving
+      result = subject.get(person_statement.statementID)
+      expect(result).to eq person_statement
+
+      # When retrieving many
+      result = subject.get_bulk([person_statement, entity_statement].map(&:statementID))
+      expect(result.sort_by(&:statementID)).to eq [person_statement, entity_statement].sort_by(&:statementID)
 
       # When records do not exist
       expect(subject.get("missing")).to be_nil
@@ -117,7 +125,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       expect(results).to eq [person_statement]
 
       results = subject.list_matching_at_least_one_identifier(person_statement.identifiers + entity_statement.identifiers)
-      expect(results).to eq [person_statement, entity_statement]
+      expect(results).to eq [entity_statement, person_statement]
     end
   end
 end
