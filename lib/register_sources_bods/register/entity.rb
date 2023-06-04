@@ -14,13 +14,12 @@ module RegisterSourcesBods
         @relationships_as_target = []
         @replaced_bods_statements = []
 
-        @resolver_response = nil # TODO: remove resolver response
         @tmp = {}
       end
 
       attr_reader :bods_statement
 
-      attr_accessor :replaced_bods_statements, :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities, :resolver_response
+      attr_accessor :replaced_bods_statements, :relationships_as_source, :relationships_as_target, :master_entity, :merged_entities
 
       def all_bods_statements
         [bods_statement] + replaced_bods_statements
@@ -121,18 +120,9 @@ module RegisterSourcesBods
       end
 
       def jurisdiction_code
-        return unless resolver_response
+        return unless bods_statement.respond_to?(:incorporatedInJurisdiction)
 
-        jurisdiction_code = resolver_response.jurisdiction_code
-        return unless jurisdiction_code
-
-        code, = jurisdiction_code.split('_')
-        country = ISO3166::Country[code]
-        return nil if country.blank?
-
-        RegisterSourcesBods::Jurisdiction.new(name: country.name, code: country.alpha2)
-
-        bods_statement.incorporatedInJurisdiction&.code
+        bods_statement&.incorporatedInJurisdiction&.code
       end
 
       def jurisdiction_code?
