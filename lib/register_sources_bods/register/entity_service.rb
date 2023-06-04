@@ -13,8 +13,9 @@ module RegisterSourcesBods
         @statement_repository = statement_repository
       end
 
-      def search(search_params, page: 1, per_page: 10)
-        query = entity_query_builder.build_query search_params
+      def search(search_params, exclude_identifiers: [], page: 1, per_page: 10)
+        query = entity_query_builder.build_query(search_params, exclude_identifiers:)
+        print "\n\nBuilt query: ", query, "\n\n\n"
         aggs = entity_query_builder.aggregations
 
         statements = statement_repository.search(query, aggs:, page:, per_page:)
@@ -30,8 +31,8 @@ module RegisterSourcesBods
         Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)
       end
 
-      def fallback_search(search_params, page: 1, per_page: 10)
-        query = entity_query_builder.build_fallback_query search_params
+      def fallback_search(search_params, exclude_identifiers: [], page: 1, per_page: 10)
+        query = entity_query_builder.build_fallback_query(search_params, exclude_identifiers:)
         aggs = entity_query_builder.aggregations
 
         statements = statement_repository.search(query, aggs:, page:, per_page:)

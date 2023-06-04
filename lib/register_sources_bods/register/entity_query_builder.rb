@@ -13,102 +13,138 @@ module RegisterSourcesBods
         }
       end
 
-      def build_query(search_params)
+      def build_query(search_params, exclude_identifiers: [])
         query = build_normalise_query(search_params[:q])
 
         {
           bool: {
-            should: [
-              {
-                match_phrase: {
-                  name: {
-                    query:,
-                    slop: 50,
-                  },
-                },
-              },
-              {
-                nested: {
-                  path: "names",
-                  query: {
-                    bool: {
-                      must: [
-                        {
-                          match_phrase: {
-                            'names.fullName': {
-                              query:,
-                              slop: 50,
-                            },
-                          },
-                        },
-                      ],
+            must: [
+              if exclude_identifiers.empty?
+                nil
+              else
+                {
+                  nested: {
+                    path: "identifiers",
+                    query: {
+                      bool: {
+                        must_not: exclude_identifiers.uniq.map do |exclude_identifier|
+                          { match: { 'identifiers.id': { query: exclude_identifier.id } } }
+                        end,
+                      },
                     },
                   },
-                },
-              },
-              # {
-              #    match_phrase: {
-              #        name_transliterated: {
-              #            query: query,
-              #            slop: 50,
-              #        },
-              #    },
-              # },
+                }
+              end,
               {
-                match: {
-                  company_number: {
-                    query:,
-                  },
+                bool: {
+                  should: [
+                    {
+                      match_phrase: {
+                        name: {
+                          query:,
+                          slop: 50,
+                        },
+                      },
+                    },
+                    {
+                      nested: {
+                        path: "names",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                match_phrase: {
+                                  'names.fullName': {
+                                    query:,
+                                    slop: 50,
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      match: {
+                        company_number: {
+                          query:,
+                        },
+                      },
+                    },
+                  ],
+                  minimum_should_match: 1,
+                  filter: build_filters(search_params),
                 },
               },
-            ],
-            minimum_should_match: 1,
-            filter: build_filters(search_params),
+            ].compact,
           },
         }
       end
 
-      def build_fallback_query(search_params)
+      def build_fallback_query(search_params, exclude_identifiers: [])
         query = build_normalise_query(search_params[:q])
 
         {
           bool: {
-            should: [
-              {
-                match: {
-                  name: {
-                    query:,
-                  },
-                },
-              },
-              {
-                nested: {
-                  path: "names",
-                  query: {
-                    bool: {
-                      must: [
-                        {
-                          match_phrase: {
-                            'names.fullName': {
-                              query:,
-                            },
-                          },
-                        },
-                      ],
+            must: [
+              if exclude_identifiers.empty?
+                nil
+              else
+                {
+                  nested: {
+                    path: "identifiers",
+                    query: {
+                      bool: {
+                        must_not: exclude_identifiers.uniq.map do |exclude_identifier|
+                          { match: { 'identifiers.id': { query: exclude_identifier.id } } }
+                        end,
+                      },
                     },
                   },
+                }
+              end,
+              {
+                bool: {
+                  should: [
+                    {
+                      match_phrase: {
+                        name: {
+                          query:,
+                        },
+                      },
+                    },
+                    {
+                      nested: {
+                        path: "names",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                match_phrase: {
+                                  'names.fullName': {
+                                    query:,
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      match: {
+                        company_number: {
+                          query:,
+                        },
+                      },
+                    },
+                  ],
+                  minimum_should_match: 1,
+                  filter: build_filters(search_params),
                 },
               },
-              # {
-              #    match: {
-              #        name_transliterated: {
-              #            query: query,
-              #        },
-              #    },
-              # },
-            ],
-            minimum_should_match: 1,
-            filter: build_filters(search_params),
+            ].compact,
           },
         }
       end
