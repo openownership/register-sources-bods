@@ -12,7 +12,7 @@ module RegisterSourcesBods
       def unique_attributes(record)
         record_h = record.to_h
 
-        record_h.except(:statementID, :statementDate, :publicationDetails, :source, :replacesStatements)
+        record_h.except(:statementID, :statementDate, :publicationDetails, :source, :identifiers, :replacesStatements)
       end
     end
   end
