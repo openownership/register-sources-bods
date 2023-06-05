@@ -13,6 +13,110 @@ module RegisterSourcesBods
         }
       end
 
+      # builds query to find natural persons with same name and birth-date
+      def build_merged_query(original_person)
+        exclude_identifiers = original_person.identifiers
+
+        query = original_person.names.first&.fullName
+
+        {
+          bool: {
+            must: [
+              if exclude_identifiers.empty?
+                nil
+              else
+                {
+                  nested: {
+                    path: "identifiers",
+                    query: {
+                      bool: {
+                        must_not: exclude_identifiers.uniq.map do |exclude_identifier|
+                          { match: { 'identifiers.id': { query: exclude_identifier.id } } }
+                        end,
+                      },
+                    },
+                  },
+                }
+              end,
+              # Match birth date
+              if original_person.birthDate
+                {
+                  bool: {
+                    should: {
+                      match: {
+                        "birthDate": { query: original_person.birthDate }, 
+                      },
+                    }
+                  }
+                }
+              end,
+              # Match address
+              if original_person.addresses && !original_person.addresses.empty?
+                {
+                  bool: {
+                    should: original_person.addresses.map { |address|#
+                      [
+                        {
+                          nested: {
+                            path: "addresses",
+                            query: {
+                              bool: {
+                                must: [
+                                  {
+                                    match: {
+                                      'addresses.address.raw': {
+                                        query: address.address
+                                      },
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        },
+                      ]
+                    }.compact.flatten,
+                    minimum_should_match: 1,
+                  },
+                }
+              end,
+              # Match name
+              {
+                bool: {
+                  should: [
+                    {
+                      nested: {
+                        path: "names",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                match_phrase: {
+                                  'names.fullName': {
+                                    query:,
+                                    slop: 50,
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                  minimum_should_match: 1,
+                  filter: {
+                    term: {
+                      statementType: 'personStatement',
+                    },
+                  },
+                },
+              },
+            ].compact,
+          },
+        }
+      end
+
       def build_query(search_params, exclude_identifiers: [])
         query = build_normalise_query(search_params[:q])
 

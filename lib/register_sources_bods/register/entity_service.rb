@@ -24,9 +24,11 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
+        print "Computing new results\n"
         new_results = statement_ids.map do |statement_id|
           result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
         end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
+        print "Computed new results\n"
 
         Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)
       end

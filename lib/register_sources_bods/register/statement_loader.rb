@@ -1,14 +1,76 @@
 require 'register_sources_bods/register/statements_mapper'
+require 'register_sources_bods/register/entity_query_builder'
 
 module RegisterSourcesBods
   module Register
     class StatementLoader
-      def initialize(statement_repository:, statements_mapper: nil)
+      def initialize(statement_repository:, statements_mapper: nil, query_builder: EntityQueryBuilder.new)
         @statement_repository = statement_repository
+        @entity_query_builder = query_builder
         @statements_mapper = statements_mapper || StatementsMapper.new
       end
 
       def load_statements(statement_ids)
+        initial_statements = load_statements_without_merges(statement_ids)
+
+        person_statements = initial_statements.entities.values.filter { |statement| statement.natural_person? }
+
+        return initial_statements unless person_statements
+
+        person_statements.each do |natural_person|
+          similar_people_query = entity_query_builder.build_merged_query(natural_person.bods_statement)
+
+          people = statement_repository.search(similar_people_query).map(&:record)
+
+          next if people.empty?
+
+          loaded_people = load_statements_without_merges(people.map(&:statementID)).entities.values
+
+          print "Loaded some people\n"
+
+          all_people = [natural_person, loaded_people].flatten
+
+          min_id = all_people.map(&:id).min
+          master_entity = all_people.find { |person| person.id == min_id }
+
+          print "Calculated master entity\n"
+
+          all_people.each do |person|
+            print "Looping for first person\n"
+            all_people.each do |person2|
+              next unless person2.id > person.id
+
+              print "Looping for second person\n"
+              if person.id != min_id
+                person.master_entity = master_entity
+              end
+
+              if person2.id != min_id
+                person2.master_entity = master_entity
+              end
+
+              person.merged_entities << person2
+              person2.merged_entities << person
+
+              new_relationships_as_sources = person.relationships_as_source + person2.relationships_as_source
+              new_relationships_as_targets = person.relationships_as_target + person2.relationships_as_target
+
+              person.relationships_as_source = new_relationships_as_sources
+              person2.relationships_as_source = new_relationships_as_sources
+              person.relationships_as_target = new_relationships_as_targets
+              person2.relationships_as_target = new_relationships_as_targets
+            end
+          end
+
+          print "Performed updates\n"
+        end
+
+        print "Added some people relationships\n"
+
+        initial_statements
+      end
+
+      def load_statements_without_merges(statement_ids)
         processed_ids = []
 
         all_statements = {}
@@ -36,7 +98,7 @@ module RegisterSourcesBods
 
       private
 
-      attr_reader :statement_repository, :statements_mapper
+      attr_reader :statement_repository, :statements_mapper, :entity_query_builder
 
       def load_by_ids(statement_ids)
         statement_repository.get_bulk(statement_ids)
