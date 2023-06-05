@@ -154,7 +154,7 @@ module RegisterSourcesBods
           h[:pending].each do |pending|
             new_identifiers = (
               pending.identifiers +
-              identifiers.reject { |identifier| identifier.schemeName == 'GB Persons Of Significant Control Register' }
+              identifiers #.reject { |identifier| identifier.schemeName == 'GB Persons Of Significant Control Register' }
             ).uniq.sort_by { |i| i.schemeName || i.scheme }
 
             # Update the list of identifiers in our pending record, in case other records
