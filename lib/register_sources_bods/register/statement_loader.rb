@@ -9,29 +9,28 @@ module RegisterSourcesBods
       end
 
       def load_statements(statement_ids)
-        processed_ids = []
+        statements = fetch_with_duplicates(statement_ids)
+        new_statements = statements
 
-        all_statements = {}
+        while !new_statements.empty?
+          new_statements = load_associated_statements(new_statements.keys).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
 
-        next_statement_ids = statement_ids.dup
-
-        until next_statement_ids.empty?
-          statements = single_loader(next_statement_ids, processed_ids:)
-
-          all_statements.merge!(statements)
-
-          processed_ids = (processed_ids + next_statement_ids + statements.values.map(&:statementID)).uniq
-
-          next_statement_ids = []
+          next_statement_ids = new_statements.keys
 
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
           next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
 
-          next_statement_ids = next_statement_ids.uniq - processed_ids
+          next_statement_ids = next_statement_ids.uniq - statements.keys
+
+          new_statements = new_statements.merge(
+            fetch_with_duplicates(next_statement_ids)
+          ).reject { |k,v| statements.key? k }
+
+          statements.merge!(new_statements)
         end
 
-        statements_mapper.map_statements all_statements
+        statements_mapper.map_statements statements
       end
 
       private
@@ -50,13 +49,9 @@ module RegisterSourcesBods
         statement_repository.list_matching_at_least_one_identifier(identifiers)
       end
 
-      def single_loader(statement_ids, processed_ids: [])
-        statement_ids = statement_ids.uniq - processed_ids
+      def fetch_with_duplicates(statement_ids)
+        statements = load_by_ids(statement_ids)
 
-        # load by id
-        statements = load_by_ids(statement_ids) + load_associated_statements(statement_ids)
-
-        # load additional statements using identifiers
         identifiers = statements.map do |statement|
           next unless statement.respond_to?(:identifiers)
 
@@ -67,7 +62,7 @@ module RegisterSourcesBods
 
         statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
 
-        statements.to_h { |statement| [statement.statementID, statement] }
+        statements.map { |statement| [statement.statementID, statement] }.to_h
       end
     end
   end

@@ -15,17 +15,18 @@ module RegisterSourcesBods
 
       def search(search_params, exclude_identifiers: [], page: 1, per_page: 10)
         query = entity_query_builder.build_query(search_params, exclude_identifiers:)
-        print "\n\nBuilt query: ", query, "\n\n\n"
         aggs = entity_query_builder.aggregations
 
         statements = statement_repository.search(query, aggs:, page:, per_page:)
 
         statement_ids = statements.map { |result| result.record.statementID }
+        identifiers = statements.map(&:record).map(&:identifiers)
 
         result = statement_loader.load_statements(statement_ids)
 
-        new_results = statement_ids.map do |statement_id|
-          result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
+        new_results = identifiers.map do |identifier|
+          # result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
+          result.entities.values.find { |e| e.identifiers & identifier }
         end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
 
         Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)

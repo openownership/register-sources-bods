@@ -142,6 +142,31 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
+      def list_matching_at_least_one_source(sources)
+        return [] if sources.empty?
+
+        process_results(
+          client.search(
+            index:,
+            body: {
+              query: {
+                nested: {
+                  path: "source",
+                  query: {
+                    bool: {
+                      should: [
+                        { terms: { 'source.url': sources.map(&:url).compact } },
+                      ].filter { |a| !a[:terms].values.first.empty? },
+                    },
+                  },
+                },
+              },
+              size: 10_000,
+            },
+          ),
+        ).map(&:record)
+      end
+
       def list_associated(statement_ids)
         conditions = []
 
