@@ -49,7 +49,9 @@ module RegisterSourcesBods
         # Build records that don't have an identifier yet
         records = records.map do |record|
           if record.identifiers.empty?
-            builder.build(record, replaces_ids: [])
+            r = builder.build(record, replaces_ids: [])
+            print "\nGOT NEW RECORD BUILT: ", r, "\n\n"
+            r
           else
             record
           end
