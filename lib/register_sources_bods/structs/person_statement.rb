@@ -17,7 +17,7 @@ module RegisterSourcesBods
   class PersonStatement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :statementID, Types::String.optional # TODO: Statement Identitifer
+    attribute? :statementID, Types::String.optional
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
     attribute :isComponent, Types::Params::Bool
@@ -34,7 +34,7 @@ module RegisterSourcesBods
     attribute? :addresses, Types.Array(Address)
     attribute? :hasPepStatus, Types::Params::Bool
     attribute? :pepStatusDetails, PepStatusDetails
-    attribute :publicationDetails, PublicationDetails
+    attribute? :publicationDetails, PublicationDetails
     attribute? :source, Source
     attribute? :annotations, Types.Array(Annotation)
     attribute? :replacesStatements, Types.Array(Types::String)
