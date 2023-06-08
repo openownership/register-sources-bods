@@ -46,6 +46,15 @@ module RegisterSourcesBods
       def publish_records_with_identifiers(records)
         return [] if records.empty?
 
+        # Build records that don't have an identifier yet
+        records = records.map do |record|
+          if record.identifiers.empty?
+            builder.build(record, replaces_ids: [])
+          else
+            record
+          end
+        end
+
         publish_id = SecureRandom.hex(6)
         time_started = Time.now.to_f
 
@@ -152,10 +161,7 @@ module RegisterSourcesBods
           # end
 
           h[:pending].each do |pending|
-            new_identifiers = (
-              pending.identifiers +
-              identifiers.reject { |identifier| identifier.schemeName == 'GB Persons Of Significant Control Register' }
-            ).uniq.sort_by { |i| i.schemeName || i.scheme }
+            new_identifiers = pending.identifiers.uniq.sort_by { |i| i.schemeName || i.scheme }
 
             # Update the list of identifiers in our pending record, in case other records
             # included additional identifiers that should still be tracked for this entity.
