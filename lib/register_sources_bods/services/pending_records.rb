@@ -16,6 +16,8 @@ module RegisterSourcesBods
       end
 
       def build_all(records)
+        return [] if records.empty?
+
         preprocessed = preprocess records
 
         process(preprocessed).map do |register_identifier, h|
@@ -96,26 +98,30 @@ module RegisterSourcesBods
       end
 
       def build(register_identifier, pending, existing)
+        # Calculate which of the statements are the latest (ie have never been replaced)
         replaced_statement_ids = Set.new(existing.map(&:replacesStatements).flatten.compact)
         unreplaced_statements = existing.reject { |statement| replaced_statement_ids.include? statement.statementID }.uniq
         seen_statement_ids = Set.new(existing.map(&:statementID))
 
         new_records = pending.map do |pending_record|
+          # Construct new identifiers
           new_identifiers = (
             pending_record.identifiers +
             [register_identifier] +
             unreplaced_statements.map(&:identifiers)
           ).flatten.compact.uniq.sort_by { |i| i.schemeName || i.scheme }
 
+          # Build new pending record
           pending_record = BodsStatement[pending_record.to_h.merge(identifiers: new_identifiers).compact]
-
           built_record = builder.build(pending_record, replaces_ids: unreplaced_statements.map(&:statementID))
 
+          # Skip if this statement has already been seen
           next if seen_statement_ids.include? built_record.statementID
-
-          unreplaced_statements = [built_record]
           seen_statement_ids << built_record.statementID
 
+          # Update unreplaced statements to point to this one (as this is the new latest)
+          unreplaced_statements = [built_record]
+          
           built_record
         end.compact
 

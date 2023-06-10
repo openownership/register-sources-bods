@@ -43,8 +43,6 @@ module RegisterSourcesBods
       attr_reader :builder, :repository, :producer, :id_generator, :logger, :pending_records_builder
 
       def publish_records_with_identifiers(records)
-        return [] if records.empty?
-
         pending_records = pending_records_builder.build_all(records)
         
         publish_new(pending_records.map { |pend| pend[:new_records] }.flatten)
@@ -53,8 +51,6 @@ module RegisterSourcesBods
       end
 
       def publish_records_without_identifiers(records)
-        return [] if records.empty?
-
         pending_records = records.map { |record| builder.build(record) }.compact
 
         publish_new(pending_records)
