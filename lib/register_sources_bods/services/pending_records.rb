@@ -35,7 +35,7 @@ module RegisterSourcesBods
 
           # Include source if it is a unique PSC one
           source = nil
-          if record.source.description == 'GB Persons Of Significant Control Register'
+          if record.source && (record.source.description == 'GB Persons Of Significant Control Register')
             if record.source.url != "http://download.companieshouse.gov.uk/en_pscdata.html"
               source = record.source
             end
