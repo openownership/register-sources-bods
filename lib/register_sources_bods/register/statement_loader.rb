@@ -27,6 +27,7 @@ module RegisterSourcesBods
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
           next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += load_associated_statements(statements.values.map(&:statementID).uniq).map(&:statementID)
 
           next_statement_ids = next_statement_ids.uniq - processed_ids
         end
@@ -54,7 +55,7 @@ module RegisterSourcesBods
         statement_ids = statement_ids.uniq - processed_ids
 
         # load by id
-        statements = load_by_ids(statement_ids) + load_associated_statements(statement_ids)
+        statements = load_by_ids(statement_ids)
 
         # load additional statements using identifiers
         identifiers = statements.map do |statement|
@@ -66,6 +67,8 @@ module RegisterSourcesBods
         end.compact
 
         statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
+
+        statements += load_associated_statements(statements.map(&:statementID).uniq)
 
         statements.to_h { |statement| [statement.statementID, statement] }
       end

@@ -72,22 +72,19 @@ module RegisterSourcesBods
         # calculate records in groups
 
         pending_records.each do |pending_record|
-          # find register identifier from associated records
-          related =
-            (records_for_all_identifiers.map do |related_record|
-              next unless related_record.identifiers & pending_record.identifiers
-
-              find_register_identifier(related_record.identifiers)
-            end) + (records_for_all_sources.map do |related_record|
-              next unless pending_record.source && related_record.source && pending_record.source.url
-
-              next unless related_record.source.url == pending_record.source.url
-
-              find_register_identifier(related_record.identifiers)
-            end)
+          register_identifier = nil
+          groups.each do |reg_id, group|
+            sim_rec = (group[:existing] + group[:pending]).find do |rec|
+              (rec.identifiers & pending_record.record.identifiers) || (
+                pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
+              )
+            if sim_rec
+              register_identifier = reg_id
+              break
+            end
+          end
 
           # construct register identifier unless one exists
-          register_identifier = related.compact.first
           unless register_identifier
             built_record = builder.build(pending_record.record, replaces_ids: [])
             register_identifier = find_register_identifier(built_record.identifiers)
@@ -98,7 +95,6 @@ module RegisterSourcesBods
           groups[register_identifier][:pending] << pending_record.record
         end
 
-        print "Constructed groups: ", groups, "\n\n\n\n"
         groups
       end
 
