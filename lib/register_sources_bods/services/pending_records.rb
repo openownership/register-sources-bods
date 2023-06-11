@@ -85,13 +85,13 @@ module RegisterSourcesBods
           # construct register identifier unless one exists
           register_identifier = related.compact.first
           unless register_identifier
-            built_record = builder.build(pending_record, replaces_ids: [])
-            register_identifier = find_register_identifier(identifier.schemeName)
+            built_record = builder.build(pending_record.record, replaces_ids: [])
+            register_identifier = find_register_identifier(built_record.identifiers)
           end
 
           # add to existing or start new group for register identifier
           groups[register_identifier] ||= { pending: [], existing: [] }
-          groups[register_identifier][:pending] << pending_record
+          groups[register_identifier][:pending] << pending_record.record
         end
 
         groups
