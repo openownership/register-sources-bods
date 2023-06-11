@@ -52,11 +52,11 @@ module RegisterSourcesBods
       def process(pending_records)
         # fetch records for identifiers
         all_identifiers = pending_records.map(&:identifiers).flatten.uniq
-        records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers)
+        records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers).filter { |r| r.responds_to?(:identifiers) }
 
         # fetch records for sources
         all_sources = pending_records.map(&:source).compact
-        records_for_all_sources = repository.list_matching_at_least_one_source(all_sources)
+        records_for_all_sources = repository.list_matching_at_least_one_source(all_sources).filter { |r| r.responds_to?(:identifiers) }
 
         # put discovered records into groups using register id
         groups = {}
