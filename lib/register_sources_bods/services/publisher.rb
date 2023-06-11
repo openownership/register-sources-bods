@@ -44,10 +44,10 @@ module RegisterSourcesBods
 
       def publish_records_with_identifiers(records)
         pending_records = pending_records_builder.build_all(records)
-        
+
         publish_new(pending_records.map { |pend| pend[:new_records] }.flatten)
 
-        pending_records.map { |pend| pend[:latest] }.flatten.compact
+        pending_records.map { |pend| pend[:unreplaced_statements] }.flatten.compact
       end
 
       def publish_records_without_identifiers(records)
