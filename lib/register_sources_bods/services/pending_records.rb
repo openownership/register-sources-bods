@@ -20,9 +20,13 @@ module RegisterSourcesBods
 
         preprocessed = preprocess records
 
-        process(preprocessed).map do |register_identifier, h|
+        r = process(preprocessed).map do |register_identifier, h|
           build(register_identifier, h[:pending], h[:existing])
         end.flatten
+
+        print "Built records\n\n", r, "\n\n\n\n"
+
+        r
       end
 
       private
