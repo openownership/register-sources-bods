@@ -94,6 +94,7 @@ module RegisterSourcesBods
           groups[register_identifier][:pending] << pending_record.record
         end
 
+        print "Constructed groups: ", groups, "\n\n\n\n"
         groups
       end
 
