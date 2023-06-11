@@ -78,6 +78,7 @@ module RegisterSourcesBods
               (rec.identifiers & pending_record.record.identifiers) || (
                 pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
               )
+            end
             if sim_rec
               register_identifier = reg_id
               break
