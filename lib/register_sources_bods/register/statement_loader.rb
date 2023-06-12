@@ -3,31 +3,22 @@ require 'register_sources_bods/register/statements_mapper'
 module RegisterSourcesBods
   module Register
     class StatementLoader
+      MAX_LEVELS = 12
+      SLICE_SIZE = 25
+
       def initialize(statement_repository:, statements_mapper: nil)
         @statement_repository = statement_repository
         @statements_mapper = statements_mapper || StatementsMapper.new
       end
 
-      def load_statements(statement_ids)
+      def load_statements(statement_ids, load_children: true)
         statements = fetch_with_duplicates(statement_ids)
-        new_statements = statements
 
-        while !new_statements.empty?
-          new_statements = load_associated_statements(new_statements.keys).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
+        if load_children
+          child_statements = load_statements_children(statements)
+          parent_statements = load_statements_parents(statements)
 
-          next_statement_ids = new_statements.keys
-
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
-
-          next_statement_ids = next_statement_ids.uniq - statements.keys
-
-          new_statements = new_statements.merge(
-            fetch_with_duplicates(next_statement_ids)
-          ).reject { |k,v| statements.key? k }
-
-          statements.merge!(new_statements)
+          statements.merge!(child_statements).merge!(parent_statements)
         end
 
         statements_mapper.map_statements statements
@@ -37,32 +28,95 @@ module RegisterSourcesBods
 
       attr_reader :statement_repository, :statements_mapper
 
+      def load_statements_children(statements)
+        new_statements = statements
+
+        level = 1
+        while !new_statements.empty? && (level <= MAX_LEVELS)
+          new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
+
+          next_statement_ids = new_statements.keys
+
+          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
+
+          next_statement_ids = next_statement_ids.uniq - statements.keys
+
+          new_statements = new_statements.merge(
+            fetch_with_duplicates(next_statement_ids)
+          ).reject { |k,v| statements.key? k }
+
+          statements = statements.merge(new_statements)
+          level += 1
+        end
+
+        statements
+      end
+
+      def load_statements_parents(statements)
+        new_statements = statements
+
+        level = 1
+        while !new_statements.empty? && (level <= MAX_LEVELS)
+          new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
+
+          next_statement_ids = new_statements.keys
+
+          next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
+
+          next_statement_ids = next_statement_ids.uniq - statements.keys
+
+          new_statements = new_statements.merge(
+            fetch_with_duplicates(next_statement_ids)
+          ).reject { |k,v| statements.key? k }
+
+          statements = statements.merge(new_statements)
+          level += 1
+        end
+
+        statements
+      end
+
       def load_by_ids(statement_ids)
         statement_repository.get_bulk(statement_ids)
       end
 
-      def load_associated_statements(statement_ids)
-        statement_repository.list_associated(statement_ids)
+      def load_associated_statements(all_statement_ids, interested_party: true, subject: true)
+        results = []
+
+        all_statement_ids.each_slice(SLICE_SIZE) do |statement_ids|
+          results += statement_repository.list_associated(statement_ids, interested_party:, subject:)
+        end
+
+        results
       end
 
       def load_by_identifiers(identifiers)
         statement_repository.list_matching_at_least_one_identifier(identifiers)
       end
 
-      def fetch_with_duplicates(statement_ids)
-        statements = load_by_ids(statement_ids)
+      def fetch_with_duplicates(all_statement_ids)
+        results = {}
 
-        identifiers = statements.map do |statement|
-          next unless statement.respond_to?(:identifiers)
+        all_statement_ids.each_slice(SLICE_SIZE) do |statement_ids|
+          statements = load_by_ids(statement_ids)
 
-          statement.identifiers.find do |identifier|
-            identifier.schemeName == "OpenOwnership Register"
-          end
-        end.compact
+          identifiers = statements.map do |statement|
+            next unless statement.respond_to?(:identifiers)
 
-        statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
+            statement.identifiers.find do |identifier|
+              identifier.schemeName == "OpenOwnership Register"
+            end
+          end.compact
 
-        statements.map { |statement| [statement.statementID, statement] }.to_h
+          statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
+
+          results.merge!(
+            statements.map { |statement| [statement.statementID, statement] }.to_h
+          )
+        end
+
+        results
       end
     end
   end

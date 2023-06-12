@@ -167,12 +167,10 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def list_associated(statement_ids)
-        conditions = []
-
-        statement_ids.map do |statement_id|
-          conditions += [
-            {
+      def list_associated(statement_ids, subject: true, interested_party: true)
+        conditions = statement_ids.map do |statement_id|
+          [
+            subject ? {
               nested: {
                 path: "subject",
                 query: {
@@ -183,8 +181,8 @@ module RegisterSourcesBods
                   },
                 },
               },
-            },
-            {
+            } : nil,
+            interested_party ? {
               nested: {
                 path: "interestedParty",
                 query: {
@@ -196,9 +194,11 @@ module RegisterSourcesBods
                   },
                 },
               },
-            },
+            } : nil,
           ]
-        end
+        end.flatten.compact
+
+        return [] if conditions.empty?
 
         process_results(
           client.search(
