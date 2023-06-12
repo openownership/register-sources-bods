@@ -15,18 +15,17 @@ module RegisterSourcesBods
         @builder = builder || Services::Builder.new
       end
 
+      # record = { uid: record }
       def build_all(records)
         return [] if records.empty?
 
         preprocessed = preprocess records
 
-        r = process(preprocessed).map do |register_identifier, h|
-          build(register_identifier, h[:pending], h[:existing])
+        process(preprocessed).map do |register_identifier, h|
+          build(register_identifier, h[:pending], h[:existing]).merge(
+            uids: h[:uids]
+          )
         end.flatten
-
-        print "Built records\n\n", r, "\n\n\n\n"
-
-        r
       end
 
       private
@@ -34,18 +33,16 @@ module RegisterSourcesBods
       attr_reader :repository, :builder
 
       def preprocess(records)
-        records.map do |record|
+        records.map do |uid, record|
           identifiers = record.identifiers
 
           # Include source if it is a unique PSC one
           source = nil
-          if record.source && (record.source.description == 'GB Persons Of Significant Control Register')
-            if record.source.url != "http://download.companieshouse.gov.uk/en_pscdata.html"
-              source = record.source
-            end
+          if record.source && (/https:\/\/api.company-information.service.gov.uk/.match record.source.url)
+            source = record.source
           end
 
-          OpenStruct.new(record:, identifiers:, source:)
+          OpenStruct.new(uid:, record:, identifiers:, source:)
         end
       end
 
@@ -55,9 +52,12 @@ module RegisterSourcesBods
         records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers).filter { |r| r.respond_to?(:identifiers) }
 
         # fetch records for sources
-        all_sources = pending_records.map(&:source).compact
+        all_sources = pending_records.map(&:source).compact.uniq
         records_for_all_sources = repository.list_matching_at_least_one_source(all_sources).filter { |r| r.respond_to?(:identifiers) }
 
+        print "Pending records:\n", pending_records, "\n\n"
+        print "All identifiers:\n", records_for_all_identifiers, "\n\n"
+        print "All sources:\n", records_for_all_sources, "\n\n"
         # put discovered records into groups using register id
         groups = {}
 
@@ -65,19 +65,25 @@ module RegisterSourcesBods
           register_identifier = find_register_identifier(related_record.identifiers)
           next unless register_identifier
 
-          groups[register_identifier] ||= { pending: [], existing: [] }
+          groups[register_identifier] ||= { pending: [], existing: [], uids: [] }
           groups[register_identifier][:existing] << related_record
         end
 
+        print "Initial groups:\n", groups, "\n\n"
         # calculate records in groups
 
         pending_records.each do |pending_record|
           register_identifier = nil
           groups.each do |reg_id, group|
             sim_rec = (group[:existing] + group[:pending]).find do |rec|
-              (rec.identifiers & pending_record.record.identifiers) || (
+              next unless rec.statementType == pending_record.record.statementType
+
+              print "Comparing identifiers for rec: #{rec.identifiers} with identifiers for pending #{pending_record.record.identifiers}\n\n"
+              res = !(rec.identifiers & pending_record.record.identifiers).empty? || (
                 pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
               )
+              print "Result: ", res, "\n"
+              res
             end
             if sim_rec
               register_identifier = reg_id
@@ -92,9 +98,11 @@ module RegisterSourcesBods
           end
 
           # add to existing or start new group for register identifier
-          groups[register_identifier] ||= { pending: [], existing: [] }
+          groups[register_identifier] ||= { pending: [], existing: [], uids: [] }
           groups[register_identifier][:pending] << pending_record.record
+          groups[register_identifier][:uids] << pending_record.uid
         end
+        print "Next groups:\n", groups, "\n\n"
 
         groups
       end

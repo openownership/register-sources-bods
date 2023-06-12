@@ -27,13 +27,12 @@ module RegisterSourcesBods
       end
 
       def publish_many(records)
-        records = records.map { |record| BodsStatement[record.to_h.compact] }
+        records = records.map { |uid, record| [uid, BodsStatement[record.to_h.compact]] }.to_h
 
-        records_with_identifiers = records.filter { |r| r.respond_to?(:identifiers) }
-        records_without_identifiers = records.filter { |r| !r.respond_to?(:identifiers) }
+        records_with_identifiers = records.to_a.filter { |_uid, r| r.respond_to?(:identifiers) }.to_h
+        records_without_identifiers = records.to_a.filter { |_uid, r| !r.respond_to?(:identifiers) }.to_h
 
-        (
-          publish_records_with_identifiers(records_with_identifiers) +
+        publish_records_with_identifiers(records_with_identifiers).merge(
           publish_records_without_identifiers(records_without_identifiers)
         )
       end
@@ -47,13 +46,19 @@ module RegisterSourcesBods
 
         publish_new(pending_records.map { |pend| pend[:new_records] }.flatten)
 
-        pending_records.map { |pend| pend[:unreplaced_statements] }.flatten.compact
+        results = {}
+        pending_records.each do |pend|
+          pend[:uids].each do |uid|
+            results[uid] = pend[:unreplaced_statements].first
+          end
+        end
+        results
       end
 
       def publish_records_without_identifiers(records)
-        pending_records = records.map { |record| builder.build(record) }.compact
+        pending_records = records.map { |uid, record| [uid, builder.build(record)] }.to_h
 
-        publish_new(pending_records)
+        publish_new(pending_records.values)
 
         pending_records
       end

@@ -13,7 +13,6 @@ module RegisterSourcesBods
       end
 
       def map_statements(bods_statements)
-        print "\n\nMapping bods statements: ", bods_statements, "\n\n\n"
         entities, relationships = split_statements_into_entities_and_relationships(bods_statements)
 
         # add merged entities and master entitiy
