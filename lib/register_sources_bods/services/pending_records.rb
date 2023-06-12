@@ -55,9 +55,6 @@ module RegisterSourcesBods
         all_sources = pending_records.map(&:source).compact.uniq
         records_for_all_sources = repository.list_matching_at_least_one_source(all_sources).filter { |r| r.respond_to?(:identifiers) }
 
-        print "Pending records:\n", pending_records, "\n\n"
-        print "All identifiers:\n", records_for_all_identifiers, "\n\n"
-        print "All sources:\n", records_for_all_sources, "\n\n"
         # put discovered records into groups using register id
         groups = {}
 
@@ -69,7 +66,6 @@ module RegisterSourcesBods
           groups[register_identifier][:existing] << related_record
         end
 
-        print "Initial groups:\n", groups, "\n\n"
         # calculate records in groups
 
         pending_records.each do |pending_record|
@@ -78,12 +74,9 @@ module RegisterSourcesBods
             sim_rec = (group[:existing] + group[:pending]).find do |rec|
               next unless rec.statementType == pending_record.record.statementType
 
-              print "Comparing identifiers for rec: #{rec.identifiers} with identifiers for pending #{pending_record.record.identifiers}\n\n"
-              res = !(rec.identifiers & pending_record.record.identifiers).empty? || (
+              !(rec.identifiers & pending_record.record.identifiers).empty? || (
                 pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
               )
-              print "Result: ", res, "\n"
-              res
             end
             if sim_rec
               register_identifier = reg_id
@@ -102,7 +95,6 @@ module RegisterSourcesBods
           groups[register_identifier][:pending] << pending_record.record
           groups[register_identifier][:uids] << pending_record.uid
         end
-        print "Next groups:\n", groups, "\n\n"
 
         groups
       end

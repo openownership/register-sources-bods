@@ -13,9 +13,7 @@ module RegisterSourcesBods
         new_statements = statements
 
         while !new_statements.empty?
-          print "Loading associated statements for #{new_statements.keys}\n"
           new_statements = load_associated_statements(new_statements.keys).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
-          print "Got #{new_statements.length} associated statements for #{new_statements.keys}\n"
 
           next_statement_ids = new_statements.keys
 
@@ -28,8 +26,6 @@ module RegisterSourcesBods
           new_statements = new_statements.merge(
             fetch_with_duplicates(next_statement_ids)
           ).reject { |k,v| statements.key? k }
-
-          print "Got #{next_statement_ids.length} new statements in total\n"
 
           statements.merge!(new_statements)
         end

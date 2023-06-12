@@ -22,11 +22,7 @@ module RegisterSourcesBods
         statement_ids = statements.map { |result| result.record.statementID }
         identifiers = statements.map(&:record).map(&:identifiers)
 
-        print "Loading statement ids: #{statement_ids}\n"
         result = statement_loader.load_statements(statement_ids)
-
-        print "Got #{result.entities.length} entities with keys #{result.entities.keys}\n"
-        print "Got identifiers #{identifiers}\n"
 
         new_results = identifiers.map do |identifier|
           # result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
