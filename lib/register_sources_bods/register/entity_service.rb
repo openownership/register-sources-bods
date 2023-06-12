@@ -24,9 +24,10 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
-        new_results = identifiers.map do |identifier|
-          # result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
-          result.entities.values.find { |e| e.identifiers & identifier }
+        #new_results = identifiers.map do |identifier|
+        new_results = statement_ids.map do |statement_id|
+          result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
+          # result.entities.values.find { |e| e.identifiers & identifier }
         end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
 
         Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)
