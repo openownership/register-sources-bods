@@ -1,29 +1,23 @@
-require 'securerandom'
-require 'logger'
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/records_producer'
 require 'register_sources_bods/services/builder'
 require 'register_sources_bods/services/pending_records'
-require 'register_sources_bods/services/id_generator'
 require 'register_sources_bods/structs/bods_statement'
 
 module RegisterSourcesBods
   module Services
     class Publisher
-      def initialize(repository: nil, producer: nil, builder: nil, id_generator: nil)
+      def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
           client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
         )
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
-        @pending_records_builder = builder || Services::PendingRecords.new
-        @id_generator = id_generator || Services::IdGenerator.new
-        @logger = Logger.new($stdout)
-        @cache = {}
+        @pending_records_builder = pending_records_builder || Services::PendingRecords.new
       end
 
       def publish(record)
-        publish_many([record]).first
+        publish_many({ uid: record }).values.first
       end
 
       def publish_many(records)
@@ -39,7 +33,7 @@ module RegisterSourcesBods
 
       private
 
-      attr_reader :builder, :repository, :producer, :id_generator, :logger, :pending_records_builder
+      attr_reader :builder, :repository, :producer, :pending_records_builder
 
       def publish_records_with_identifiers(records)
         pending_records = pending_records_builder.build_all(records)
