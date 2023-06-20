@@ -33,9 +33,6 @@ module RegisterSourcesBods
           next if replaced_ids.include? entity.bods_statement.statementID
 
           master_statement_ids[register_identifier&.uri] = entity.bods_statement.statementID
-        end
-
-        entities.each_value do |entity|
           register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
 
           next unless register_identifier&.uri
@@ -70,11 +67,11 @@ module RegisterSourcesBods
           end
 
           target = subject_statement_id && entities[subject_statement_id]
-          if target
-            target = target.master_entity || target
-            target.relationships_as_target = [target.relationships_as_target, relationship].compact.flatten.uniq
-            relationship.target = target
-          end
+          next unless target
+
+          target = target.master_entity || target
+          target.relationships_as_target = [target.relationships_as_target, relationship].compact.flatten.uniq
+          relationship.target = target
         end
 
         entities = entities.filter { |_, entity| !entity.master_entity }

@@ -33,7 +33,7 @@ module RegisterSourcesBods
 
         level = 1
         while !new_statements.empty? && (level <= MAX_LEVELS)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
+          new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
           next_statement_ids = new_statements.keys
 
@@ -43,8 +43,8 @@ module RegisterSourcesBods
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
           new_statements = new_statements.merge(
-            fetch_with_duplicates(next_statement_ids)
-          ).reject { |k,v| statements.key? k }
+            fetch_with_duplicates(next_statement_ids),
+          ).reject { |k, _v| statements.key? k }
 
           statements = statements.merge(new_statements)
           level += 1
@@ -58,7 +58,7 @@ module RegisterSourcesBods
 
         level = 1
         while !new_statements.empty? && (level <= MAX_LEVELS)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).map { |r| [r.statementID, r] }.to_h.reject { |k,v| statements.key? k }
+          new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
           next_statement_ids = new_statements.keys
 
@@ -67,8 +67,8 @@ module RegisterSourcesBods
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
           new_statements = new_statements.merge(
-            fetch_with_duplicates(next_statement_ids)
-          ).reject { |k,v| statements.key? k }
+            fetch_with_duplicates(next_statement_ids),
+          ).reject { |k, _v| statements.key? k }
 
           statements = statements.merge(new_statements)
           level += 1
@@ -112,7 +112,7 @@ module RegisterSourcesBods
           statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
 
           results.merge!(
-            statements.map { |statement| [statement.statementID, statement] }.to_h
+            statements.to_h { |statement| [statement.statementID, statement] },
           )
         end
 

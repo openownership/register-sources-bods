@@ -170,31 +170,35 @@ module RegisterSourcesBods
       def list_associated(statement_ids, subject: true, interested_party: true)
         conditions = statement_ids.map do |statement_id|
           [
-            subject ? {
-              nested: {
-                path: "subject",
-                query: {
-                  bool: {
-                    must: [
-                      { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
-                    ],
+            if subject
+              {
+                nested: {
+                  path: "subject",
+                  query: {
+                    bool: {
+                      must: [
+                        { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
+                      ],
+                    },
                   },
                 },
-              },
-            } : nil,
-            interested_party ? {
-              nested: {
-                path: "interestedParty",
-                query: {
-                  bool: {
-                    should: [
-                      { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
-                      { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
-                    ],
+              }
+            end,
+            if interested_party
+              {
+                nested: {
+                  path: "interestedParty",
+                  query: {
+                    bool: {
+                      should: [
+                        { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
+                        { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
+                      ],
+                    },
                   },
                 },
-              },
-            } : nil,
+              }
+            end,
           ]
         end.flatten.compact
 

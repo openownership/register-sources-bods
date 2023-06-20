@@ -1,50 +1,45 @@
-require 'securerandom'
-require 'logger'
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/records_producer'
 require 'register_sources_bods/services/builder'
 require 'register_sources_bods/services/pending_records'
-require 'register_sources_bods/services/id_generator'
 require 'register_sources_bods/structs/bods_statement'
 
 module RegisterSourcesBods
   module Services
     class Publisher
-      def initialize(repository: nil, producer: nil, builder: nil, id_generator: nil)
+      def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
           client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
         )
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
-        @pending_records_builder = builder || Services::PendingRecords.new
-        @id_generator = id_generator || Services::IdGenerator.new
-        @logger = Logger.new($stdout)
-        @cache = {}
+        @pending_records_builder = pending_records_builder || Services::PendingRecords.new
       end
 
       def publish(record)
-        publish_many([record]).first
+        publish_many({ uid: record }).values.first
       end
 
       def publish_many(records)
-        records = records.map { |uid, record| [uid, BodsStatement[record.to_h.compact]] }.to_h
+        records = records.transform_values { |record| BodsStatement[record.to_h.compact] }
 
         records_with_identifiers = records.to_a.filter { |_uid, r| r.respond_to?(:identifiers) }.to_h
         records_without_identifiers = records.to_a.filter { |_uid, r| !r.respond_to?(:identifiers) }.to_h
 
         publish_records_with_identifiers(records_with_identifiers).merge(
-          publish_records_without_identifiers(records_without_identifiers)
+          publish_records_without_identifiers(records_without_identifiers),
         )
       end
 
       private
 
-      attr_reader :builder, :repository, :producer, :id_generator, :logger, :pending_records_builder
+      attr_reader :builder, :repository, :producer, :pending_records_builder
 
       def publish_records_with_identifiers(records)
         pending_records = pending_records_builder.build_all(records)
 
-        publish_new(pending_records.map { |pend| pend[:new_records] }.flatten)
+        publishable_records = pending_records.map { |pend| pend[:new_records] }.flatten
+        publish_new(deduplicate_existing_records(publishable_records))
 
         results = {}
         pending_records.each do |pend|
@@ -56,17 +51,29 @@ module RegisterSourcesBods
       end
 
       def publish_records_without_identifiers(records)
-        pending_records = records.map { |uid, record| [uid, builder.build(record)] }.to_h
+        pending_records = records.transform_values { |record| builder.build(record) }
 
-        publish_new(pending_records.values)
+        publishable_records = pending_records.values
+        publish_new(deduplicate_existing_records(publishable_records))
 
         pending_records
+      end
+
+      def deduplicate_existing_records(records)
+        return [] if records.empty?
+
+        statement_ids = records.map(&:statementID).uniq
+
+        existing_statements = repository.get_bulk(statement_ids)
+        existing_statement_ids = Set.new(existing_statements.map(&:statementID))
+
+        records.reject { |record| existing_statement_ids.include? record.statementID }
       end
 
       def publish_new(records)
         return if records.empty?
 
-        # Send pending records into stream
+        # Send records into stream
         producer.produce(records)
         producer.finalize
 

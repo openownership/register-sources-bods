@@ -8,8 +8,8 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
     described_class.new(repository:, builder:)
   end
 
-  let(:repository) { double 'repository' }
-  let(:builder) { double 'builder' }
+  let(:repository) { instance_double(RegisterSourcesBods::Repositories::BodsStatementRepository) }
+  let(:builder) { instance_double(RegisterSourcesBods::Services::Builder) }
 
   let(:statement) do
     RegisterSourcesBods::BodsStatement[
@@ -24,7 +24,7 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
 
   describe '#build_all' do
     context 'when statements are empty' do
-      let(:statements) { [] }
+      let(:statements) { {} }
 
       it 'builds statements' do
         expect(subject.build_all(statements)).to eq []
@@ -33,16 +33,22 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
 
     context 'when statements are not-empty' do
       before do
-        expect(repository).to receive(:list_matching_at_least_one_identifier).with(statement.identifiers).and_return []
-        expect(builder).to receive(:build).with(statement, replaces_ids: []).and_return statement
+        allow(repository).to receive(:list_matching_at_least_one_identifier).with(statement.identifiers).and_return []
+        allow(repository).to receive(:list_matching_at_least_one_source).with([]).and_return []
+        allow(builder).to receive(:build).with(statement, replaces_ids: []).and_return statement
       end
 
-      let(:statements) { [statement] }
+      let(:statements) { { uid: statement } }
 
       it 'builds statements' do
-        expect(subject.build_all(statements)).to eq []
+        expect(subject.build_all(statements)).to eq [
+          {
+            new_records: [statement],
+            uids: [:uid],
+            unreplaced_statements: [statement],
+          },
+        ]
       end
     end
-    
   end
 end

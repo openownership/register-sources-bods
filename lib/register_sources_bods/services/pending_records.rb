@@ -1,5 +1,3 @@
-require 'ostruct'
-
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/builder'
 
@@ -7,6 +5,8 @@ module RegisterSourcesBods
   module Services
     class PendingRecords
       REGISTER_SCHEME_NAME = 'OpenOwnership Register'.freeze
+
+      PreprocessedRecord = Struct.new(:uid, :record, :identifiers, :source)
 
       def initialize(repository: nil, builder: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
@@ -23,7 +23,7 @@ module RegisterSourcesBods
 
         process(preprocessed).map do |register_identifier, h|
           build(register_identifier, h[:pending], h[:existing]).merge(
-            uids: h[:uids]
+            uids: h[:uids],
           )
         end.flatten
       end
@@ -38,11 +38,11 @@ module RegisterSourcesBods
 
           # Include source if it is a unique PSC one
           source = nil
-          if record.source && (/https:\/\/api.company-information.service.gov.uk/.match record.source.url)
+          if record.source && (%r{https://api.company-information.service.gov.uk}.match record.source.url)
             source = record.source
           end
 
-          OpenStruct.new(uid:, record:, identifiers:, source:)
+          PreprocessedRecord.new(uid, record, identifiers, source)
         end
       end
 
@@ -74,7 +74,7 @@ module RegisterSourcesBods
             sim_rec = (group[:existing] + group[:pending]).find do |rec|
               next unless rec.statementType == pending_record.record.statementType
 
-              !(rec.identifiers & pending_record.record.identifiers).empty? || (
+              !rec.identifiers.intersect?(pending_record.record.identifiers).nil? || (
                 pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
               )
             end
@@ -119,11 +119,12 @@ module RegisterSourcesBods
 
           # Skip if this statement has already been seen
           next if seen_statement_ids.include? built_record.statementID
+
           seen_statement_ids << built_record.statementID
 
           # Update unreplaced statements to point to this one (as this is the new latest)
           unreplaced_statements = [built_record]
-          
+
           built_record
         end.compact
 
@@ -135,7 +136,7 @@ module RegisterSourcesBods
       end
 
       def find_register_identifier(identifiers)
-        select_register_identifiers(identifiers).sort.first
+        select_register_identifiers(identifiers).min
       end
     end
   end
