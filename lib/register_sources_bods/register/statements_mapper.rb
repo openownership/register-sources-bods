@@ -12,6 +12,7 @@ module RegisterSourcesBods
         @unknown_person_builder = unknown_person_builder || UnknownPersonBuilder.new
       end
 
+      # rubocop:disable Style/CombinableLoops
       def map_statements(bods_statements)
         entities, relationships = split_statements_into_entities_and_relationships(bods_statements)
 
@@ -33,6 +34,9 @@ module RegisterSourcesBods
           next if replaced_ids.include? entity.bods_statement.statementID
 
           master_statement_ids[register_identifier&.uri] = entity.bods_statement.statementID
+        end
+
+        entities.each_value do |entity|
           register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
 
           next unless register_identifier&.uri
@@ -46,7 +50,6 @@ module RegisterSourcesBods
           if master_statement_id == entity.bods_statement.statementID
             entity.replaced_bods_statements << entity.bods_statement
           else
-            # master_entity.merged_entities << entity
             entity.master_entity = master_entity
           end
         end
@@ -67,6 +70,7 @@ module RegisterSourcesBods
           end
 
           target = subject_statement_id && entities[subject_statement_id]
+
           next unless target
 
           target = target.master_entity || target
@@ -77,6 +81,7 @@ module RegisterSourcesBods
         entities = entities.filter { |_, entity| !entity.master_entity }
         OpenStruct.new(entities:, relationships:)
       end
+      # rubocop:enable Style/CombinableLoops
 
       private
 
