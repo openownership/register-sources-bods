@@ -142,38 +142,67 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def list_associated(statement_ids)
-        conditions = []
+      def list_matching_at_least_one_source(sources)
+        return [] if sources.empty?
 
-        statement_ids.map do |statement_id|
-          conditions += [
-            {
-              nested: {
-                path: "subject",
-                query: {
-                  bool: {
-                    must: [
-                      { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
-                    ],
+        process_results(
+          client.search(
+            index:,
+            body: {
+              query: {
+                nested: {
+                  path: "source",
+                  query: {
+                    bool: {
+                      should: [
+                        { terms: { 'source.url': sources.map(&:url).compact } },
+                      ].filter { |a| !a[:terms].values.first.empty? },
+                    },
                   },
                 },
               },
+              size: 10_000,
             },
-            {
-              nested: {
-                path: "interestedParty",
-                query: {
-                  bool: {
-                    should: [
-                      { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
-                      { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
-                    ],
+          ),
+        ).map(&:record)
+      end
+
+      def list_associated(statement_ids, subject: true, interested_party: true)
+        conditions = statement_ids.map do |statement_id|
+          [
+            if subject
+              {
+                nested: {
+                  path: "subject",
+                  query: {
+                    bool: {
+                      must: [
+                        { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
+                      ],
+                    },
                   },
                 },
-              },
-            },
+              }
+            end,
+            if interested_party
+              {
+                nested: {
+                  path: "interestedParty",
+                  query: {
+                    bool: {
+                      should: [
+                        { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
+                        { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
+                      ],
+                    },
+                  },
+                },
+              }
+            end,
           ]
-        end
+        end.flatten.compact
+
+        return [] if conditions.empty?
 
         process_results(
           client.search(

@@ -9,14 +9,14 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
       repository:,
       producer:,
       builder:,
-      id_generator:,
+      pending_records_builder:,
     )
   end
 
   let(:repository) { double 'repository' }
   let(:producer) { double 'producer' }
   let(:builder) { double 'builder' }
-  let(:id_generator) { double 'id_generator' }
+  let(:pending_records_builder) { double 'pending_records_builder' }
 
   let(:statement) do
     RegisterSourcesBods::BodsStatement[
@@ -27,18 +27,27 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     ]
   end
 
-  let(:statement_id) { 'abc1' }
-
   before do
-    expect(repository).to receive(:list_matching_at_least_one_identifier).with(statement.identifiers).and_return []
-    allow(id_generator).to receive(:generate_id).with(statement).and_return statement_id
-    expect(builder).to receive(:build).with(statement, replaces_ids: []).and_return statement
     expect(producer).to receive(:produce).with([statement])
     expect(producer).to receive(:finalize)
+    expect(repository).to receive(:get_bulk).with([statement.statementID]).and_return []
     expect(repository).to receive(:store).with([statement])
+    expect(pending_records_builder).to receive(:build_all).with(
+      { statement_uuid => statement },
+    ).and_return(
+      [
+        {
+          new_records: [statement],
+          unreplaced_statements: [statement],
+          uids: [statement_uuid],
+        },
+      ],
+    )
   end
 
   describe '#publish' do
+    let(:statement_uuid) { :uid }
+
     it 'stores and produces statement' do
       result = subject.publish statement
       expect(result).to eq statement
@@ -46,9 +55,13 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
   end
 
   describe '#publish_many' do
+    let(:statement_uuid) { 'uid123' }
+
     it 'stores and produces statements' do
-      results = subject.publish_many [statement]
-      expect(results).to eq [statement]
+      statements = { statement_uuid => statement }
+
+      results = subject.publish_many(statements)
+      expect(results).to eq statements
     end
   end
 end

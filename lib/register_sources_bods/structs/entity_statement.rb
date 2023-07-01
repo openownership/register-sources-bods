@@ -15,7 +15,7 @@ module RegisterSourcesBods
   class EntityStatement < Dry::Struct
     transform_keys(&:to_sym)
 
-    attribute :statementID, Types::String
+    attribute? :statementID, Types::String
     attribute :statementType, StatementTypes
     attribute? :statementDate, StatementDate
     attribute :isComponent, Types::Params::Bool
@@ -30,7 +30,7 @@ module RegisterSourcesBods
     attribute? :addresses, Types.Array(Address)
     attribute? :uri, Types::String
     attribute? :replacesStatements, Types.Array(Types::String)
-    attribute :publicationDetails, PublicationDetails
+    attribute? :publicationDetails, PublicationDetails
     attribute? :source, Source
     attribute? :annotations, Types.Array(Annotation)
   end
