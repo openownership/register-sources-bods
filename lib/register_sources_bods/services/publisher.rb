@@ -78,7 +78,7 @@ module RegisterSourcesBods
         producer.finalize
 
         # Store pending records
-        repository.store(records)
+        repository.store(records, await_refresh: true)
         repository.mark_replaced_statements(records)
       end
     end

@@ -266,7 +266,7 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def store(records)
+      def store(records, await_refresh: false)
         return true if records.empty?
 
         operations = records.map do |record|
@@ -279,7 +279,9 @@ module RegisterSourcesBods
           }
         end
 
-        result = client.bulk(body: operations)
+        refresh = await_refresh ? :wait_for : false
+
+        result = client.bulk(body: operations, refresh:)
 
         if result['errors']
           print result, "\n\n"

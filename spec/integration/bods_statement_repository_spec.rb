@@ -97,7 +97,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
         person_statement2,
       ]
 
-      subject.store(records)
+      subject.store(records, await_refresh: true)
       subject.mark_replaced_statements(records)
 
       sleep 1 # eventually consistent, give time
