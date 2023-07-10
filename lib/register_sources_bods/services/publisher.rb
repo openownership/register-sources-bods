@@ -79,6 +79,7 @@ module RegisterSourcesBods
 
         # Store pending records
         repository.store(records)
+        repository.mark_replaced_statements(records)
       end
     end
   end

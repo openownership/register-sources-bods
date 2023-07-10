@@ -32,6 +32,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     expect(producer).to receive(:finalize)
     expect(repository).to receive(:get_bulk).with([statement.statementID]).and_return []
     expect(repository).to receive(:store).with([statement])
+    expect(repository).to receive(:mark_replaced_statements).with([statement])
     expect(pending_records_builder).to receive(:build_all).with(
       { statement_uuid => statement },
     ).and_return(

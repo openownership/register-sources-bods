@@ -289,6 +289,23 @@ module RegisterSourcesBods
         true
       end
 
+      def mark_replaced_statements(records)
+        replaced_ids = records.map(&:replacesStatements).flatten.uniq.compact
+
+        return {} if replaced_ids.empty?
+
+        client.update_by_query(
+          index:,
+          body: {
+            script: {
+              lang: 'painless',
+              source: "ctx._source['metadata.replaced'] = true",
+            },
+            query: { terms: { statementID: replaced_ids } },
+          },
+        )
+      end
+
       def search(query, aggs: nil, page: 1, per_page: 10)
         if (page.to_i >= 1) && (per_page.to_i >= 1)
           page = page.to_i
