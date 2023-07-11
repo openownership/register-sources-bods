@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+bundle config disable_local_branch_check true
+
+bundle config local.register_common lib/register-common
