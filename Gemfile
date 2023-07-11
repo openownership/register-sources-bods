@@ -7,6 +7,6 @@ gem 'rubocop'
 gem 'rubocop-rspec'
 gem 'webmock'
 
-gem 'register_common', git: 'git@github.com:openownership/register-common.git'
+gem 'register_common', git: 'https://github.com/openownership/register-common.git'
 
 gemspec
