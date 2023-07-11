@@ -303,7 +303,16 @@ module RegisterSourcesBods
               lang: 'painless',
               source: "ctx._source['metadata.replaced'] = true",
             },
-            query: { terms: { statementID: replaced_ids } },
+            query: {
+              bool: {
+                must: {
+                  terms: { statementID: replaced_ids },
+                },
+                must_not: {
+                  match: { 'metadata.replaced': true },
+                },
+              },
+            },
           },
         )
       end
