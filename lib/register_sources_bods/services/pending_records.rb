@@ -74,7 +74,7 @@ module RegisterSourcesBods
             sim_rec = (group[:existing] + group[:pending]).find do |rec|
               next unless rec.statementType == pending_record.record.statementType
 
-              !rec.identifiers.intersect?(pending_record.record.identifiers).nil? || (
+              !(rec.identifiers & pending_record.record.identifiers).empty? || (
                 pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
               )
             end
