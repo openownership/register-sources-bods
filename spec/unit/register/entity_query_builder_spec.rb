@@ -22,6 +22,9 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
+                    must_not: {
+                      match: { 'metadata.replaced': true },
+                    },
                     should: [
                       {
                         match_phrase: {
@@ -70,7 +73,7 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
     context 'when exclude_identifiers provided' do
       let(:exclude_identifiers) { [double(id: 'abc')] }
 
-      it 'builds query' do
+      it 'builds query' do # rubocop:disable RSpec/ExampleLength
         result = subject.build_query(search_params, exclude_identifiers:)
 
         expect(result).to eq(
@@ -93,6 +96,9 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
+                    must_not: {
+                      match: { 'metadata.replaced': true },
+                    },
                     should: [
                       {
                         match_phrase: {
@@ -152,6 +158,9 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
+                    must_not: {
+                      match: { 'metadata.replaced': true },
+                    },
                     should: [
                       {
                         match_phrase: {
@@ -198,7 +207,7 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
     context 'when exclude_identifiers provided' do
       let(:exclude_identifiers) { [double(id: 'abc')] }
 
-      it 'builds query' do
+      it 'builds query' do # rubocop:disable RSpec/ExampleLength
         result = subject.build_fallback_query(search_params, exclude_identifiers:)
 
         expect(result).to eq(
@@ -221,6 +230,9 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
+                    must_not: {
+                      match: { 'metadata.replaced': true },
+                    },
                     should: [
                       {
                         match_phrase: {

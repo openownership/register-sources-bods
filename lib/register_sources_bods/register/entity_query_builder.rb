@@ -75,6 +75,9 @@ module RegisterSourcesBods
                   ],
                   minimum_should_match: 1,
                   filter: build_filters(search_params),
+                  must_not: {
+                    match: { 'metadata.replaced': true },
+                  },
                 },
               },
             ].compact,
@@ -142,6 +145,9 @@ module RegisterSourcesBods
                   ],
                   minimum_should_match: 1,
                   filter: build_filters(search_params),
+                  must_not: {
+                    match: { 'metadata.replaced': true },
+                  },
                 },
               },
             ].compact,
