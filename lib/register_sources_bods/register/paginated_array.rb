@@ -29,7 +29,7 @@ module RegisterSourcesBods
       end
 
       def total_pages
-        (total_count / records_per_page).ceil
+        (total_count * 1.0 / records_per_page).ceil
       end
 
       def order_by(**_args)
