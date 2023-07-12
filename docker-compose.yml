@@ -10,13 +10,13 @@ services:
       - sources
     restart: on-failure
     volumes:
+      - ${DC_SOURCES_BODS_LIB_REGISTER_COMMON:-.dockerempty}:/home/x/lib/register-common
       - ./bin:/home/x/r/bin
       - ./Gemfile.lock:/home/x/r/Gemfile.lock
       - ./Gemfile:/home/x/r/Gemfile
       - ./lib:/home/x/r/lib
       - ./register_sources_bods.gemspec:/home/x/r/register_sources_bods.gemspec
       - ./spec:/home/x/r/spec
-      #- ../register-common:/home/x/r/lib/register-common
 networks:
   elasticsearch: {}
   sources: {}
