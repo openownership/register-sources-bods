@@ -13,32 +13,30 @@ This library does not include transformation to BODS format of other data standa
 
 This has been tested with v7.17 of Elasticsearch.
 
-## Configuration
+## Installation
 
-Make an .env filed based on the keys listed in .env.example as follows:
-```
-ELASTICSEARCH_HOST=
-ELASTICSEARCH_PORT=
-ELASTICSEARCH_PROTOCOL=
-ELASTICSEARCH_SSL_VERIFY=
-ELASTICSEARCH_PASSWORD=
+Install and boot [register-v2](https://github.com/openownership/register-v2).
 
-BODS_S3_BUCKET_NAME=
-BODS_AWS_REGION=
-BODS_AWS_ACCESS_KEY_ID=
-BODS_AWS_SECRET_ACCESS_KEY=
-
-BODS_STREAM=
-```
+Configure your environment using the example file:
 
 - BODS_STREAM is an optional - if provided then any newly generated BODS statements will be published to the Kinesis stream with this name before being stored in Elasticsearch
 - Configure Elasticsearch Credentials as normal
 - Configure AWS credentials as normal
 
-## Tests
+```sh
+cp .env.example .env
+```
 
-To execute the tests, first build the container (bin/build) and then run:
+Install and boot:
 
-```shell
-bin/test
+```sh
+docker compose up
+```
+
+## Testing
+
+Run the tests:
+
+```sh
+docker compose exec sources-bods test
 ```
