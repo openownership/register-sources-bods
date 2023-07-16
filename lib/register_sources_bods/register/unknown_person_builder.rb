@@ -10,15 +10,48 @@ module RegisterSourcesBods
           statementType: StatementTypes['personStatement'],
           isComponent: false,
           personType: PersonTypes['unknownPerson'],
+          identifiers: bods_statement.identifiers.map { |identifier|
+            next unless identifier.schemeName == "OpenOwnership Register"
+
+            RegisterSourcesBods::Identifier[{
+              id: "#{identifier.id}-unknown",
+              scheme: identifier.scheme,
+              schemeName: identifier.schemeName,
+              uri: "#{identifier.id}-uri"
+            }.compact]
+          }.compact,
           unspecifiedPersonDetails: UnspecifiedPersonDetails[{
             reason: UnspecifiedReasons['unknown'],
           }],
           publicationDetails: bods_statement.publicationDetails,
           names: [
             Name[{
-              fullName: "unknown_persons_entity.names.unknown", # TODO
+              fullName: "Unknown person(s)",
             }],
           ],
+          source: bods_statement.source
+        }.compact]
+      end
+
+      def build_unknown_relationship(bods_statement)
+        RegisterSourcesBods::OwnershipOrControlStatement[{
+          statementID: "#{bods_statement.statementID}-unknown-rel",
+          statementType: StatementTypes['ownershipOrControlStatement'],
+          isComponent: false,
+          subject: Subject[{
+            describedByEntityStatement: bods_statement.statementID
+          }],
+          interestedParty: InterestedParty[{
+            describedByPersonStatement: "#{bods_statement.statementID}-unknown"
+          }],
+          interests: [
+            Interest.new(
+              type: InterestTypes['other-influence-or-control'],
+              interestLevel: InterestLevels['unknown']
+            )
+          ],
+          publicationDetails: bods_statement.publicationDetails,
+          source: bods_statement.source
         }.compact]
       end
     end

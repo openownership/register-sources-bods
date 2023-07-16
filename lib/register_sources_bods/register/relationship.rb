@@ -54,6 +54,10 @@ module RegisterSourcesBods
         false
       end
 
+      def is_unknown?
+        bods_statement.statementID.split('-').last == "unknown"
+      end
+
       def keys_for_uniq_grouping
         [source_id, target_id].compact.map(&:to_s) + interests.to_a.map(&:type).sort
       end

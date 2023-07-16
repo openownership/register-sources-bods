@@ -119,6 +119,10 @@ module RegisterSourcesBods
         incorporation_date.present?
       end
 
+      def is_unknown?
+        bods_statement.statementID.split('-').last == "unknown"
+      end
+
       def jurisdiction_code
         return unless bods_statement.respond_to?(:incorporatedInJurisdiction)
 

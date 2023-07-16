@@ -78,7 +78,28 @@ module RegisterSourcesBods
           relationship.target = target
         end
 
-        entities = entities.filter { |_, entity| !entity.master_entity }
+        # build unknown
+
+        unknown_entities = {}
+        entities.each_value do |entity|
+          next if entity.natural_person?
+          next unless (entity.relationships_as_target || []).empty?
+
+          unknown_bods_statement = unknown_person_builder.build entity.bods_statement
+          unknown_relationship_statement = unknown_person_builder.build_unknown_relationship entity.bods_statement
+
+          unknown_entity = Register::Entity.new(unknown_bods_statement)
+          unknown_rel = Register::Relationship.new(unknown_relationship_statement)
+          unknown_rel.source = unknown_entity
+          unknown_rel.target = entity
+          unknown_entity.relationships_as_source = [unknown_rel]
+          entity.relationships_as_target = [unknown_rel]
+
+          unknown_entities[unknown_entity.bods_statement.statementID] = unknown_entity
+          relationships[unknown_rel.bods_statement.statementID] = unknown_rel
+        end
+
+        entities = entities.filter { |_, entity| !entity.master_entity }.merge(unknown_entities)
         OpenStruct.new(entities:, relationships:)
       end
       # rubocop:enable Style/CombinableLoops
@@ -104,10 +125,6 @@ module RegisterSourcesBods
         end
 
         [entities, relationships]
-      end
-
-      def build_unknown_person(bods_statement)
-        unknown_person_builder.build bods_statement
       end
     end
   end
