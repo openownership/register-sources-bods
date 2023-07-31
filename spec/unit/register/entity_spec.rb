@@ -56,7 +56,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#country_of_residence' do
       it 'returns country_of_residence' do
-        expect(subject.country_of_residence).to be_nil
+        expect(subject.country_of_residence).to eq ISO3166::Country["FR"]
       end
     end
 
