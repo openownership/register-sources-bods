@@ -54,7 +54,7 @@ module RegisterSourcesBods
         false
       end
 
-      def is_unknown?
+      def unknown?
         bods_statement.statementID.split('-').last == "unknown"
       end
 

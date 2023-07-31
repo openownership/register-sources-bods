@@ -123,7 +123,7 @@ module RegisterSourcesBods
         incorporation_date.present?
       end
 
-      def is_unknown?
+      def unknown?
         bods_statement.statementID.split('-').last == "unknown"
       end
 
@@ -160,7 +160,7 @@ module RegisterSourcesBods
       end
 
       def unknown_reason
-        is_unknown? ? 'We have no data to tell us who this person or people might be.' : nil
+        unknown? ? 'We have no data to tell us who this person or people might be.' : nil
       end
 
       def from_denmark_cvr_v2?

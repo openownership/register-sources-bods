@@ -95,12 +95,12 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
-        statement_ids.map { |statement_id|
+        statement_ids.map do |statement_id|
           [
             (result.entities[statement_id] || result.relationships[statement_id]),
-            (result.entities["#{statement_id}-unknown"] || result.relationships["#{statement_id}-unknown"])
+            (result.entities["#{statement_id}-unknown"] || result.relationships["#{statement_id}-unknown"]),
           ]
-        }.flatten.compact
+        end.flatten.compact
       end
 
       def list_matching_at_least_one_identifier(identifiers)
