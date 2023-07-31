@@ -266,7 +266,7 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def store(records)
+      def store(records, await_refresh: false)
         return true if records.empty?
 
         operations = records.map do |record|
@@ -279,7 +279,9 @@ module RegisterSourcesBods
           }
         end
 
-        result = client.bulk(body: operations)
+        refresh = await_refresh ? :wait_for : false
+
+        result = client.bulk(body: operations, refresh:)
 
         if result['errors']
           print result, "\n\n"
@@ -287,6 +289,32 @@ module RegisterSourcesBods
         end
 
         true
+      end
+
+      def mark_replaced_statements(records)
+        replaced_ids = records.map(&:replacesStatements).flatten.uniq.compact
+
+        return {} if replaced_ids.empty?
+
+        client.update_by_query(
+          index:,
+          body: {
+            script: {
+              lang: 'painless',
+              source: "ctx._source['metadata.replaced'] = true",
+            },
+            query: {
+              bool: {
+                must: {
+                  terms: { statementID: replaced_ids },
+                },
+                must_not: {
+                  match: { 'metadata.replaced': true },
+                },
+              },
+            },
+          },
+        )
       end
 
       def search(query, aggs: nil, page: 1, per_page: 10)

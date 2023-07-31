@@ -188,6 +188,13 @@ module RegisterSourcesBods
               isComponent: {
                 type: "keyword", # Types::String.optional
               },
+              metadata: {
+                properties: {
+                  replaced: {
+                    type: "boolean",
+                  },
+                },
+              },
               name: {
                 type: "text",
                 fields: {

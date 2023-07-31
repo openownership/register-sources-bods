@@ -25,6 +25,14 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       ).compact,
     )
   end
+  let(:person_statement2) do
+    RegisterSourcesBods::PersonStatement.new(
+      **JSON.parse(
+        File.read('spec/fixtures/person_statement2.json'),
+        symbolize_names: true,
+      ).compact,
+    )
+  end
 
   let(:entity_statement) do
     RegisterSourcesBods::EntityStatement.new(
@@ -79,6 +87,58 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
 
       # When records do not exist
       expect(subject.get("missing")).to be_nil
+    end
+  end
+
+  describe '#mark_replaced_statements' do
+    it 'stores' do
+      records = [
+        person_statement,
+        person_statement2,
+      ]
+
+      subject.store(records, await_refresh: true)
+      subject.mark_replaced_statements(records)
+
+      sleep 1 # eventually consistent, give time
+
+      results = es_client.search(
+        index:,
+        body: {
+          query: {
+            bool: {
+              filter: {
+                bool: {
+                  should: { match: { 'metadata.replaced': true } },
+                },
+              },
+            },
+          },
+        },
+      )
+      results_ids = results['hits']['hits'].map { |r| r['_id'] }
+      expect(results_ids).to contain_exactly('ps1')
+
+      results = es_client.search(
+        index:,
+        body: {
+          query: {
+            bool: {
+              filter: {
+                bool: {
+                  must_not: {
+                    bool: {
+                      should: { match: { 'metadata.replaced': true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      )
+      results_ids = results['hits']['hits'].map { |r| r['_id'] }
+      expect(results_ids).to contain_exactly('ps2')
     end
   end
 
