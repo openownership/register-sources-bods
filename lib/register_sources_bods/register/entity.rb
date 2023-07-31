@@ -76,7 +76,11 @@ module RegisterSourcesBods
       end
 
       def country_of_residence
-        nil
+        country_code = bods_statement.addresses&.first&.country
+
+        return unless country_code
+
+        ISO3166::Country[country_code]
       end
 
       def dissolution_date
@@ -119,6 +123,10 @@ module RegisterSourcesBods
         incorporation_date.present?
       end
 
+      def unknown?
+        bods_statement.statementID.split('-').last == "unknown"
+      end
+
       def jurisdiction_code
         return unless bods_statement.respond_to?(:incorporatedInJurisdiction)
 
@@ -152,7 +160,7 @@ module RegisterSourcesBods
       end
 
       def unknown_reason
-        nil
+        unknown? ? 'We have no data to tell us who this person or people might be.' : nil
       end
 
       def from_denmark_cvr_v2?

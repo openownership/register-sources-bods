@@ -60,8 +60,8 @@ module RegisterSourcesBods
       # merged_page, source_page
 
       def find(statement_id)
-        result = statement_loader.load_statements([statement_id])
-
+        resolved_statement_id = statement_id.split('-unknown').first
+        result = statement_loader.load_statements([resolved_statement_id])
         result.entities[statement_id] || result.relationships[statement_id]
       end
 
@@ -69,20 +69,23 @@ module RegisterSourcesBods
         find_by_entity_uri("/entities/#{entity_id}")
       end
 
-      def find_by_entity_ids(entity_ids)
-        find_by_entity_uris(entity_ids.map { |entity_id| "/entities/#{entity_id}" })
-      end
-
       def find_by_entity_uri(uri)
-        find_by_entity_uris([uri]).first
+        results = find_by_entity_uris([uri])
+
+        if /unknown/.match uri
+          results.find { |result| /unknown/.match result.id }
+        else
+          results.find { |result| !(/unknown/.match result.id) }
+        end
       end
 
       def find_by_entity_uris(uris)
         identifiers = uris.uniq.map do |uri|
+          resolved_uri = uri.split('-unknown').first
           RegisterSourcesBods::Identifier[{
-            id: uri,
+            id: resolved_uri,
             schemeName: "OpenOwnership Register",
-            uri:,
+            uri: resolved_uri,
           }]
         end
 
@@ -92,7 +95,12 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
-        statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
+        statement_ids.map do |statement_id|
+          [
+            (result.entities[statement_id] || result.relationships[statement_id]),
+            (result.entities["#{statement_id}-unknown"] || result.relationships["#{statement_id}-unknown"]),
+          ]
+        end.flatten.compact
       end
 
       def list_matching_at_least_one_identifier(identifiers)

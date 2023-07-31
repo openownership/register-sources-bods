@@ -3,8 +3,8 @@ require 'register_sources_bods/register/statements_mapper'
 module RegisterSourcesBods
   module Register
     class StatementLoader
-      MAX_LEVELS = 12
-      SLICE_SIZE = 25
+      MAX_LEVELS = 8
+      SLICE_SIZE = 50
 
       def initialize(statement_repository:, statements_mapper: nil)
         @statement_repository = statement_repository
@@ -31,7 +31,7 @@ module RegisterSourcesBods
       def load_statements_children(statements)
         new_statements = statements
 
-        level = 1
+        level = 0
         while !new_statements.empty? && (level <= MAX_LEVELS)
           new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
@@ -39,6 +39,8 @@ module RegisterSourcesBods
 
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
           next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
+          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
 
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
@@ -56,13 +58,14 @@ module RegisterSourcesBods
       def load_statements_parents(statements)
         new_statements = statements
 
-        level = 1
+        level = 0
         while !new_statements.empty? && (level <= MAX_LEVELS)
           new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
           next_statement_ids = new_statements.keys
 
           next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
 
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
