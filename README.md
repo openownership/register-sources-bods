@@ -27,16 +27,10 @@ Configure your environment using the example file:
 cp .env.example .env
 ```
 
-Install and boot:
-
-```sh
-docker compose up
-```
-
 ## Testing
 
 Run the tests:
 
 ```sh
-docker compose exec sources-bods test
+docker compose run sources-bods test
 ```
