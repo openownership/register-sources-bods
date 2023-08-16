@@ -26,7 +26,7 @@ RSpec.describe RegisterSourcesBods::Register::Provenance do
 
     describe '#source_name' do
       it 'returns source_name' do
-        expect(subject.source_name).to eq "GB Persons Of Significant Control Register"
+        expect(subject.source_name).to eq "UK PSC Register"
       end
     end
 
