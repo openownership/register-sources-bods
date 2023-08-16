@@ -47,9 +47,8 @@ module RegisterSourcesBods
 
           next unless master_entity
 
-          if master_statement_id == entity.bods_statement.statementID
-            entity.replaced_bods_statements << entity.bods_statement
-          else
+          if master_statement_id != entity.bods_statement.statementID
+            master_entity.replaced_bods_statements << entity.bods_statement
             entity.master_entity = master_entity
           end
         end

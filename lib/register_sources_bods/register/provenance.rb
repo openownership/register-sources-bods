@@ -1,6 +1,12 @@
 module RegisterSourcesBods
   module Register
     class Provenance
+      MAPPINGS = {
+        'GB Persons Of Significant Control Register' => 'UK PSC Register',
+        'DK Centrale Virksomhedsregister' => 'Denmark Central Business Register (Centrale Virksomhedsregister [CVR])',
+        'SK Register Partnerov Verejného Sektora' => 'Slovakia Public Sector Partners Register (Register partnerov verejného sektora)',
+      }.freeze
+
       def initialize(bods_statement)
         @bods_statement = bods_statement
       end
@@ -12,7 +18,8 @@ module RegisterSourcesBods
       end
 
       def source_name
-        bods_statement&.source&.description
+        name = bods_statement&.source&.description
+        MAPPINGS[name] || name
       end
 
       def retrieved_at

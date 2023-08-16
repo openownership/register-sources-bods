@@ -1,5 +1,7 @@
 require 'countries'
 require 'iso8601'
+require 'active_support/core_ext/object/blank'
+
 require 'register_sources_bods/register/paginated_array'
 
 module RegisterSourcesBods
@@ -98,7 +100,7 @@ module RegisterSourcesBods
 
         dob = bods_statement.birthDate
 
-        return unless dob
+        return unless dob.presence
 
         ISO8601::Date.new(dob)
       end
