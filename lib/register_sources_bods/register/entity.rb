@@ -7,6 +7,10 @@ require 'register_sources_bods/register/paginated_array'
 module RegisterSourcesBods
   module Register
     class Entity
+      PSC_SCHEME = 'GB-COH'.freeze
+      SK_SCHEME = 'SK-ORSR'.freeze
+      DK_SCHEME = 'DK-CVR'.freeze
+
       def initialize(bods_statement)
         @bods_statement = bods_statement
 
@@ -48,7 +52,7 @@ module RegisterSourcesBods
       end
 
       def company_number
-        bods_statement.identifiers.find { |ident| ident.scheme == "GB-COH" }&.id
+        bods_statement.identifiers.find { |ident| [PSC_SCHEME, DK_SCHEME, SK_SCHEME].include? ident.scheme }&.id
       end
 
       def company_number?

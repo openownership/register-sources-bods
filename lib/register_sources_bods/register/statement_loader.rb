@@ -11,15 +11,13 @@ module RegisterSourcesBods
         @statements_mapper = statements_mapper || StatementsMapper.new
       end
 
-      def load_statements(statement_ids, load_children: true)
+      def load_statements(statement_ids, max_levels: MAX_LEVELS)
         statements = fetch_with_duplicates(statement_ids)
 
-        if load_children
-          child_statements = load_statements_children(statements)
-          parent_statements = load_statements_parents(statements)
+        child_statements = load_statements_children(statements, max_levels:)
+        parent_statements = load_statements_parents(statements, max_levels:)
 
-          statements.merge!(child_statements).merge!(parent_statements)
-        end
+        statements.merge!(child_statements).merge!(parent_statements)
 
         statements_mapper.map_statements statements
       end
@@ -28,11 +26,11 @@ module RegisterSourcesBods
 
       attr_reader :statement_repository, :statements_mapper
 
-      def load_statements_children(statements)
+      def load_statements_children(statements, max_levels:)
         new_statements = statements
 
         level = 0
-        while !new_statements.empty? && (level <= MAX_LEVELS)
+        while !new_statements.empty? && (level <= max_levels)
           new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
           next_statement_ids = new_statements.keys
@@ -55,11 +53,11 @@ module RegisterSourcesBods
         statements
       end
 
-      def load_statements_parents(statements)
+      def load_statements_parents(statements, max_levels:)
         new_statements = statements
 
         level = 0
-        while !new_statements.empty? && (level <= MAX_LEVELS)
+        while !new_statements.empty? && (level <= max_levels)
           new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
 
           next_statement_ids = new_statements.keys
