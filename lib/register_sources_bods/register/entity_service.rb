@@ -22,7 +22,7 @@ module RegisterSourcesBods
         statement_ids = statements.map { |result| result.record.statementID }
         statements.map(&:record).map(&:identifiers)
 
-        result = statement_loader.load_statements(statement_ids, load_children: false)
+        result = statement_loader.load_statements(statement_ids, max_levels: 1)
 
         # new_results = identifiers.map do |identifier|
         new_results = statement_ids.map do |statement_id|
@@ -41,7 +41,7 @@ module RegisterSourcesBods
 
         statement_ids = statements.map { |result| result.record.statementID }
 
-        result = statement_loader.load_statements(statement_ids, load_children: false)
+        result = statement_loader.load_statements(statement_ids, max_levels: 1)
 
         new_results = statement_ids.map do |statement_id|
           result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
