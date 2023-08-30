@@ -13,6 +13,8 @@ require 'active_support/core_ext/string/conversions'
 module RegisterSourcesBods
   module Mappers
     module ResolverMappings
+      LEI_SCHEME                  = 'XI-LEI'.freeze
+      LEI_SCHEME_NAME             = 'Global Legal Entity Identifier Index'.freeze
       OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'.freeze
 
       def addresses
@@ -36,6 +38,22 @@ module RegisterSourcesBods
         return unless resolver_response&.company
 
         resolver_response.company.name
+      end
+
+      def lei_identifier
+        return unless resolver_response&.resolved && resolver_response&.add_ids
+
+        add_id = resolver_response.add_ids.find { |e| e.identifier_system_code == 'lei' }
+        return unless add_id
+
+        uri = "https://opencorporates.com/companies/#{add_id.jurisdiction_code}/#{add_id.company_number}"
+
+        RegisterSourcesBods::Identifier[{
+          id: add_id.uid,
+          scheme: LEI_SCHEME,
+          schemeName: LEI_SCHEME_NAME,
+          uri:,
+        }]
       end
 
       def open_corporates_identifier
