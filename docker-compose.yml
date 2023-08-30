@@ -11,6 +11,7 @@ services:
     restart: on-failure
     volumes:
       - ${DC_SOURCES_BODS_LIB_REGISTER_COMMON:-.dockerempty}:/home/x/lib/register-common
+      - ${DC_SOURCES_BODS_LIB_REGISTER_SOURCES_OC:-.dockerempty}:/home/x/lib/register-sources-oc
       - ./bin:/home/x/r/bin
       - ./Gemfile.lock:/home/x/r/Gemfile.lock
       - ./Gemfile:/home/x/r/Gemfile
