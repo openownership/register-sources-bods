@@ -35,7 +35,7 @@ module RegisterSourcesBods
       end
 
       def identifier_lei_from_add_id(add_id)
-        uri = "https://opencorporates.com/companies/#{add_id.jurisdiction_code}/#{add_id.company_number}"
+        uri = "https://search.gleif.org/#/record/#{add_id.uid}"
         RegisterSourcesBods::Identifier[{
           id: add_id.uid,
           scheme: LEI_SCHEME,
