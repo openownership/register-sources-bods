@@ -17,6 +17,24 @@ GIT
       rubyzip (>= 2, < 3)
       xxhash
 
+GIT
+  remote: https://github.com/openownership/register-sources-oc.git
+  revision: b665f862e88cbb09d4942b7d83b68d07b47784bb
+  specs:
+    register_sources_oc (0.1.0)
+      activesupport (>= 6, < 8)
+      countries (>= 4, < 5)
+      dotenv
+      dry-struct (>= 1, < 2)
+      dry-types (>= 1, < 2)
+      elasticsearch (>= 7.10, < 8)
+      faraday (>= 1, < 2)
+      faraday_middleware (>= 1, < 2)
+      geokit (>= 1, < 2)
+      iso8601
+      net-http-persistent
+      rexml
+
 PATH
   remote: .
   specs:
@@ -126,6 +144,7 @@ GEM
     faraday-retry (1.0.3)
     faraday_middleware (1.2.0)
       faraday (~> 1.0)
+    geokit (1.14.0)
     hashdiff (1.0.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
@@ -206,6 +225,7 @@ PLATFORMS
 DEPENDENCIES
   register_common!
   register_sources_bods!
+  register_sources_oc!
   rspec (~> 3.0)
   rubocop
   rubocop-rspec

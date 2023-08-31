@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-libs=(register-common)
+libs=(register-common register-sources-oc)
 
 echo -e "\n=== Configuring dev libs"
 

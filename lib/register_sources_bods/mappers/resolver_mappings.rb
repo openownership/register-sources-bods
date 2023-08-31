@@ -34,6 +34,25 @@ module RegisterSourcesBods
         ]
       end
 
+      def identifier_lei_from_add_id(add_id)
+        uri = "https://search.gleif.org/#/record/#{add_id.uid}"
+        RegisterSourcesBods::Identifier[{
+          id: add_id.uid,
+          scheme: LEI_SCHEME,
+          schemeName: LEI_SCHEME_NAME,
+          uri:,
+        }]
+      end
+
+      def identifier_open_corporates_from_company(jurisdiction_code, company_number)
+        uri = "https://opencorporates.com/companies/#{jurisdiction_code}/#{company_number}"
+        RegisterSourcesBods::Identifier[{
+          id: uri,
+          schemeName: OPEN_CORPORATES_SCHEME_NAME,
+          uri:,
+        }]
+      end
+
       def name
         return unless resolver_response&.company
 
@@ -46,28 +65,13 @@ module RegisterSourcesBods
         add_id = resolver_response.add_ids.find { |e| e.identifier_system_code == 'lei' }
         return unless add_id
 
-        uri = "https://opencorporates.com/companies/#{add_id.jurisdiction_code}/#{add_id.company_number}"
-
-        RegisterSourcesBods::Identifier[{
-          id: add_id.uid,
-          scheme: LEI_SCHEME,
-          schemeName: LEI_SCHEME_NAME,
-          uri:,
-        }]
+        identifier_lei_from_add_id(add_id)
       end
 
       def open_corporates_identifier
         return unless resolver_response&.resolved
 
-        jurisdiction = resolver_response.jurisdiction_code
-        company_number = resolver_response.company_number
-        oc_url = "https://opencorporates.com/companies/#{jurisdiction}/#{company_number}"
-
-        RegisterSourcesBods::Identifier[{
-          id: oc_url,
-          schemeName: OPEN_CORPORATES_SCHEME_NAME,
-          uri: oc_url,
-        }]
+        identifier_open_corporates_from_company(resolver_response.jurisdiction_code, resolver_response.company_number)
       end
 
       def incorporated_in_jurisdiction
