@@ -54,9 +54,18 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                         },
                       },
                       {
-                        match: {
-                          company_number: {
-                            query: "Some Company",
+                        nested: {
+                          path: "identifiers",
+                          query: {
+                            bool: {
+                              must: [
+                                {
+                                  term: {
+                                    'identifiers.id': "Some Company",
+                                  },
+                                },
+                              ],
+                            },
                           },
                         },
                       },
@@ -128,9 +137,18 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                         },
                       },
                       {
-                        match: {
-                          company_number: {
-                            query: "Some Company",
+                        nested: {
+                          path: "identifiers",
+                          query: {
+                            bool: {
+                              must: [
+                                {
+                                  term: {
+                                    'identifiers.id': "Some Company",
+                                  },
+                                },
+                              ],
+                            },
                           },
                         },
                       },
@@ -188,9 +206,18 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                         },
                       },
                       {
-                        match: {
-                          company_number: {
-                            query: "Some Company",
+                        nested: {
+                          path: "identifiers",
+                          query: {
+                            bool: {
+                              must: [
+                                {
+                                  term: {
+                                    'identifiers.id': "Some Company",
+                                  },
+                                },
+                              ],
+                            },
                           },
                         },
                       },
@@ -260,9 +287,18 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                         },
                       },
                       {
-                        match: {
-                          company_number: {
-                            query: "Some Company",
+                        nested: {
+                          path: "identifiers",
+                          query: {
+                            bool: {
+                              must: [
+                                {
+                                  term: {
+                                    'identifiers.id': "Some Company",
+                                  },
+                                },
+                              ],
+                            },
                           },
                         },
                       },
