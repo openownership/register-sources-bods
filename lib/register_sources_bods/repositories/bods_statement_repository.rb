@@ -116,24 +116,31 @@ module RegisterSourcesBods
         ).map(&:record)
       end
 
-      def list_matching_at_least_one_identifier(identifiers)
+      def list_matching_at_least_one_identifier(identifiers, latest: false)
         return [] if identifiers.empty?
 
+        q_must_not = []
+        q_must_not << { match: { 'metadata.replaced': true } } if latest
         process_results(
           client.search(
             index:,
             body: {
               query: {
-                nested: {
-                  path: "identifiers",
-                  query: {
-                    bool: {
-                      should: [
-                        { terms: { 'identifiers.id': identifiers.map(&:id).compact } },
-                        { terms: { 'identifiers.uri': identifiers.map(&:uri).compact } },
-                      ].filter { |a| !a[:terms].values.first.empty? },
+                bool: {
+                  must: {
+                    nested: {
+                      path: "identifiers",
+                      query: {
+                        bool: {
+                          should: [
+                            { terms: { 'identifiers.id': identifiers.map(&:id).compact } },
+                            { terms: { 'identifiers.uri': identifiers.map(&:uri).compact } },
+                          ].filter { |a| !a[:terms].values.first.empty? },
+                        },
+                      },
                     },
                   },
+                  must_not: q_must_not,
                 },
               },
               size: 10_000,

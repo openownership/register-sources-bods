@@ -25,7 +25,7 @@ module RegisterSourcesBods
         @repository_ai.each_lei(jurisdiction_codes:, uids:) do |add_id|
           id_lei = identifier_lei_from_add_id(add_id)
           id_oc = identifier_open_corporates_from_company(add_id.jurisdiction_code, add_id.company_number)
-          ent_sts = @repository_bs.list_matching_at_least_one_identifier([id_oc])
+          ent_sts = @repository_bs.list_matching_at_least_one_identifier([id_oc], latest: true)
           ent_sts.each do |ent_st|
             next if (ent_st&.identifiers || []).include?(id_lei)
 
