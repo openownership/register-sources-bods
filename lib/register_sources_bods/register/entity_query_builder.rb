@@ -66,9 +66,18 @@ module RegisterSourcesBods
                       },
                     },
                     {
-                      match: {
-                        company_number: {
-                          query:,
+                      nested: {
+                        path: "identifiers",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                term: {
+                                  'identifiers.id': query,
+                                },
+                              },
+                            ],
+                          },
                         },
                       },
                     },
@@ -136,9 +145,18 @@ module RegisterSourcesBods
                       },
                     },
                     {
-                      match: {
-                        company_number: {
-                          query:,
+                      nested: {
+                        path: "identifiers",
+                        query: {
+                          bool: {
+                            must: [
+                              {
+                                term: {
+                                  'identifiers.id': query,
+                                },
+                              },
+                            ],
+                          },
                         },
                       },
                     },
