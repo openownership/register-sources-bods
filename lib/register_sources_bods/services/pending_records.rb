@@ -136,7 +136,7 @@ module RegisterSourcesBods
       end
 
       def find_register_identifier(identifiers)
-        select_register_identifiers(identifiers).min
+        select_register_identifiers(identifiers).min_by(&:id)
       end
     end
   end
