@@ -45,7 +45,7 @@ module RegisterSourcesBods
       end
 
       def identifier_open_corporates_from_company(jurisdiction_code, company_number)
-        uri = "https://opencorporates.com/companies/#{jurisdiction_code}/#{company_number}"
+        uri = "https://opencorporates.com/companies/#{jurisdiction_code}/#{company_number.upcase}"
         RegisterSourcesBods::Identifier[{
           id: uri,
           schemeName: OPEN_CORPORATES_SCHEME_NAME,
