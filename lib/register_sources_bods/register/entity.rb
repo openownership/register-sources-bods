@@ -119,6 +119,10 @@ module RegisterSourcesBods
         bods_statement.identifiers
       end
 
+      def identifiers_lei
+        identifiers.select { |i| i.scheme == 'XI-LEI' }
+      end
+
       def incorporation_date
         return unless bods_statement.respond_to?(:foundingDate)
 
