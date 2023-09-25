@@ -380,7 +380,7 @@ module RegisterSourcesBods
       def process_results(results)
         # print "Elasticsearch: ", results, "\n\n"
         hits = results.dig('hits', 'hits') || []
-        hits = hits.sort { |hit| hit['_score'] }.reverse
+        hits = hits.sort { |hit| hit['_score'] }.reverse # rubocop:disable Lint/UnexpectedBlockArity # FIXME
         total_count = results.dig('hits', 'total', 'value') || 0
 
         mapped = hits.map do |hit|
