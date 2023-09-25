@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/name'
 
 RSpec.describe RegisterSourcesBods::Name do
@@ -10,7 +12,7 @@ RSpec.describe RegisterSourcesBods::Name do
         fullName: '',
         familyName: '',
         givenName: '',
-        patronymicName: '',
+        patronymicName: ''
       }
     end
 

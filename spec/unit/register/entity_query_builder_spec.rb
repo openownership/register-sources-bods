@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 require 'register_sources_bods/structs/bods_statement'
@@ -7,7 +9,7 @@ require 'register_sources_bods/register/entity_query_builder'
 RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
   subject { described_class.new }
 
-  let(:search_params) { { q: "Some Company Limited" } }
+  let(:search_params) { { q: 'Some Company Limited' } }
 
   describe '#build_query' do
     context 'when exclude_identifiers not provided' do
@@ -23,58 +25,58 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                     filter: [],
                     minimum_should_match: 1,
                     must_not: {
-                      match: { 'metadata.replaced': true },
+                      match: { 'metadata.replaced': true }
                     },
                     should: [
                       {
                         match_phrase: {
                           name: {
-                            query: "Some Company",
-                            slop: 50,
-                          },
-                        },
+                            query: 'Some Company',
+                            slop: 50
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "names",
+                          path: 'names',
                           query: {
                             bool: {
                               must: [
                                 {
                                   match_phrase: {
                                     'names.fullName': {
-                                      query: "Some Company",
-                                      slop: 50,
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
+                                      query: 'Some Company',
+                                      slop: 50
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "identifiers",
+                          path: 'identifiers',
                           query: {
                             bool: {
                               must: [
                                 {
                                   term: {
-                                    'identifiers.id': "Some Company",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
+                                    'identifiers.id': 'Some Company'
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         )
       end
     end
@@ -82,7 +84,7 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
     context 'when exclude_identifiers provided' do
       let(:exclude_identifiers) { [double(id: 'abc')] }
 
-      it 'builds query' do # rubocop:disable RSpec/ExampleLength
+      it 'builds query' do
         result = subject.build_query(search_params, exclude_identifiers:)
 
         expect(result).to eq(
@@ -91,73 +93,73 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
               must: [
                 {
                   nested: {
-                    path: "identifiers",
+                    path: 'identifiers',
                     query: {
                       bool: {
                         must_not: [
-                          { match: { 'identifiers.id': { query: "abc" } } },
-                        ],
-                      },
-                    },
-                  },
+                          { match: { 'identifiers.id': { query: 'abc' } } }
+                        ]
+                      }
+                    }
+                  }
                 },
                 {
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
                     must_not: {
-                      match: { 'metadata.replaced': true },
+                      match: { 'metadata.replaced': true }
                     },
                     should: [
                       {
                         match_phrase: {
                           name: {
-                            query: "Some Company",
-                            slop: 50,
-                          },
-                        },
+                            query: 'Some Company',
+                            slop: 50
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "names",
+                          path: 'names',
                           query: {
                             bool: {
                               must: [
                                 {
                                   match_phrase: {
                                     'names.fullName': {
-                                      query: "Some Company",
-                                      slop: 50,
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
+                                      query: 'Some Company',
+                                      slop: 50
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "identifiers",
+                          path: 'identifiers',
                           query: {
                             bool: {
                               must: [
                                 {
                                   term: {
-                                    'identifiers.id': "Some Company",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
+                                    'identifiers.id': 'Some Company'
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         )
       end
     end
@@ -177,56 +179,56 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                     filter: [],
                     minimum_should_match: 1,
                     must_not: {
-                      match: { 'metadata.replaced': true },
+                      match: { 'metadata.replaced': true }
                     },
                     should: [
                       {
                         match_phrase: {
                           name: {
-                            query: "Some Company",
-                          },
-                        },
+                            query: 'Some Company'
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "names",
+                          path: 'names',
                           query: {
                             bool: {
                               must: [
                                 {
                                   match_phrase: {
                                     'names.fullName': {
-                                      query: "Some Company",
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
+                                      query: 'Some Company'
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "identifiers",
+                          path: 'identifiers',
                           query: {
                             bool: {
                               must: [
                                 {
                                   term: {
-                                    'identifiers.id': "Some Company",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
+                                    'identifiers.id': 'Some Company'
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         )
       end
     end
@@ -234,7 +236,7 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
     context 'when exclude_identifiers provided' do
       let(:exclude_identifiers) { [double(id: 'abc')] }
 
-      it 'builds query' do # rubocop:disable RSpec/ExampleLength
+      it 'builds query' do
         result = subject.build_fallback_query(search_params, exclude_identifiers:)
 
         expect(result).to eq(
@@ -243,71 +245,71 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
               must: [
                 {
                   nested: {
-                    path: "identifiers",
+                    path: 'identifiers',
                     query: {
                       bool: {
                         must_not: [
-                          { match: { 'identifiers.id': { query: "abc" } } },
-                        ],
-                      },
-                    },
-                  },
+                          { match: { 'identifiers.id': { query: 'abc' } } }
+                        ]
+                      }
+                    }
+                  }
                 },
                 {
                   bool: {
                     filter: [],
                     minimum_should_match: 1,
                     must_not: {
-                      match: { 'metadata.replaced': true },
+                      match: { 'metadata.replaced': true }
                     },
                     should: [
                       {
                         match_phrase: {
                           name: {
-                            query: "Some Company",
-                          },
-                        },
+                            query: 'Some Company'
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "names",
+                          path: 'names',
                           query: {
                             bool: {
                               must: [
                                 {
                                   match_phrase: {
                                     'names.fullName': {
-                                      query: "Some Company",
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
+                                      query: 'Some Company'
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
                       },
                       {
                         nested: {
-                          path: "identifiers",
+                          path: 'identifiers',
                           query: {
                             bool: {
                               must: [
                                 {
                                   term: {
-                                    'identifiers.id': "Some Company",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
+                                    'identifiers.id': 'Some Company'
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         )
       end
     end

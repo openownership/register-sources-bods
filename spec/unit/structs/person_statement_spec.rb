@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'register_sources_bods/structs/person_statement'
 
@@ -8,7 +10,7 @@ RSpec.describe RegisterSourcesBods::PersonStatement do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true,
+        symbolize_names: true
       )
     end
 

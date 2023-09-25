@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/records_producer'
 require 'register_sources_bods/services/builder'
@@ -9,7 +11,7 @@ module RegisterSourcesBods
     class Publisher
       def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
         )
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
@@ -27,7 +29,7 @@ module RegisterSourcesBods
         records_without_identifiers = records.to_a.filter { |_uid, r| !r.respond_to?(:identifiers) }.to_h
 
         publish_records_with_identifiers(records_with_identifiers).merge(
-          publish_records_without_identifiers(records_without_identifiers),
+          publish_records_without_identifiers(records_without_identifiers)
         )
       end
 

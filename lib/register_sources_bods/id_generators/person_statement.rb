@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/id_generators/base'
 
 module RegisterSourcesBods

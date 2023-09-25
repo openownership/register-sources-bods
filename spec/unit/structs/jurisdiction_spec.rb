@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/jurisdiction'
 
 RSpec.describe RegisterSourcesBods::Jurisdiction do
@@ -7,7 +9,7 @@ RSpec.describe RegisterSourcesBods::Jurisdiction do
     let(:params) do
       {
         name: '',
-        code: '',
+        code: ''
       }
     end
 

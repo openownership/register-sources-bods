@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 require 'register_sources_bods/structs/bods_statement'
@@ -14,31 +16,31 @@ RSpec.describe RegisterSourcesBods::Register::Provenance do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/ownership_or_control_statement.json'),
-        symbolize_names: true,
+        symbolize_names: true
       ).compact
     end
 
     describe '#source_url' do
       it 'returns source_url' do
-        expect(subject.source_url).to eq "http://download.companieshouse.gov.uk/en_pscdata.html"
+        expect(subject.source_url).to eq 'http://download.companieshouse.gov.uk/en_pscdata.html'
       end
     end
 
     describe '#source_name' do
       it 'returns source_name' do
-        expect(subject.source_name).to eq "UK PSC Register"
+        expect(subject.source_name).to eq 'UK PSC Register'
       end
     end
 
     describe '#retrieved_at' do
       it 'returns retrieved_at' do
-        expect(subject.retrieved_at).to eq "2023-03-15"
+        expect(subject.retrieved_at).to eq '2023-03-15'
       end
     end
 
     describe '#imported_at' do
       it 'returns imported_at' do
-        expect(subject.imported_at).to eq "2023-03-15"
+        expect(subject.imported_at).to eq '2023-03-15'
       end
     end
   end

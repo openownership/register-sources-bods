@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/share'
 
 RSpec.describe RegisterSourcesBods::Share do
@@ -10,7 +12,7 @@ RSpec.describe RegisterSourcesBods::Share do
         maximum: 60.2,
         minimum: 29.5,
         exclusiveMinimum: false,
-        exclusiveMaximum: false,
+        exclusiveMaximum: false
       }
     end
 

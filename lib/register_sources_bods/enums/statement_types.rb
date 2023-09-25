@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/types'
 
 module RegisterSourcesBods
   StatementTypes = Types::String.enum(
     'personStatement',
     'entityStatement',
-    'ownershipOrControlStatement',
+    'ownershipOrControlStatement'
   )
 end

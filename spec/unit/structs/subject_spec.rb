@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/subject'
 
 RSpec.describe RegisterSourcesBods::Subject do
@@ -6,7 +8,7 @@ RSpec.describe RegisterSourcesBods::Subject do
   context 'when params are valid' do
     let(:params) do
       {
-        describedByEntityStatement: '',
+        describedByEntityStatement: ''
       }
     end
 

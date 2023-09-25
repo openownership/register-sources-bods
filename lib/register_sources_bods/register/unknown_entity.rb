@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/register/entity'
 
 module RegisterSourcesBods

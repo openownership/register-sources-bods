@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/services/publisher'
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/person_statement'
@@ -9,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
       repository:,
       producer:,
       builder:,
-      pending_records_builder:,
+      pending_records_builder:
     )
   end
 
@@ -22,11 +24,12 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     RegisterSourcesBods::BodsStatement[
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true,
+        symbolize_names: true
       ).compact
     ]
   end
 
+  # rubocop:disable RSpec/ExpectInHook
   before do
     expect(producer).to receive(:produce).with([statement])
     expect(producer).to receive(:finalize)
@@ -34,17 +37,18 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     expect(repository).to receive(:store).with([statement], await_refresh: true)
     expect(repository).to receive(:mark_replaced_statements).with([statement])
     expect(pending_records_builder).to receive(:build_all).with(
-      { statement_uuid => statement },
+      { statement_uuid => statement }
     ).and_return(
       [
         {
           new_records: [statement],
           unreplaced_statements: [statement],
-          uids: [statement_uuid],
-        },
-      ],
+          uids: [statement_uuid]
+        }
+      ]
     )
   end
+  # rubocop:enable RSpec/ExpectInHook
 
   describe '#publish' do
     let(:statement_uuid) { :uid }

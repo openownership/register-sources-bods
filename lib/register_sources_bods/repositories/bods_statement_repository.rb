@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/config/elasticsearch'
 require 'register_sources_bods/structs/bods_statement'
 require 'register_sources_bods/register/paginated_array'
@@ -37,15 +39,15 @@ module RegisterSourcesBods
                     {
                       match: {
                         statementID: {
-                          query: statement_id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          ),
+                          query: statement_id
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          )
         ).first&.record
       end
 
@@ -62,31 +64,31 @@ module RegisterSourcesBods
                     {
                       bool: {
                         must: [
-                          { match: { statementID: { query: statement_id } } },
-                        ],
-                      },
+                          { match: { statementID: { query: statement_id } } }
+                        ]
+                      }
                     }
-                  end,
-                },
+                  end
+                }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
       def list_all(query: nil)
         query ||= {
-          bool: {},
+          bool: {}
         }
 
         process_results(
           client.search(
             index:,
             body: {
-              query:,
-            },
-          ),
+              query:
+            }
+          )
         ).map(&:record)
       end
 
@@ -97,22 +99,22 @@ module RegisterSourcesBods
             body: {
               query: {
                 nested: {
-                  path: "identifiers",
+                  path: 'identifiers',
                   query: {
                     bool: {
                       must: [
                         { match: { 'identifiers.id': { query: identifier.id } } },
                         { match: { 'identifiers.scheme': { query: identifier.scheme } } },
                         { match: { 'identifiers.schemeName': { query: identifier.schemeName } } },
-                        { match: { 'identifiers.uri': { query: identifier.uri } } },
-                      ].select { |sel| sel[:match].values.first[:query] },
-                    },
-                  },
-                },
+                        { match: { 'identifiers.uri': { query: identifier.uri } } }
+                      ].select { |sel| sel[:match].values.first[:query] }
+                    }
+                  }
+                }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
@@ -129,23 +131,23 @@ module RegisterSourcesBods
                 bool: {
                   must: {
                     nested: {
-                      path: "identifiers",
+                      path: 'identifiers',
                       query: {
                         bool: {
                           should: [
                             { terms: { 'identifiers.id': identifiers.map(&:id).compact } },
-                            { terms: { 'identifiers.uri': identifiers.map(&:uri).compact } },
-                          ].filter { |a| !a[:terms].values.first.empty? },
-                        },
-                      },
-                    },
+                            { terms: { 'identifiers.uri': identifiers.map(&:uri).compact } }
+                          ].filter { |a| !a[:terms].values.first.empty? }
+                        }
+                      }
+                    }
                   },
-                  must_not: q_must_not,
-                },
+                  must_not: q_must_not
+                }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
@@ -158,19 +160,19 @@ module RegisterSourcesBods
             body: {
               query: {
                 nested: {
-                  path: "source",
+                  path: 'source',
                   query: {
                     bool: {
                       should: [
-                        { terms: { 'source.url': sources.map(&:url).compact } },
-                      ].filter { |a| !a[:terms].values.first.empty? },
-                    },
-                  },
-                },
+                        { terms: { 'source.url': sources.map(&:url).compact } }
+                      ].filter { |a| !a[:terms].values.first.empty? }
+                    }
+                  }
+                }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
@@ -180,32 +182,32 @@ module RegisterSourcesBods
             if subject
               {
                 nested: {
-                  path: "subject",
+                  path: 'subject',
                   query: {
                     bool: {
                       must: [
-                        { match: { 'subject.describedByEntityStatement': { query: statement_id } } },
-                      ],
-                    },
-                  },
-                },
+                        { match: { 'subject.describedByEntityStatement': { query: statement_id } } }
+                      ]
+                    }
+                  }
+                }
               }
             end,
             if interested_party
               {
                 nested: {
-                  path: "interestedParty",
+                  path: 'interestedParty',
                   query: {
                     bool: {
                       should: [
                         { match: { 'interestedParty.describedByEntityStatement': { query: statement_id } } },
-                        { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } },
-                      ],
-                    },
-                  },
-                },
+                        { match: { 'interestedParty.describedByPersonStatement': { query: statement_id } } }
+                      ]
+                    }
+                  }
+                }
               }
-            end,
+            end
           ]
         end.flatten.compact
 
@@ -216,15 +218,16 @@ module RegisterSourcesBods
             index:,
             body: {
               query: {
-                bool: { should: conditions },
+                bool: { should: conditions }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
-      def list_for_subject_or_interested_party(subject_statement_id: nil, interested_party_statement_id: nil, match_both: false)
+      def list_for_subject_or_interested_party(subject_statement_id: nil, interested_party_statement_id: nil,
+                                               match_both: false)
         raise 'must provide at least one' unless subject_statement_id || interested_party_statement_id
 
         conditions = []
@@ -232,32 +235,34 @@ module RegisterSourcesBods
         if subject_statement_id
           conditions << {
             nested: {
-              path: "subject",
+              path: 'subject',
               query: {
                 bool: {
                   must: [
-                    { match: { 'subject.describedByEntityStatement': { query: subject_statement_id } } },
-                  ],
-                },
-              },
-            },
+                    { match: { 'subject.describedByEntityStatement': { query: subject_statement_id } } }
+                  ]
+                }
+              }
+            }
           }
         end
 
         if interested_party_statement_id
+          # rubocop:disable Layout/LineLength
           conditions << {
             nested: {
-              path: "interestedParty",
+              path: 'interestedParty',
               query: {
                 bool: {
                   should: [
                     { match: { 'interestedParty.describedByEntityStatement': { query: interested_party_statement_id } } },
-                    { match: { 'interestedParty.describedByPersonStatement': { query: interested_party_statement_id } } },
-                  ],
-                },
-              },
-            },
+                    { match: { 'interestedParty.describedByPersonStatement': { query: interested_party_statement_id } } }
+                  ]
+                }
+              }
+            }
           }
+          # rubocop:enable Layout/LineLength
         end
 
         process_results(
@@ -265,11 +270,11 @@ module RegisterSourcesBods
             index:,
             body: {
               query: {
-                bool: match_both ? { must: conditions } : { should: conditions },
+                bool: match_both ? { must: conditions } : { should: conditions }
               },
-              size: 10_000,
-            },
-          ),
+              size: 10_000
+            }
+          )
         ).map(&:record)
       end
 
@@ -281,8 +286,8 @@ module RegisterSourcesBods
             index: {
               _index: index,
               _id: calculate_id(record),
-              data: record.to_h,
-            },
+              data: record.to_h
+            }
           }
         end
 
@@ -308,19 +313,19 @@ module RegisterSourcesBods
           body: {
             script: {
               lang: 'painless',
-              source: "ctx._source['metadata.replaced'] = true",
+              source: "ctx._source['metadata.replaced'] = true"
             },
             query: {
               bool: {
                 must: {
-                  terms: { statementID: replaced_ids },
+                  terms: { statementID: replaced_ids }
                 },
                 must_not: {
-                  match: { 'metadata.replaced': true },
-                },
-              },
-            },
-          },
+                  match: { 'metadata.replaced': true }
+                }
+              }
+            }
+          }
         )
       end
 
@@ -344,23 +349,24 @@ module RegisterSourcesBods
               from:,
               size: per_page,
               query:,
-              aggregations: aggs,
-            }.compact,
-          ),
+              aggregations: aggs
+            }.compact
+          )
         )
 
-        Register::PaginatedArray.new(res, current_page: page, records_per_page: per_page, limit_value: nil, total_count: res.total_count, aggs: res.aggs)
+        Register::PaginatedArray.new(res, current_page: page, records_per_page: per_page, limit_value: nil,
+                                          total_count: res.total_count, aggs: res.aggs)
       end
 
       def count(query)
         res = client.count(
           index:,
           body: {
-            query:,
-          }.compact,
+            query:
+          }.compact
         )
 
-        res["count"]
+        res['count']
       end
 
       private
@@ -384,7 +390,7 @@ module RegisterSourcesBods
         SearchResults.new(
           mapped.sort_by(&:score).reverse,
           total_count:,
-          aggs: results['aggregations'],
+          aggs: results['aggregations']
         )
       end
 

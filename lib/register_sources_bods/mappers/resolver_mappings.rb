@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/enums/entity_types'
 require 'register_sources_bods/enums/statement_types'
 require 'register_sources_bods/structs/address'
@@ -13,14 +15,14 @@ require 'active_support/core_ext/string/conversions'
 module RegisterSourcesBods
   module Mappers
     module ResolverMappings
-      LEI_SCHEME                  = 'XI-LEI'.freeze
-      LEI_SCHEME_NAME             = 'Global Legal Entity Identifier Index'.freeze
-      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'.freeze
+      LEI_SCHEME                  = 'XI-LEI'
+      LEI_SCHEME_NAME             = 'Global Legal Entity Identifier Index'
+      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
 
       def addresses
         return [] unless resolver_response&.company
 
-        address = resolver_response.company.registered_address_in_full.presence.try(:gsub, "\n", ", ")
+        address = resolver_response.company.registered_address_in_full.presence.try(:gsub, "\n", ', ')
         return [] if address.blank?
 
         country_code = incorporated_in_jurisdiction&.code
@@ -29,8 +31,8 @@ module RegisterSourcesBods
           RegisterSourcesBods::Address[{
             type: RegisterSourcesBods::AddressTypes['registered'],
             address:,
-            country: country_code,
-          }.compact],
+            country: country_code
+          }.compact]
         ]
       end
 
@@ -40,7 +42,7 @@ module RegisterSourcesBods
           id: add_id.uid,
           scheme: LEI_SCHEME,
           schemeName: LEI_SCHEME_NAME,
-          uri:,
+          uri:
         }]
       end
 
@@ -49,7 +51,7 @@ module RegisterSourcesBods
         RegisterSourcesBods::Identifier[{
           id: uri,
           schemeName: OPEN_CORPORATES_SCHEME_NAME,
-          uri:,
+          uri:
         }]
       end
 

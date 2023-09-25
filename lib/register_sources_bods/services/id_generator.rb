@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/constants/errors'
 require 'register_sources_bods/id_generators/entity_statement'
 require 'register_sources_bods/id_generators/person_statement'
@@ -19,7 +21,7 @@ module RegisterSourcesBods
         @id_generators = {
           StatementTypes['personStatement'] => person_statement_id_generator,
           StatementTypes['entityStatement'] => entity_statement_id_generator,
-          StatementTypes['ownershipOrControlStatement'] => ownership_or_control_statement_id_generator,
+          StatementTypes['ownershipOrControlStatement'] => ownership_or_control_statement_id_generator
         }
       end
 
