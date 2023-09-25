@@ -7,7 +7,7 @@ require 'register_sources_bods/constants/publisher'
 module RegisterSourcesBods
   module Builders
     class OwnershipOrControlStatement < Base
-      def build(record, replaces_ids: [])
+      def build(record, replaces_ids: []) # rubocop:disable Lint/UnusedMethodArgument # FIXME
         statement_id = generate_statement_id(record)
 
         RegisterSourcesBods::OwnershipOrControlStatement[
