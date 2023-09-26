@@ -3,7 +3,7 @@
 require 'register_sources_bods/structs/bods_statement'
 require 'register_sources_bods/services/migrator_lei'
 
-RSpec.describe RegisterSourcesBods::Services::MigratorLEI do # rubocop:disable RSpec/MultipleMemoizedHelpers
+RSpec.describe RegisterSourcesBods::Services::MigratorLEI do
   subject do
     described_class.new(add_id_repository:, publisher:, bods_statement_repository:)
   end
@@ -76,7 +76,7 @@ RSpec.describe RegisterSourcesBods::Services::MigratorLEI do # rubocop:disable R
     [st]
   end
 
-  describe '#migrate' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  describe '#migrate' do
     it 'migrates and publishes statements' do
       expect(add_id_repository).to receive(:each_lei).with(jurisdiction_codes: [], uids: [])
                                                      .and_yield(ex_add_id)

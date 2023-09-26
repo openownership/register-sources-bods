@@ -102,6 +102,7 @@ RSpec/MultipleMemoizedHelpers:
   Exclude:
     - spec/integration/bods_statement_repository_spec.rb
     - spec/unit/services/builder_spec.rb
+    - spec/unit/services/migrator_lei_spec.rb
     - spec/unit/services/publisher_spec.rb
 RSpec/NamedSubject:
   Exclude:
