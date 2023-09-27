@@ -13,8 +13,9 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/openownership/register-sources-bods'
   spec.required_ruby_version = '>= 3.1'
 
-  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
-  spec.metadata['source_code_uri'] = 'https://github.com/openownership/register-sources-bods'
+  spec.metadata['allowed_push_host']     = 'https://rubygems.org'
+  spec.metadata['rubygems_mfa_required'] = 'true'
+  spec.metadata['source_code_uri']       = 'https://github.com/openownership/register-sources-bods'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -34,6 +35,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'elasticsearch', '>= 7.10', '< 8'
   spec.add_dependency 'iso8601'
   spec.add_dependency 'xxhash'
-
-  spec.metadata['rubygems_mfa_required'] = 'true'
 end
