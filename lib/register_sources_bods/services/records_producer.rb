@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/config/settings'
 require 'register_sources_bods/config/adapters'
 require 'register_sources_bods/record_serializer'
@@ -13,13 +15,13 @@ module RegisterSourcesBods
         serializer ||= RecordSerializer.new
 
         @publisher = if stream_name
-          RegisterCommon::Services::Publisher.new(
-            stream_name:,
-            kinesis_adapter:,
-            buffer_size:,
-            serializer:,
-          )
-        end
+                       RegisterCommon::Services::Publisher.new(
+                         stream_name:,
+                         kinesis_adapter:,
+                         buffer_size:,
+                         serializer:
+                       )
+                     end
       end
 
       def produce(records)

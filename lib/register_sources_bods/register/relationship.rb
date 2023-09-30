@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'provenance'
 
 module RegisterSourcesBods
@@ -20,12 +22,12 @@ module RegisterSourcesBods
         [bods_statement]
       end
 
-      def [](k)
-        @tmp[k]
+      def [](key)
+        @tmp[key]
       end
 
-      def []=(k, v)
-        @tmp[k] = v
+      def []=(key, val)
+        @tmp[key] = val
       end
 
       def _id
@@ -50,12 +52,14 @@ module RegisterSourcesBods
         bods_statement.interests
       end
 
+      # rubocop:disable Naming/PredicateName
       def is_indirect
         false
       end
+      # rubocop:enable Naming/PredicateName
 
       def unknown?
-        bods_statement.statementID.split('-').last == "unknown"
+        bods_statement.statementID.split('-').last == 'unknown'
       end
 
       def keys_for_uniq_grouping

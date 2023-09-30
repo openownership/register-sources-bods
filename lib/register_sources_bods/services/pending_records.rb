@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/repositories/bods_statement_repository'
 require 'register_sources_bods/services/builder'
 
 module RegisterSourcesBods
   module Services
     class PendingRecords
-      REGISTER_SCHEME_NAME = 'OpenOwnership Register'.freeze
+      REGISTER_SCHEME_NAME = 'OpenOwnership Register'
 
       PreprocessedRecord = Struct.new(:uid, :record, :identifiers, :source)
 
       def initialize(repository: nil, builder: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
         )
         @builder = builder || Services::Builder.new
       end
@@ -23,7 +25,7 @@ module RegisterSourcesBods
 
         process(preprocessed).map do |register_identifier, h|
           build(register_identifier, h[:pending], h[:existing]).merge(
-            uids: h[:uids],
+            uids: h[:uids]
           )
         end.flatten
       end
@@ -46,14 +48,19 @@ module RegisterSourcesBods
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def process(pending_records)
         # fetch records for identifiers
         all_identifiers = pending_records.map(&:identifiers).flatten.uniq
-        records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers).filter { |r| r.respond_to?(:identifiers) }
+        records_for_all_identifiers = repository.list_matching_at_least_one_identifier(all_identifiers).filter do |r|
+          r.respond_to?(:identifiers)
+        end
 
         # fetch records for sources
         all_sources = pending_records.map(&:source).compact.uniq
-        records_for_all_sources = repository.list_matching_at_least_one_source(all_sources).filter { |r| r.respond_to?(:identifiers) }
+        records_for_all_sources = repository.list_matching_at_least_one_source(all_sources).filter do |r|
+          r.respond_to?(:identifiers)
+        end
 
         # put discovered records into groups using register id
         groups = {}
@@ -75,7 +82,10 @@ module RegisterSourcesBods
               next unless rec.statementType == pending_record.record.statementType
 
               !(rec.identifiers & pending_record.record.identifiers).empty? || ( # rubocop:disable Style/ArrayIntersect
-                pending_record.source && rec.source && pending_record.source.url && (rec.source.url == pending_record.source.url)
+                pending_record.source &&
+                rec.source &&
+                pending_record.source.url &&
+                (rec.source.url == pending_record.source.url)
               )
             end
             if sim_rec
@@ -98,11 +108,15 @@ module RegisterSourcesBods
 
         groups
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def build(register_identifier, pending, existing)
         # Calculate which of the statements are the latest (ie have never been replaced)
         replaced_statement_ids = Set.new(existing.map(&:replacesStatements).flatten.compact)
-        unreplaced_statements = existing.reject { |statement| replaced_statement_ids.include? statement.statementID }.uniq
+        unreplaced_statements = existing.reject do |statement|
+          replaced_statement_ids.include? statement.statementID
+        end.uniq
         seen_statement_ids = Set.new(existing.map(&:statementID))
 
         new_records = pending.map do |pending_record|
@@ -130,13 +144,14 @@ module RegisterSourcesBods
 
         { new_records:, unreplaced_statements: }
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def select_register_identifiers(identifiers)
         identifiers.filter { |identifier| identifier.schemeName == REGISTER_SCHEME_NAME }
       end
 
       def find_register_identifier(identifiers)
-        select_register_identifiers(identifiers).min
+        select_register_identifiers(identifiers).min_by(&:id)
       end
     end
   end

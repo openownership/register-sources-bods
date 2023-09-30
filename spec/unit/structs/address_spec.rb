@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/address'
 
 RSpec.describe RegisterSourcesBods::Address do
@@ -9,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Address do
         type: 'residence',
         address: '123 House',
         postCode: 'ABC 123',
-        country: 'United Kingdom',
+        country: 'United Kingdom'
       }
     end
 
@@ -24,7 +26,7 @@ RSpec.describe RegisterSourcesBods::Address do
         type: 'invalid',
         address: '123 House',
         postCode: 'ABC 123',
-        country: 'United Kingdom',
+        country: 'United Kingdom'
       }
     end
 

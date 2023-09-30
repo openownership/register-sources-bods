@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/replaces_statements'
 
 RSpec.describe RegisterSourcesBods::ReplacesStatements do
@@ -6,7 +8,7 @@ RSpec.describe RegisterSourcesBods::ReplacesStatements do
   context 'when params are valid' do
     let(:params) do
       {
-        value: '',
+        value: ''
       }
     end
 

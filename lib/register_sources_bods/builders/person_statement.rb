@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/builders/base'
 require 'register_sources_bods/structs/person_statement'
 require 'register_sources_bods/constants/identifiers'
@@ -12,9 +14,7 @@ module RegisterSourcesBods
         identifiers = record.identifiers.to_a
 
         register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
-        unless register_identifier
-          identifiers << register_identifier(statement_id)
-        end
+        identifiers << register_identifier(statement_id) unless register_identifier
 
         identifiers = identifiers.sort_by { |i| i.schemeName || i.scheme }
 
@@ -30,8 +30,8 @@ module RegisterSourcesBods
               publicationDate: publication_date,
               bodsVersion: RegisterSourcesBods::BODS_VERSION,
               license: RegisterSourcesBods::BODS_LICENSE,
-              publisher: RegisterSourcesBods::PUBLISHER,
-            ),
+              publisher: RegisterSourcesBods::PUBLISHER
+            )
           ).compact
         ]
       end
@@ -42,7 +42,7 @@ module RegisterSourcesBods
         RegisterSourcesBods::Identifier.new(
           id: url,
           schemeName: REGISTER_SCHEME_NAME,
-          uri: url,
+          uri: url
         )
       end
     end
