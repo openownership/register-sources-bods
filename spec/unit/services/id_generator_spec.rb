@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/services/id_generator'
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/person_statement'
@@ -8,7 +10,7 @@ RSpec.describe RegisterSourcesBods::Services::IdGenerator do
     described_class.new(
       entity_statement_id_generator:,
       person_statement_id_generator:,
-      ownership_or_control_statement_id_generator:,
+      ownership_or_control_statement_id_generator:
     )
   end
 

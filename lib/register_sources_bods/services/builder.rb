@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/constants/errors'
 require 'register_sources_bods/builders/entity_statement'
 require 'register_sources_bods/builders/person_statement'
@@ -22,7 +24,7 @@ module RegisterSourcesBods
         @builders = {
           StatementTypes['personStatement'] => person_statement_builder,
           StatementTypes['entityStatement'] => entity_statement_builder,
-          StatementTypes['ownershipOrControlStatement'] => ownership_or_control_statement_builder,
+          StatementTypes['ownershipOrControlStatement'] => ownership_or_control_statement_builder
         }
       end
 

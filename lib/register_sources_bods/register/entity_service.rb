@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ostruct'
 require 'register_sources_bods/enums/statement_types'
 require 'register_sources_bods/register/statement_loader'
@@ -13,6 +15,7 @@ module RegisterSourcesBods
         @statement_repository = statement_repository
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def search(search_params, exclude_identifiers: [], page: 1, per_page: 10)
         query = entity_query_builder.build_query(search_params, exclude_identifiers:)
         aggs = entity_query_builder.aggregations
@@ -26,12 +29,20 @@ module RegisterSourcesBods
 
         # new_results = identifiers.map do |identifier|
         new_results = statement_ids.map do |statement_id|
-          result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
+          result.entities[statement_id]&.master_entity ||
+            result.entities[statement_id] ||
+            result.relationships[statement_id]
           # result.entities.values.find { |e| e.identifiers & identifier }
         end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
 
-        Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)
+        Register::PaginatedArray.new(new_results,
+                                     current_page: statements.current_page,
+                                     records_per_page: statements.records_per_page,
+                                     limit_value: nil,
+                                     total_count: statements.total_count,
+                                     aggs: statements.aggs)
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def fallback_search(search_params, exclude_identifiers: [], page: 1, per_page: 10)
         query = entity_query_builder.build_fallback_query(search_params, exclude_identifiers:)
@@ -44,10 +55,17 @@ module RegisterSourcesBods
         result = statement_loader.load_statements(statement_ids, max_levels: 1)
 
         new_results = statement_ids.map do |statement_id|
-          result.entities[statement_id]&.master_entity || result.entities[statement_id] || result.relationships[statement_id]
+          result.entities[statement_id]&.master_entity ||
+            result.entities[statement_id] ||
+            result.relationships[statement_id]
         end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
 
-        Register::PaginatedArray.new(new_results, current_page: statements.current_page, records_per_page: statements.records_per_page, limit_value: nil, total_count: statements.total_count, aggs: statements.aggs)
+        Register::PaginatedArray.new(new_results,
+                                     current_page: statements.current_page,
+                                     records_per_page: statements.records_per_page,
+                                     limit_value: nil,
+                                     total_count: statements.total_count,
+                                     aggs: statements.aggs)
       end
 
       def count_legal_entities
@@ -84,8 +102,8 @@ module RegisterSourcesBods
           resolved_uri = uri.split('-unknown').first
           RegisterSourcesBods::Identifier[{
             id: resolved_uri,
-            schemeName: "OpenOwnership Register",
-            uri: resolved_uri,
+            schemeName: 'OpenOwnership Register',
+            uri: resolved_uri
           }]
         end
 
@@ -98,7 +116,7 @@ module RegisterSourcesBods
         statement_ids.map do |statement_id|
           [
             (result.entities[statement_id] || result.relationships[statement_id]),
-            (result.entities["#{statement_id}-unknown"] || result.relationships["#{statement_id}-unknown"]),
+            (result.entities["#{statement_id}-unknown"] || result.relationships["#{statement_id}-unknown"])
           ]
         end.flatten.compact
       end

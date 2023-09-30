@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/publication_details'
 
 RSpec.describe RegisterSourcesBods::PublicationDetails do
@@ -11,8 +13,8 @@ RSpec.describe RegisterSourcesBods::PublicationDetails do
         license: '',
         publisher: {
           name: '',
-          url: '',
-        },
+          url: ''
+        }
       }
     end
 

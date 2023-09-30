@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/identifier'
 
 RSpec.describe RegisterSourcesBods::Identifier do
@@ -9,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Identifier do
         id: '',
         scheme: '',
         schemeName: '',
-        uri: '',
+        uri: ''
       }
     end
 

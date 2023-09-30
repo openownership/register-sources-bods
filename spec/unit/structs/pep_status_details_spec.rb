@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/pep_status_details'
 
 RSpec.describe RegisterSourcesBods::PepStatusDetails do
@@ -16,8 +18,8 @@ RSpec.describe RegisterSourcesBods::PepStatusDetails do
           description: '',
           url: '',
           retrievedAt: '',
-          assertedBy: nil,
-        },
+          assertedBy: nil
+        }
       }
     end
 

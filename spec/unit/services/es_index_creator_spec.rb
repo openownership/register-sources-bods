@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/services/es_index_creator'
 
 RSpec.describe RegisterSourcesBods::Services::EsIndexCreator do
@@ -9,7 +11,7 @@ RSpec.describe RegisterSourcesBods::Services::EsIndexCreator do
   describe '#create_es_index' do
     it 'calls client' do
       expect(client.indices).to receive(:create).with a_hash_including(
-        index:,
+        index:
       )
 
       subject.create_es_index

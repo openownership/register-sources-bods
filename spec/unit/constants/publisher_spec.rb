@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/constants/publisher'
 
 RSpec.describe RegisterSourcesBods do

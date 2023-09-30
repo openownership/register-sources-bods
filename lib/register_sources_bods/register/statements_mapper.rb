@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ostruct'
 require 'register_sources_bods/structs/bods_statement'
 require 'register_sources_bods/register/entity'
@@ -12,7 +14,7 @@ module RegisterSourcesBods
         @unknown_person_builder = unknown_person_builder || UnknownPersonBuilder.new
       end
 
-      # rubocop:disable Style/CombinableLoops
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Style/CombinableLoops
       def map_statements(bods_statements)
         entities, relationships = split_statements_into_entities_and_relationships(bods_statements)
 
@@ -27,7 +29,7 @@ module RegisterSourcesBods
         # compute master entities
         master_statement_ids = {}
         entities.each_value do |entity|
-          register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
+          register_identifier = entity.identifiers.find { |ident| ident.schemeName == 'OpenOwnership Register' }
 
           next unless register_identifier&.uri
 
@@ -37,7 +39,7 @@ module RegisterSourcesBods
         end
 
         entities.each_value do |entity|
-          register_identifier = entity.identifiers.find { |ident| ident.schemeName == "OpenOwnership Register" }
+          register_identifier = entity.identifiers.find { |ident| ident.schemeName == 'OpenOwnership Register' }
 
           next unless register_identifier&.uri
 
@@ -59,7 +61,8 @@ module RegisterSourcesBods
 
           subject_statement_id = bods_statement.subject&.describedByEntityStatement
           interested_party = bods_statement.interestedParty
-          interested_party_statement_id = interested_party&.describedByEntityStatement || interested_party&.describedByPersonStatement
+          interested_party_statement_id = interested_party&.describedByEntityStatement ||
+                                          interested_party&.describedByPersonStatement
 
           source = interested_party_statement_id && entities[interested_party_statement_id]
           if source
@@ -99,9 +102,9 @@ module RegisterSourcesBods
         end
 
         entities = entities.filter { |_, entity| !entity.master_entity }.merge(unknown_entities)
-        OpenStruct.new(entities:, relationships:)
+        OpenStruct.new(entities:, relationships:) # rubocop:disable Style/OpenStructUse
       end
-      # rubocop:enable Style/CombinableLoops
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Style/CombinableLoops
 
       private
 
@@ -114,9 +117,7 @@ module RegisterSourcesBods
         # map initial register statements
         bods_statements.each_value do |bods_statement|
           case bods_statement.statementType
-          when StatementTypes['personStatement']
-            entities[bods_statement.statementID] = Register::Entity.new(bods_statement)
-          when StatementTypes['entityStatement']
+          when StatementTypes['entityStatement'], StatementTypes['personStatement']
             entities[bods_statement.statementID] = Register::Entity.new(bods_statement)
           when StatementTypes['ownershipOrControlStatement']
             relationships[bods_statement.statementID] = Register::Relationship.new(bods_statement)

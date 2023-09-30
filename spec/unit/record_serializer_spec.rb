@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'register_sources_bods/record_serializer'
 require 'register_sources_bods/structs/bods_statement'
@@ -11,7 +13,7 @@ RSpec.describe RegisterSourcesBods::RecordSerializer do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/person_statement.json'),
-            symbolize_names: true,
+            symbolize_names: true
           )
         ]
       end
@@ -28,7 +30,7 @@ RSpec.describe RegisterSourcesBods::RecordSerializer do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/entity_statement.json'),
-            symbolize_names: true,
+            symbolize_names: true
           )
         ]
       end
@@ -45,7 +47,7 @@ RSpec.describe RegisterSourcesBods::RecordSerializer do
         RegisterSourcesBods::BodsStatement[
           JSON.parse(
             File.read('spec/fixtures/ownership_or_control_statement.json'),
-            symbolize_names: true,
+            symbolize_names: true
           )
         ]
       end

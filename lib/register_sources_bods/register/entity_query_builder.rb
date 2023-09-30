@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RegisterSourcesBods
   module Register
     class EntityQueryBuilder
@@ -7,9 +9,9 @@ module RegisterSourcesBods
         {
           bool: {
             filter: [
-              build_term_query(:statementType, statement_type),
-            ].compact,
-          },
+              build_term_query(:statementType, statement_type)
+            ].compact
+          }
         }
       end
 
@@ -24,15 +26,15 @@ module RegisterSourcesBods
               else
                 {
                   nested: {
-                    path: "identifiers",
+                    path: 'identifiers',
                     query: {
                       bool: {
                         must_not: exclude_identifiers.uniq.map do |exclude_identifier|
                           { match: { 'identifiers.id': { query: exclude_identifier.id } } }
-                        end,
-                      },
-                    },
-                  },
+                        end
+                      }
+                    }
+                  }
                 }
               end,
               {
@@ -42,13 +44,13 @@ module RegisterSourcesBods
                       match_phrase: {
                         name: {
                           query:,
-                          slop: 50,
-                        },
-                      },
+                          slop: 50
+                        }
+                      }
                     },
                     {
                       nested: {
-                        path: "names",
+                        path: 'names',
                         query: {
                           bool: {
                             must: [
@@ -56,41 +58,41 @@ module RegisterSourcesBods
                                 match_phrase: {
                                   'names.fullName': {
                                     query:,
-                                    slop: 50,
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
+                                    slop: 50
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
                     },
                     {
                       nested: {
-                        path: "identifiers",
+                        path: 'identifiers',
                         query: {
                           bool: {
                             must: [
                               {
                                 term: {
-                                  'identifiers.id': query,
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
-                    },
+                                  'identifiers.id': query
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
                   ],
                   minimum_should_match: 1,
                   filter: build_filters(search_params),
                   must_not: {
-                    match: { 'metadata.replaced': true },
-                  },
-                },
-              },
-            ].compact,
-          },
+                    match: { 'metadata.replaced': true }
+                  }
+                }
+              }
+            ].compact
+          }
         }
       end
 
@@ -105,15 +107,15 @@ module RegisterSourcesBods
               else
                 {
                   nested: {
-                    path: "identifiers",
+                    path: 'identifiers',
                     query: {
                       bool: {
                         must_not: exclude_identifiers.uniq.map do |exclude_identifier|
                           { match: { 'identifiers.id': { query: exclude_identifier.id } } }
-                        end,
-                      },
-                    },
-                  },
+                        end
+                      }
+                    }
+                  }
                 }
               end,
               {
@@ -122,54 +124,54 @@ module RegisterSourcesBods
                     {
                       match_phrase: {
                         name: {
-                          query:,
-                        },
-                      },
+                          query:
+                        }
+                      }
                     },
                     {
                       nested: {
-                        path: "names",
+                        path: 'names',
                         query: {
                           bool: {
                             must: [
                               {
                                 match_phrase: {
                                   'names.fullName': {
-                                    query:,
-                                  },
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
+                                    query:
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
                     },
                     {
                       nested: {
-                        path: "identifiers",
+                        path: 'identifiers',
                         query: {
                           bool: {
                             must: [
                               {
                                 term: {
-                                  'identifiers.id': query,
-                                },
-                              },
-                            ],
-                          },
-                        },
-                      },
-                    },
+                                  'identifiers.id': query
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
                   ],
                   minimum_should_match: 1,
                   filter: build_filters(search_params),
                   must_not: {
-                    match: { 'metadata.replaced': true },
-                  },
-                },
-              },
-            ].compact,
-          },
+                    match: { 'metadata.replaced': true }
+                  }
+                }
+              }
+            ].compact
+          }
         }
       end
 
@@ -177,9 +179,9 @@ module RegisterSourcesBods
         {
           type: {
             terms: {
-              field: :statementType,
-            },
-          },
+              field: :statementType
+            }
+          }
           # country: {
           #    terms: {
           #        field: :country_code,
@@ -190,7 +192,7 @@ module RegisterSourcesBods
 
       def build_filters(search_params)
         [
-          build_term_query(:statementType, search_params[:type]),
+          build_term_query(:statementType, search_params[:type])
           # build_term_query(:country_code, search_params[:country])
         ].compact
       end
@@ -200,8 +202,8 @@ module RegisterSourcesBods
 
         {
           term: {
-            key => value,
-          },
+            key => value
+          }
         }
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/country'
 
 RSpec.describe RegisterSourcesBods::Country do
@@ -7,7 +9,7 @@ RSpec.describe RegisterSourcesBods::Country do
     let(:params) do
       {
         name: '',
-        code: '',
+        code: ''
       }
     end
 

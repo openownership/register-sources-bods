@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/register/statements_mapper'
 
 module RegisterSourcesBods
@@ -26,24 +28,38 @@ module RegisterSourcesBods
 
       attr_reader :statement_repository, :statements_mapper
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def load_statements_children(statements, max_levels:)
         new_statements = statements
 
         level = 0
         while !new_statements.empty? && (level <= max_levels)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: false, subject: true).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
+          new_statements = load_associated_statements(new_statements.keys, interested_party: false,
+                                                                           subject: true).to_h do |r|
+                             [r.statementID, r]
+                           end.reject do |k, _v|
+            statements.key? k
+          end
 
           next_statement_ids = new_statements.keys
 
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
-          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
-          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:interestedParty) }.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
+          next_statement_ids += statements.values.select do |s|
+            s.respond_to?(:interestedParty)
+          end.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += statements.values.select do |s|
+            s.respond_to?(:interestedParty)
+          end.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
+          next_statement_ids += new_statements.values.select do |s|
+            s.respond_to?(:interestedParty)
+          end.map(&:interestedParty).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += new_statements.values.select do |s|
+            s.respond_to?(:interestedParty)
+          end.map(&:interestedParty).compact.map(&:describedByPersonStatement).compact
 
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
           new_statements = new_statements.merge(
-            fetch_with_duplicates(next_statement_ids),
+            fetch_with_duplicates(next_statement_ids)
           ).reject { |k, _v| statements.key? k }
 
           statements = statements.merge(new_statements)
@@ -52,23 +68,34 @@ module RegisterSourcesBods
 
         statements
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def load_statements_parents(statements, max_levels:)
         new_statements = statements
 
         level = 0
         while !new_statements.empty? && (level <= max_levels)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: true, subject: false).to_h { |r| [r.statementID, r] }.reject { |k, _v| statements.key? k }
+          new_statements = load_associated_statements(new_statements.keys, interested_party: true,
+                                                                           subject: false).to_h do |r|
+                             [r.statementID, r]
+                           end.reject do |k, _v|
+            statements.key? k
+          end
 
           next_statement_ids = new_statements.keys
 
-          next_statement_ids += statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
-          next_statement_ids += new_statements.values.select { |s| s.respond_to?(:subject) }.map(&:subject).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += statements.values.select do |s|
+            s.respond_to?(:subject)
+          end.map(&:subject).compact.map(&:describedByEntityStatement).compact
+          next_statement_ids += new_statements.values.select do |s|
+            s.respond_to?(:subject)
+          end.map(&:subject).compact.map(&:describedByEntityStatement).compact
 
           next_statement_ids = next_statement_ids.uniq - statements.keys
 
           new_statements = new_statements.merge(
-            fetch_with_duplicates(next_statement_ids),
+            fetch_with_duplicates(next_statement_ids)
           ).reject { |k, _v| statements.key? k }
 
           statements = statements.merge(new_statements)
@@ -77,6 +104,7 @@ module RegisterSourcesBods
 
         statements
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def load_by_ids(statement_ids)
         statement_repository.get_bulk(statement_ids)
@@ -106,14 +134,14 @@ module RegisterSourcesBods
             next unless statement.respond_to?(:identifiers)
 
             statement.identifiers.find do |identifier|
-              identifier.schemeName == "OpenOwnership Register"
+              identifier.schemeName == 'OpenOwnership Register'
             end
           end.compact
 
           statements += statement_repository.list_matching_at_least_one_identifier(identifiers)
 
           results.merge!(
-            statements.to_h { |statement| [statement.statementID, statement] },
+            statements.to_h { |statement| [statement.statementID, statement] }
           )
         end
 

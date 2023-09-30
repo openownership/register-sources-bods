@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/enums/name_types'
 
 RSpec.describe RegisterSourcesBods::NameTypes do
