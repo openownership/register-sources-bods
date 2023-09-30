@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/interest'
 
 RSpec.describe RegisterSourcesBods::Interest do
@@ -15,10 +17,10 @@ RSpec.describe RegisterSourcesBods::Interest do
           maximum: 60.2,
           minimum: 29.5,
           exclusiveMinimum: false,
-          exclusiveMaximum: false,
+          exclusiveMaximum: false
         },
         startDate: '2022-03-01',
-        endDate: '2022-05-09',
+        endDate: '2022-05-09'
       }
     end
 

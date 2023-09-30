@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/source'
 
 RSpec.describe RegisterSourcesBods::Source do
@@ -10,7 +12,7 @@ RSpec.describe RegisterSourcesBods::Source do
         description: '',
         url: '',
         retrievedAt: '',
-        assertedBy: nil,
+        assertedBy: nil
       }
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/types'
 
 module RegisterSourcesBods
@@ -7,6 +9,6 @@ module RegisterSourcesBods
     'transliteration',
     'former',
     'alternative',
-    'birth',
+    'birth'
   )
 end

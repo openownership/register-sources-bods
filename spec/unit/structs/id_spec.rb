@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/id'
 
 RSpec.describe RegisterSourcesBods::Id do
@@ -6,7 +8,7 @@ RSpec.describe RegisterSourcesBods::Id do
   context 'when params are valid' do
     let(:params) do
       {
-        id: '',
+        id: ''
       }
     end
 

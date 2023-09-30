@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 require 'register_sources_bods/structs/bods_statement'
@@ -14,13 +16,13 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
     let(:params) do
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true,
+        symbolize_names: true
       ).compact
     end
 
     describe '#address' do
       it 'returns address' do
-        expect(subject.address).to eq "free address field"
+        expect(subject.address).to eq 'free address field'
       end
     end
 
@@ -44,7 +46,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#country' do
       it 'returns true' do
-        expect(subject.country).to eq ISO3166::Country["FR"]
+        expect(subject.country).to eq ISO3166::Country['FR']
       end
     end
 
@@ -56,7 +58,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#country_of_residence' do
       it 'returns country_of_residence' do
-        expect(subject.country_of_residence).to eq ISO3166::Country["FR"]
+        expect(subject.country_of_residence).to eq ISO3166::Country['FR']
       end
     end
 
@@ -68,21 +70,21 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#dob' do
       it 'returns dob' do
-        expect(subject.dob).to eq ISO8601::Date.new("1990-05-03")
+        expect(subject.dob).to eq ISO8601::Date.new('1990-05-03')
       end
     end
 
     describe '#id' do
       it 'returns id' do
-        expect(subject.id).to eq "ps1"
+        expect(subject.id).to eq 'ps1'
       end
     end
 
     describe '#identifiers' do
       it 'returns identifiers' do
         expect(subject.identifiers).to eq [
-          RegisterSourcesBods::Identifier[{ id: "id2", scheme: "scheme", schemeName: "schemeName" }],
-          RegisterSourcesBods::Identifier[{ id: "another-id2", scheme: "scheme2", schemeName: "schemeName2" }],
+          RegisterSourcesBods::Identifier[{ id: 'id2', scheme: 'scheme', schemeName: 'schemeName' }],
+          RegisterSourcesBods::Identifier[{ id: 'another-id2', scheme: 'scheme2', schemeName: 'schemeName2' }]
         ]
       end
     end
@@ -131,7 +133,7 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
 
     describe '#type' do
       it 'returns type' do
-        expect(subject.type).to eq "personStatement"
+        expect(subject.type).to eq 'personStatement'
       end
     end
 

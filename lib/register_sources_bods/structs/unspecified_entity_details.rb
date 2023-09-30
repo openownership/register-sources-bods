@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/types'
 require 'register_sources_bods/enums/unspecified_reasons'
 

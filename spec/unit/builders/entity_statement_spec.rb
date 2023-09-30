@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/builders/entity_statement'
 
 RSpec.describe RegisterSourcesBods::Builders::EntityStatement do
@@ -10,16 +12,18 @@ RSpec.describe RegisterSourcesBods::Builders::EntityStatement do
       RegisterSourcesBods::EntityStatement[
         **JSON.parse(
           File.read('spec/fixtures/entity_statement.json'),
-          symbolize_names: true,
+          symbolize_names: true
         ).compact
       ]
     end
 
     let(:statement_id) { '12345' }
 
+    # rubocop:disable RSpec/ExpectInHook
     before do
       expect(id_generator).to receive(:generate_id).with(record).and_return statement_id
     end
+    # rubocop:enable RSpec/ExpectInHook
 
     context 'when record does not already exist' do
       let(:replaces_ids) { [] }

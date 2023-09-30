@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/person_statement'
 require 'register_sources_bods/structs/ownership_or_control_statement'
@@ -15,7 +17,7 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
     RegisterSourcesBods::BodsStatement[
       JSON.parse(
         File.read('spec/fixtures/person_statement.json'),
-        symbolize_names: true,
+        symbolize_names: true
       ).compact
     ]
   end
@@ -45,8 +47,8 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
           {
             new_records: [statement],
             uids: [:uid],
-            unreplaced_statements: [statement],
-          },
+            unreplaced_statements: [statement]
+          }
         ]
       end
     end

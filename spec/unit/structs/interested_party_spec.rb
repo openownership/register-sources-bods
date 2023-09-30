@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/interested_party'
 
 RSpec.describe RegisterSourcesBods::InterestedParty do
@@ -10,8 +12,8 @@ RSpec.describe RegisterSourcesBods::InterestedParty do
         describedByPersonStatement: '',
         unspecified: {
           description: 'some description',
-          reason: 'no-beneficial-owners',
-        },
+          reason: 'no-beneficial-owners'
+        }
       }
     end
 
@@ -24,8 +26,8 @@ RSpec.describe RegisterSourcesBods::InterestedParty do
     let(:params) do
       {
         unspecified: {
-          reason: 'invalid',
-        },
+          reason: 'invalid'
+        }
       }
     end
 

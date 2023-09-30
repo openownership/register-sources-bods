@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/services/builder'
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/person_statement'
@@ -8,7 +10,7 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
     described_class.new(
       entity_statement_builder:,
       person_statement_builder:,
-      ownership_or_control_statement_builder:,
+      ownership_or_control_statement_builder:
     )
   end
 
@@ -54,7 +56,9 @@ RSpec.describe RegisterSourcesBods::Services::Builder do
       let(:statement_type) { 'invalid' }
 
       it 'raises an error' do
-        expect { subject.build(statement, replaces_ids:) }.to raise_error RegisterSourcesBods::Errors::UnknownRecordKindError
+        expect do
+          subject.build(statement, replaces_ids:)
+        end.to raise_error RegisterSourcesBods::Errors::UnknownRecordKindError
       end
     end
   end

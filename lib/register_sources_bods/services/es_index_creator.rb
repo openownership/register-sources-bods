@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/config/elasticsearch'
 
 module RegisterSourcesBods
@@ -16,455 +18,455 @@ module RegisterSourcesBods
           mappings: {
             properties: {
               addresses: { # Array[Address]
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   address: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   postCode: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   country: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               alternateNames: {
-                type: "text",
+                type: 'text',
                 fields: {
                   raw: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               annotations: { # Types.Array(Annotation)
-                type: "nested",
+                type: 'nested',
                 properties: {
                   statementPointerTarget: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   creationDate: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   createdBy: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   motivation: {
-                    type: "keyword", # AnnotationMotivations
+                    type: 'keyword' # AnnotationMotivations
                   },
                   description: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   transformedContent: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   url: {
-                    type: "keyword", # Types::String.optional
-                  },
-                },
+                    type: 'keyword' # Types::String.optional
+                  }
+                }
               },
               birthDate: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               componentStatementIDs: {
-                type: "keyword", # Types.Array(Types::String).optional
+                type: 'keyword' # Types.Array(Types::String).optional
               },
               deathDate: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               dissolutionDate: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               entityType: {
-                type: "keyword", # EntityTypes
+                type: 'keyword' # EntityTypes
               },
               foundingDate: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               hasPepStatus: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               identifiers: { # Types.Array(Identifier).optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   id: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   scheme: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   schemeName: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   uri: {
-                    type: "keyword", # Types::String.optional
-                  },
-                },
+                    type: 'keyword' # Types::String.optional
+                  }
+                }
               },
               incorporatedInJurisdiction: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   name: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   code: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               interestedParty: { # InterestedParty.optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   describedByEntityStatement: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   describedByPersonStatement: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   unspecified: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       reason: {
-                        type: "keyword", # UnspecifiedReasons
+                        type: 'keyword' # UnspecifiedReasons
                       },
                       description: {
-                        type: "keyword", # Types::String.optional
-                      },
-                    },
-                  },
-                },
+                        type: 'keyword' # Types::String.optional
+                      }
+                    }
+                  }
+                }
               },
               interests: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   interestLevel: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   beneficialOwnershipOrControl: {
-                    type: "boolean",
+                    type: 'boolean'
                   },
                   details: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   share: {
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       exact: {
-                        type: "float",
+                        type: 'float'
                       },
                       maximum: {
-                        type: "float",
+                        type: 'float'
                       },
                       minimum: {
-                        type: "float",
+                        type: 'float'
                       },
                       exclusiveMinimum: {
-                        type: "boolean",
+                        type: 'boolean'
                       },
                       exclusiveMaximum: {
-                        type: "boolean",
-                      },
-                    },
+                        type: 'boolean'
+                      }
+                    }
                   },
                   startDate: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   endDate: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               isComponent: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               metadata: {
                 properties: {
                   replaced: {
-                    type: "boolean",
-                  },
-                },
+                    type: 'boolean'
+                  }
+                }
               },
               name: {
-                type: "text",
+                type: 'text',
                 fields: {
                   raw: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               names: { # Array[Name]
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword", # NameTypes
+                    type: 'keyword' # NameTypes
                   },
                   fullName: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   familyName: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   givenName: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   patronymicName: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
-                  },
-                },
+                        type: 'keyword'
+                      }
+                    }
+                  }
+                }
               },
               nationalities: { # Array[Country]
-                type: "nested",
+                type: 'nested',
                 properties: {
                   name: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   code: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               pepStatusDetails: { # PepStatusDetails.optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   reason: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   missingInfoReason: {
-                    type: "keyword", # UnspecifiedReasons
+                    type: 'keyword' # UnspecifiedReasons
                   },
                   jurisdiction: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   startDate: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   endDate: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   source: { # Source.optional
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       type: {
-                        type: "keyword", # SourceTypes
+                        type: 'keyword' # SourceTypes
                       },
                       description: {
-                        type: "keyword", # Types::String.optional
+                        type: 'keyword' # Types::String.optional
                       },
                       url: {
-                        type: "keyword", # Types::String.optional
+                        type: 'keyword' # Types::String.optional
                       },
                       retrievedAt: {
-                        type: "keyword", # Types::String.optional
+                        type: 'keyword' # Types::String.optional
                       },
                       assertedBy: { # Agent.optional
-                        type: "nested",
+                        type: 'nested',
                         properties: {
                           name: {
-                            type: "keyword", # Types::String.optional
+                            type: 'keyword' # Types::String.optional
                           },
                           url: {
-                            type: "keyword", # Types::String.optional
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
+                            type: 'keyword' # Types::String.optional
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               },
               personType: {
-                type: "keyword", # PersonTypes
+                type: 'keyword' # PersonTypes
               },
               placeOfBirth: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   address: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   postCode: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   country: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               placeOfResidence: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   address: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                       raw: {
-                        type: "keyword",
-                      },
-                    },
+                        type: 'keyword'
+                      }
+                    }
                   },
                   postCode: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   country: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               publicationDetails: { # PublicationDetails.optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   publicationDate: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   bodsVersion: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   license: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   publisher: { # Publisher
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       name: {
-                        type: "keyword", # Types::String.optional
+                        type: 'keyword' # Types::String.optional
                       },
                       url: {
-                        type: "keyword", # Types::String.optional
-                      },
-                    },
-                  },
-                },
+                        type: 'keyword' # Types::String.optional
+                      }
+                    }
+                  }
+                }
               },
               replacesStatements: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               source: { # Source.optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   type: {
-                    type: "keyword", # SourceTypes
+                    type: 'keyword' # SourceTypes
                   },
                   description: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   url: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   retrievedAt: {
-                    type: "keyword", # Types::String.optional
+                    type: 'keyword' # Types::String.optional
                   },
                   assertedBy: { # Agent.optional
-                    type: "nested",
+                    type: 'nested',
                     properties: {
                       name: {
-                        type: "keyword", # Types::String.optional
+                        type: 'keyword' # Types::String.optional
                       },
                       url: {
-                        type: "keyword", # Types::String.optional
-                      },
-                    },
-                  },
-                },
+                        type: 'keyword' # Types::String.optional
+                      }
+                    }
+                  }
+                }
               },
               statementID: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               statementType: {
-                type: "keyword", # StatementTypes
+                type: 'keyword' # StatementTypes
               },
               statementDate: {
-                type: "keyword", # Types::String.optional
+                type: 'keyword' # Types::String.optional
               },
               subject: { # Subject.optional
-                type: "nested",
+                type: 'nested',
                 properties: {
                   describedByEntityStatement: {
-                    type: "keyword", # Types::String.optional
-                  },
-                },
+                    type: 'keyword' # Types::String.optional
+                  }
+                }
               },
               taxResidencies: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   name: {
-                    type: "keyword",
+                    type: 'keyword'
                   },
                   code: {
-                    type: "keyword",
-                  },
-                },
+                    type: 'keyword'
+                  }
+                }
               },
               unspecifiedEntityDetails: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   reason: {
-                    type: "keyword", # UnspecifiedReasons
+                    type: 'keyword' # UnspecifiedReasons
                   },
                   description: {
-                    type: "keyword", # Types::String.optional
-                  },
-                },
+                    type: 'keyword' # Types::String.optional
+                  }
+                }
               },
               unspecifiedPersonDetails: {
-                type: "nested",
+                type: 'nested',
                 properties: {
                   reason: {
-                    type: "keyword", # UnspecifiedReasons
+                    type: 'keyword' # UnspecifiedReasons
                   },
                   description: {
-                    type: "keyword", # Types::String.optional
-                  },
-                },
+                    type: 'keyword' # Types::String.optional
+                  }
+                }
               },
               uri: {
-                type: "keyword", # Types::String.optional
-              },
-            },
-          },
+                type: 'keyword' # Types::String.optional
+              }
+            }
+          }
         }
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/types'
 
 module RegisterSourcesBods
@@ -6,6 +8,6 @@ module RegisterSourcesBods
     'legalEntity',
     'arrangement',
     'anonymousEntity',
-    'unknownEntity',
+    'unknownEntity'
   )
 end

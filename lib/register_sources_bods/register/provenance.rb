@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 module RegisterSourcesBods
   module Register
     class Provenance
+      # rubocop:disable Layout/LineLength
       MAPPINGS = {
         'GB Persons Of Significant Control Register' => 'UK PSC Register',
         'DK Centrale Virksomhedsregister' => 'Denmark Central Business Register (Centrale Virksomhedsregister [CVR])',
-        'SK Register Partnerov Verejného Sektora' => 'Slovakia Public Sector Partners Register (Register partnerov verejného sektora)',
+        'SK Register Partnerov Verejného Sektora' => 'Slovakia Public Sector Partners Register (Register partnerov verejného sektora)'
       }.freeze
+      # rubocop:enable Layout/LineLength
 
       def initialize(bods_statement)
         @bods_statement = bods_statement

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/types'
 
 module RegisterSourcesBods
@@ -8,6 +10,6 @@ module RegisterSourcesBods
     'subject-exempt-from-disclosure',
     'interested-party-exempt-from-disclosure',
     'unknown',
-    'information-unknown-to-publisher',
+    'information-unknown-to-publisher'
   )
 end

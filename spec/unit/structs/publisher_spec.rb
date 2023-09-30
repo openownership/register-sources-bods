@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/publication_details'
 
 RSpec.describe RegisterSourcesBods::Publisher do
@@ -7,7 +9,7 @@ RSpec.describe RegisterSourcesBods::Publisher do
     let(:params) do
       {
         name: '',
-        url: '',
+        url: ''
       }
     end
 

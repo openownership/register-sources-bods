@@ -21,13 +21,14 @@ module RegisterSourcesBods
         @repository_bs = bods_statement_repository
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def migrate(jurisdiction_codes: [], uids: [])
         batch_lei(jurisdiction_codes:, uids:) do |add_ids|
           # construct map of LEI identifiers to OpenCorporates identifiers
           lei_map = add_ids.to_h do |add_id|
             [
               identifier_lei_from_add_id(add_id),
-              identifier_open_corporates_from_company(add_id.jurisdiction_code, add_id.company_number),
+              identifier_open_corporates_from_company(add_id.jurisdiction_code, add_id.company_number)
             ]
           end
 
@@ -37,7 +38,7 @@ module RegisterSourcesBods
           # construct new statements
           new_statements = ent_sts.map do |ent_st|
             # filter to get OpenCorporates identifiers
-            oc_ids = ent_st.identifiers.filter { |identifier| identifier.schemeName == "OpenCorporates" }
+            oc_ids = ent_st.identifiers.filter { |identifier| identifier.schemeName == 'OpenCorporates' }
 
             # get list of LEI identifiers for these OpenCorporates identifiers
             lei_identifiers = oc_ids.map { |oc_id| lei_map.key(oc_id) }.compact.uniq
@@ -61,6 +62,7 @@ module RegisterSourcesBods
           @publisher.publish_many(new_statements)
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def batch_lei(jurisdiction_codes: [], uids: [], chunk_size: 50)
         chunk = []
