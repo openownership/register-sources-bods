@@ -84,7 +84,15 @@ RSpec.describe RegisterSourcesBods::Register::Entity do
       it 'returns identifiers' do
         expect(subject.identifiers).to eq [
           RegisterSourcesBods::Identifier[{ id: 'id2', scheme: 'scheme', schemeName: 'schemeName' }],
-          RegisterSourcesBods::Identifier[{ id: 'another-id2', scheme: 'scheme2', schemeName: 'schemeName2' }]
+          RegisterSourcesBods::Identifier[{ id: 'another-id2', scheme: 'XI-LEI', schemeName: 'schemeName2' }]
+        ]
+      end
+    end
+
+    describe '#identifiers_lei' do
+      it 'returns identifiers_lei' do
+        expect(subject.identifiers_lei).to eq [
+          RegisterSourcesBods::Identifier[{ id: 'another-id2', scheme: 'XI-LEI', schemeName: 'schemeName2' }]
         ]
       end
     end

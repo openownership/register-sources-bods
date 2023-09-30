@@ -19,9 +19,9 @@
     },
     {
       "id": "another-id2",
-      "scheme": "scheme2",
+      "scheme": "XI-LEI",
       "schemeName": "schemeName2"
-    }    
+    }
   ],
   "nationalities": [
     { "name": "France", "code": "FR" }
