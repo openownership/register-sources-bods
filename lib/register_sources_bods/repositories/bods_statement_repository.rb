@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/config/elasticsearch'
-require 'register_sources_bods/structs/bods_statement'
-require 'register_sources_bods/register/paginated_array'
+require_relative '../config/elasticsearch'
+require_relative '../register/paginated_array'
+require_relative '../structs/bods_statement'
 
 module RegisterSourcesBods
   module Repositories
     class BodsStatementRepository
-      UnknownRecordKindError = Class.new(StandardError)
       ElasticsearchError = Class.new(StandardError)
 
       SearchResult = Struct.new(:record, :score)
@@ -23,7 +22,7 @@ module RegisterSourcesBods
         attr_reader :total_count, :aggs
       end
 
-      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_BODS_V2_INDEX)
+      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ELASTICSEARCH_INDEX)
         @client = client
         @index = index
       end

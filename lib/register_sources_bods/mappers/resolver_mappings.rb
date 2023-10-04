@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/enums/entity_types'
-require 'register_sources_bods/enums/statement_types'
-require 'register_sources_bods/structs/address'
-require 'register_sources_bods/structs/entity_statement'
-require 'register_sources_bods/structs/identifier'
-require 'register_sources_bods/structs/jurisdiction'
-
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
-require 'active_support/core_ext/time'
 require 'active_support/core_ext/string/conversions'
+require 'active_support/core_ext/time'
+
+require_relative '../enums/entity_types'
+require_relative '../enums/statement_types'
+require_relative '../structs/address'
+require_relative '../structs/entity_statement'
+require_relative '../structs/identifier'
+require_relative '../structs/jurisdiction'
 
 module RegisterSourcesBods
   module Mappers

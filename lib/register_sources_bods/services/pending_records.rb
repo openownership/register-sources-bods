@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/repositories/bods_statement_repository'
-require 'register_sources_bods/services/builder'
+require_relative '../repositories/bods_statement_repository'
+require_relative 'builder'
 
 module RegisterSourcesBods
   module Services

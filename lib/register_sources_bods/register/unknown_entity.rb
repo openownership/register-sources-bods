@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/register/entity'
+require_relative 'entity'
 
 module RegisterSourcesBods
   module Register

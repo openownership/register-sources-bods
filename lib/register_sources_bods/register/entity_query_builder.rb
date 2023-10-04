@@ -182,18 +182,12 @@ module RegisterSourcesBods
               field: :statementType
             }
           }
-          # country: {
-          #    terms: {
-          #        field: :country_code,
-          #    },
-          # },
         }
       end
 
       def build_filters(search_params)
         [
           build_term_query(:statementType, search_params[:type])
-          # build_term_query(:country_code, search_params[:country])
         ].compact
       end
 

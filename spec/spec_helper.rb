@@ -5,7 +5,6 @@ module RegisterSourcesBods
 end
 
 require 'register_sources_bods'
-require 'register_sources_bods/config'
 require 'webmock/rspec'
 
 RSpec.configure do |config|

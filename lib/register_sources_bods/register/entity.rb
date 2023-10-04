@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/object/blank'
 require 'countries'
 require 'iso8601'
-require 'active_support/core_ext/object/blank'
 
-require 'register_sources_bods/register/paginated_array'
+require_relative 'paginated_array'
 
 module RegisterSourcesBods
   module Register
     class Entity
-      PSC_SCHEME = 'GB-COH'
-      SK_SCHEME = 'SK-ORSR'
-      DK_SCHEME = 'DK-CVR'
+      SCHEME_DK  = 'DK-CVR'
+      SCHEME_PSC = 'GB-COH'
+      SCHEME_SK  = 'SK-ORSR'
 
       def initialize(bods_statement)
         @bods_statement = bods_statement
@@ -27,8 +27,8 @@ module RegisterSourcesBods
 
       attr_reader :bods_statement
 
-      attr_accessor :replaced_bods_statements, :relationships_as_source, :relationships_as_target, :master_entity,
-                    :merged_entities
+      attr_accessor :replaced_bods_statements, :relationships_as_source,
+                    :relationships_as_target, :master_entity, :merged_entities
 
       def all_bods_statements
         [bods_statement] + replaced_bods_statements
@@ -55,7 +55,9 @@ module RegisterSourcesBods
       end
 
       def company_number
-        bods_statement.identifiers.find { |ident| [PSC_SCHEME, DK_SCHEME, SK_SCHEME].include? ident.scheme }&.id
+        bods_statement.identifiers.find do |ident|
+          [SCHEME_PSC, SCHEME_DK, SCHEME_SK].include? ident.scheme
+        end&.id
       end
 
       def company_number?
@@ -113,7 +115,9 @@ module RegisterSourcesBods
       end
 
       def id
-        ident = identifiers.find { |identifier| identifier.schemeName == 'OpenOwnership Register' }
+        ident = identifiers.find do |identifier|
+          identifier.schemeName == 'OpenOwnership Register'
+        end
 
         ident ? ident.id.split('/').last : bods_statement.statementID
       end
@@ -194,8 +198,6 @@ module RegisterSourcesBods
           '@type' => 'Person',
           name:,
           'address' => address
-          # "birthDate" => h.partial_date_format(dob),
-          # "url" => Rails.application.routes.url_helpers.entity_url(object),
         }.compact.to_json
       end
 
@@ -207,7 +209,6 @@ module RegisterSourcesBods
           'address' => address,
           'foundingDate' => incorporation_date,
           'dissolutionDate' => dissolution_date
-          # "url" => Rails.application.routes.url_helpers.entity_url(object),
         }.compact.to_json
       end
     end

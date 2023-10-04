@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/structs/person_statement'
-require 'register_sources_bods/register/unknown_entity'
+require_relative '../structs/person_statement'
+require_relative 'unknown_entity'
 
 module RegisterSourcesBods
   module Register

@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 require 'ostruct'
-require 'register_sources_bods/structs/bods_statement'
-require 'register_sources_bods/register/entity'
-require 'register_sources_bods/register/relationship'
-require 'register_sources_bods/register/unknown_person_builder'
-require 'register_sources_bods/register/paginated_array'
+
+require_relative '../structs/bods_statement'
+require_relative 'entity'
+require_relative 'paginated_array'
+require_relative 'relationship'
+require_relative 'unknown_person_builder'
 
 module RegisterSourcesBods
   module Register
@@ -29,7 +30,9 @@ module RegisterSourcesBods
         # compute master entities
         master_statement_ids = {}
         entities.each_value do |entity|
-          register_identifier = entity.identifiers.find { |ident| ident.schemeName == 'OpenOwnership Register' }
+          register_identifier = entity.identifiers.find do |ident|
+            ident.schemeName == 'OpenOwnership Register'
+          end
 
           next unless register_identifier&.uri
 
@@ -39,7 +42,9 @@ module RegisterSourcesBods
         end
 
         entities.each_value do |entity|
-          register_identifier = entity.identifiers.find { |ident| ident.schemeName == 'OpenOwnership Register' }
+          register_identifier = entity.identifiers.find do |ident|
+            ident.schemeName == 'OpenOwnership Register'
+          end
 
           next unless register_identifier&.uri
 

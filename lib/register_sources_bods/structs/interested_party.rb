@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/types'
-require 'register_sources_bods/enums/unspecified_reasons'
+require_relative '../enums/unspecified_reasons'
+require_relative '../types'
 
 module RegisterSourcesBods
   class InterestedParty < Dry::Struct
@@ -10,7 +10,7 @@ module RegisterSourcesBods
     attribute? :describedByEntityStatement, Types::String
     attribute? :describedByPersonStatement, Types::String
     attribute? :unspecified do
-      attribute :reason, UnspecifiedReasons
+      attribute  :reason,      UnspecifiedReasons
       attribute? :description, Types::String.optional
     end
   end

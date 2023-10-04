@@ -27,20 +27,20 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids, max_levels: 1)
 
-        # new_results = identifiers.map do |identifier|
         new_results = statement_ids.map do |statement_id|
           result.entities[statement_id]&.master_entity ||
             result.entities[statement_id] ||
             result.relationships[statement_id]
-          # result.entities.values.find { |e| e.identifiers & identifier }
-        end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
+        end.compact.uniq
 
-        Register::PaginatedArray.new(new_results,
-                                     current_page: statements.current_page,
-                                     records_per_page: statements.records_per_page,
-                                     limit_value: nil,
-                                     total_count: statements.total_count,
-                                     aggs: statements.aggs)
+        Register::PaginatedArray.new(
+          new_results,
+          current_page: statements.current_page,
+          records_per_page: statements.records_per_page,
+          limit_value: nil,
+          total_count: statements.total_count,
+          aggs: statements.aggs
+        )
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
@@ -58,7 +58,7 @@ module RegisterSourcesBods
           result.entities[statement_id]&.master_entity ||
             result.entities[statement_id] ||
             result.relationships[statement_id]
-        end.compact.uniq # .map { |r|  OpenStruct.new(record: r) }
+        end.compact.uniq
 
         Register::PaginatedArray.new(new_results,
                                      current_page: statements.current_page,
@@ -74,8 +74,6 @@ module RegisterSourcesBods
 
         statement_repository.count(query)
       end
-
-      # merged_page, source_page
 
       def find(statement_id)
         resolved_statement_id = statement_id.split('-unknown').first
@@ -128,7 +126,9 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
-        statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
+        statement_ids.map do |statement_id|
+          result.entities[statement_id] || result.relationships[statement_id]
+        end.compact
       end
 
       def list_for_subject_or_interested_party(**kwargs)
@@ -138,7 +138,9 @@ module RegisterSourcesBods
 
         result = statement_loader.load_statements(statement_ids)
 
-        statement_ids.map { |statement_id| result.entities[statement_id] || result.relationships[statement_id] }.compact
+        statement_ids.map do |statement_id|
+          result.entities[statement_id] || result.relationships[statement_id]
+        end.compact
       end
 
       private
