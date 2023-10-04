@@ -21,17 +21,33 @@ module RegisterSourcesBods
 
       def limit(lim)
         new_limit = [limit_value, lim].compact.min
-        PaginatedArray.new(source_array[0...new_limit], current_page:, records_per_page:, limit_value: new_limit,
-                                                        total_count:)
+        PaginatedArray.new(
+          source_array[0...new_limit],
+          current_page:,
+          records_per_page:,
+          limit_value: new_limit,
+          total_count:
+        )
       end
 
       def page(page_num)
-        PaginatedArray.new(source_array[0...n], current_page: page_num, records_per_page:, limit_value:, total_count:)
+        PaginatedArray.new(
+          source_array[0...n],
+          current_page: page_num,
+          records_per_page:,
+          limit_value:,
+          total_count:
+        )
       end
 
       def per(max_per_page)
-        PaginatedArray.new(source_array[0...n], current_page:, records_per_page: max_per_page, limit_value:,
-                                                total_count:)
+        PaginatedArray.new(
+          source_array[0...n],
+          current_page:,
+          records_per_page: max_per_page,
+          limit_value:,
+          total_count:
+        )
       end
 
       def total_pages

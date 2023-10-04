@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/repositories/bods_statement_repository'
-require 'register_sources_bods/services/records_producer'
-require 'register_sources_bods/services/builder'
-require 'register_sources_bods/services/pending_records'
-require 'register_sources_bods/structs/bods_statement'
+require_relative '../repositories/bods_statement_repository'
+require_relative '../structs/bods_statement'
+require_relative 'builder'
+require_relative 'pending_records'
+require_relative 'records_producer'
 
 module RegisterSourcesBods
   module Services

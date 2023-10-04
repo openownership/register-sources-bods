@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/builders/base'
-require 'register_sources_bods/structs/person_statement'
-require 'register_sources_bods/constants/identifiers'
-require 'register_sources_bods/constants/publisher'
+require_relative '../constants/identifiers'
+require_relative '../constants/publisher'
+require_relative '../structs/person_statement'
+require_relative 'base'
 
 module RegisterSourcesBods
   module Builders

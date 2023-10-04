@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/id_generators/base'
+require_relative 'base'
 
 module RegisterSourcesBods
   module IdGenerators

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/constants/errors'
-require 'register_sources_bods/types'
-require 'register_sources_bods/enums/statement_types'
-require 'register_sources_bods/structs/entity_statement'
-require 'register_sources_bods/structs/ownership_or_control_statement'
-require 'register_sources_bods/structs/person_statement'
+require_relative '../constants/errors'
+require_relative '../enums/statement_types'
+require_relative '../types'
+require_relative 'entity_statement'
+require_relative 'ownership_or_control_statement'
+require_relative 'person_statement'
 
 module RegisterSourcesBods
   BodsStatement = Types::Nominal::Any.constructor do |value|

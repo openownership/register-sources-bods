@@ -4,7 +4,7 @@ require 'register_sources_oc/repositories/add_id_repository'
 
 require_relative '../mappers/resolver_mappings'
 require_relative '../repositories/bods_statement_repository'
-require_relative '../services/publisher'
+require_relative 'publisher'
 
 module RegisterSourcesBods
   module Services

@@ -1,0 +1,452 @@
+{
+  "properties": {
+    "addresses": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "postCode": {
+          "type": "keyword"
+        },
+        "country": {
+          "type": "keyword"
+        }
+      }
+    },
+    "alternateNames": {
+      "type": "text",
+      "fields": {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    },
+    "annotations": {
+      "type": "nested",
+      "properties": {
+        "statementPointerTarget": {
+          "type": "keyword"
+        },
+        "creationDate": {
+          "type": "keyword"
+        },
+        "createdBy": {
+          "type": "keyword"
+        },
+        "motivation": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "keyword"
+        },
+        "transformedContent": {
+          "type": "keyword"
+        },
+        "url": {
+          "type": "keyword"
+        }
+      }
+    },
+    "birthDate": {
+      "type": "keyword"
+    },
+    "componentStatementIDs": {
+      "type": "keyword"
+    },
+    "deathDate": {
+      "type": "keyword"
+    },
+    "dissolutionDate": {
+      "type": "keyword"
+    },
+    "entityType": {
+      "type": "keyword"
+    },
+    "foundingDate": {
+      "type": "keyword"
+    },
+    "hasPepStatus": {
+      "type": "keyword"
+    },
+    "identifiers": {
+      "type": "nested",
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "scheme": {
+          "type": "keyword"
+        },
+        "schemeName": {
+          "type": "keyword"
+        },
+        "uri": {
+          "type": "keyword"
+        }
+      }
+    },
+    "incorporatedInJurisdiction": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "code": {
+          "type": "keyword"
+        }
+      }
+    },
+    "interestedParty": {
+      "type": "nested",
+      "properties": {
+        "describedByEntityStatement": {
+          "type": "keyword"
+        },
+        "describedByPersonStatement": {
+          "type": "keyword"
+        },
+        "unspecified": {
+          "type": "nested",
+          "properties": {
+            "reason": {
+              "type": "keyword"
+            },
+            "description": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "interests": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "interestLevel": {
+          "type": "keyword"
+        },
+        "beneficialOwnershipOrControl": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": "keyword"
+        },
+        "share": {
+          "type": "nested",
+          "properties": {
+            "exact": {
+              "type": "float"
+            },
+            "maximum": {
+              "type": "float"
+            },
+            "minimum": {
+              "type": "float"
+            },
+            "exclusiveMinimum": {
+              "type": "boolean"
+            },
+            "exclusiveMaximum": {
+              "type": "boolean"
+            }
+          }
+        },
+        "startDate": {
+          "type": "keyword"
+        },
+        "endDate": {
+          "type": "keyword"
+        }
+      }
+    },
+    "isComponent": {
+      "type": "keyword"
+    },
+    "metadata": {
+      "properties": {
+        "replaced": {
+          "type": "boolean"
+        }
+      }
+    },
+    "name": {
+      "type": "text",
+      "fields": {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    },
+    "names": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "fullName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "familyName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "givenName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "patronymicName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "nationalities": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "code": {
+          "type": "keyword"
+        }
+      }
+    },
+    "pepStatusDetails": {
+      "type": "nested",
+      "properties": {
+        "reason": {
+          "type": "keyword"
+        },
+        "missingInfoReason": {
+          "type": "keyword"
+        },
+        "jurisdiction": {
+          "type": "keyword"
+        },
+        "startDate": {
+          "type": "keyword"
+        },
+        "endDate": {
+          "type": "keyword"
+        },
+        "source": {
+          "type": "nested",
+          "properties": {
+            "type": {
+              "type": "keyword"
+            },
+            "description": {
+              "type": "keyword"
+            },
+            "url": {
+              "type": "keyword"
+            },
+            "retrievedAt": {
+              "type": "keyword"
+            },
+            "assertedBy": {
+              "type": "nested",
+              "properties": {
+                "name": {
+                  "type": "keyword"
+                },
+                "url": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "personType": {
+      "type": "keyword"
+    },
+    "placeOfBirth": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "postCode": {
+          "type": "keyword"
+        },
+        "country": {
+          "type": "keyword"
+        }
+      }
+    },
+    "placeOfResidence": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "postCode": {
+          "type": "keyword"
+        },
+        "country": {
+          "type": "keyword"
+        }
+      }
+    },
+    "publicationDetails": {
+      "type": "nested",
+      "properties": {
+        "publicationDate": {
+          "type": "keyword"
+        },
+        "bodsVersion": {
+          "type": "keyword"
+        },
+        "license": {
+          "type": "keyword"
+        },
+        "publisher": {
+          "type": "nested",
+          "properties": {
+            "name": {
+              "type": "keyword"
+            },
+            "url": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "replacesStatements": {
+      "type": "keyword"
+    },
+    "source": {
+      "type": "nested",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "keyword"
+        },
+        "url": {
+          "type": "keyword"
+        },
+        "retrievedAt": {
+          "type": "keyword"
+        },
+        "assertedBy": {
+          "type": "nested",
+          "properties": {
+            "name": {
+              "type": "keyword"
+            },
+            "url": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    },
+    "statementID": {
+      "type": "keyword"
+    },
+    "statementType": {
+      "type": "keyword"
+    },
+    "statementDate": {
+      "type": "keyword"
+    },
+    "subject": {
+      "type": "nested",
+      "properties": {
+        "describedByEntityStatement": {
+          "type": "keyword"
+        }
+      }
+    },
+    "taxResidencies": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "code": {
+          "type": "keyword"
+        }
+      }
+    },
+    "unspecifiedEntityDetails": {
+      "type": "nested",
+      "properties": {
+        "reason": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "keyword"
+        }
+      }
+    },
+    "unspecifiedPersonDetails": {
+      "type": "nested",
+      "properties": {
+        "reason": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "keyword"
+        }
+      }
+    },
+    "uri": {
+      "type": "keyword"
+    }
+  }
+}

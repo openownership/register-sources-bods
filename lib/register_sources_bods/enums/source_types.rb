@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/types'
+require_relative '../types'
 
 module RegisterSourcesBods
   SourceTypes = Types::String.enum(

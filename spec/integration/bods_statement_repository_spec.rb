@@ -50,10 +50,10 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
 
   before do
     index_creator = RegisterSourcesBods::Services::EsIndexCreator.new(
-      es_index: index,
+      index:,
       client: es_client
     )
-    index_creator.create_es_index
+    index_creator.create_index
   end
 
   describe '#store' do

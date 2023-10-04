@@ -34,10 +34,13 @@ module RegisterSourcesBods
 
         level = 0
         while !new_statements.empty? && (level <= max_levels)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: false,
-                                                                           subject: true).to_h do |r|
-                             [r.statementID, r]
-                           end.reject do |k, _v|
+          new_statements = load_associated_statements(
+            new_statements.keys,
+            interested_party: false,
+            subject: true
+          ).to_h do |r|
+            [r.statementID, r]
+          end.reject do |k, _v|
             statements.key? k
           end
 
@@ -76,10 +79,13 @@ module RegisterSourcesBods
 
         level = 0
         while !new_statements.empty? && (level <= max_levels)
-          new_statements = load_associated_statements(new_statements.keys, interested_party: true,
-                                                                           subject: false).to_h do |r|
-                             [r.statementID, r]
-                           end.reject do |k, _v|
+          new_statements = load_associated_statements(
+            new_statements.keys,
+            interested_party: true,
+            subject: false
+          ).to_h do |r|
+            [r.statementID, r]
+          end.reject do |k, _v|
             statements.key? k
           end
 

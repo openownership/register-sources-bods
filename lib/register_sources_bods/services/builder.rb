@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/constants/errors'
-require 'register_sources_bods/builders/entity_statement'
-require 'register_sources_bods/builders/person_statement'
-require 'register_sources_bods/builders/ownership_or_control_statement'
-require 'register_sources_bods/services/id_generator'
-require 'register_sources_bods/enums/statement_types'
+require_relative '../builders/entity_statement'
+require_relative '../builders/ownership_or_control_statement'
+require_relative '../builders/person_statement'
+require_relative '../constants/errors'
+require_relative '../enums/statement_types'
+require_relative 'id_generator'
 
 module RegisterSourcesBods
   module Services
