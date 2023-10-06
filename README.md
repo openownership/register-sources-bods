@@ -1,27 +1,23 @@
 # Register Sources BODS
 
-Register Sources BODS is designed for inclusion as a library for use with any BODS data source. See https://standard.openownership.org/en/0.2.0/ for an example of the data standard.
+Register Sources BODS is a shared library for the [OpenOwnership](https://www.openownership.org/en/) [Register](https://github.com/openownership/register) project.
+It is designed for use with any [Beneficial Ownership Data Standard (BODS)](https://www.openownership.org/en/topics/beneficial-ownership-data-standard/) format data source.
 
-There are three primary purposes for this library:
+The primary purposes of this library are:
 
 - Providing typed objects for the JSON-line data. It makes use of the dry-types and dry-struct gems to specify the different object types allowed in the data returned.
-- For use with an Elasticsearch database for
-persisting the BODS records. This functionality includes creating a mapping for indexing the possible fields observed as well as functions for storage and retrieval.
-- For publishing BODS statements to a designated Kinesis stream.
+- Persisting the BODS records using Elasticsearch. This functionality includes creating a mapping for indexing the possible fields observed as well as functions for storage and retrieval.
+- Publishing BODS statements to a designated Kinesis stream.
 
-This library does not include transformation to BODS format of other data standards. That is instead left as the purpose of the transformer gems, such as register-transformer-psc.
+This library does not include transformation to BODS format of other data standards. That is instead left as the purpose of the Register Transformers.
 
-This has been tested with v7.17 of Elasticsearch.
+The data standard is [BODS 0.2](https://standard.openownership.org/en/0.2.0/schema/schema-browser.html).
 
 ## Installation
 
-Install and boot [register-v2](https://github.com/openownership/register-v2).
+Install and boot [Register](https://github.com/openownership/register).
 
 Configure your environment using the example file:
-
-- BODS_STREAM is an optional - if provided then any newly generated BODS statements will be published to the Kinesis stream with this name before being stored in Elasticsearch
-- Configure Elasticsearch Credentials as normal
-- Configure AWS credentials as normal
 
 ```sh
 cp .env.example .env
