@@ -19,6 +19,7 @@ services:
       - ./lib:/home/x/r/lib
       - ./register_sources_bods.gemspec:/home/x/r/register_sources_bods.gemspec
       - ./spec:/home/x/r/spec
+      - ./storage:/home/x/r/storage
 networks:
   elasticsearch: {}
   sources: {}

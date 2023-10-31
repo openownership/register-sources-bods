@@ -33,19 +33,11 @@ module RegisterSourcesBods
       end
 
       def call
-        RegisterSourcesBods::EntityStatement[{
-          statementType: statement_type,
-          statementDate: nil,
-          isComponent: false,
-          entityType: entity_type,
-          name:,
-          incorporatedInJurisdiction: incorporated_in_jurisdiction,
+        RegisterSourcesBods::EntityStatement[bods_entity.to_h.merge({
           identifiers:,
           foundingDate: founding_date,
           dissolutionDate: dissolution_date,
-          addresses:,
-          source:,
-        }.compact]
+        }).compact]
       end
 
       private
@@ -67,28 +59,8 @@ module RegisterSourcesBods
         )
       end
 
-      def statement_type
-        bods_entity.statementType
-      end
-
-      def entity_type
-        bods_entity.entityType
-      end
-
       def identifiers
-        (bods_entity.identifiers + [open_corporates_identifier, lei_identifier].compact).uniq
-      end
-
-      def name
-        bods_entity.name
-      end
-
-      def addresses
-        bods_entity.addresses
-      end
-
-      def incorporated_in_jurisdiction
-        bods_entity.incorporatedInJurisdiction
+        (bods_entity.identifiers.to_a + [open_corporates_identifier, lei_identifier].compact).uniq
       end
 
       def founding_date
@@ -97,10 +69,6 @@ module RegisterSourcesBods
 
       def dissolution_date
         bods_entity.dissolutionDate || super
-      end
-
-      def source
-        bods_entity.source
       end
     end
   end

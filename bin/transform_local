@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+require 'register_sources_bods/transformer/transform_local'
+
+RegisterSourcesBods::Transformer::TransformLocal.bash_call ARGV

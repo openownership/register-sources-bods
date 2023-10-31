@@ -19,6 +19,8 @@ module RegisterSourcesBods
 
       def create_index_unless_exists
         create_index
+      rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
+        print "Got error: #{e}\n"
         # TODO: catch error
       end
 
