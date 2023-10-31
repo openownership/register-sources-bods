@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/structs/person_statement'
 
 module RegisterSourcesBods
@@ -13,8 +15,8 @@ module RegisterSourcesBods
 
       def call
         RegisterSourcesBods::PersonStatement[bods_entity.to_h.merge({
-          identifiers: (bods_entity.identifiers || []),
-        }).compact]
+                                                                      identifiers: (bods_entity.identifiers || [])
+                                                                    }).compact]
       end
 
       private

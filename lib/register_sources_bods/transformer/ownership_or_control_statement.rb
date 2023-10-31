@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'xxhash'
 
 require 'register_sources_bods/structs/interest'
@@ -14,7 +16,7 @@ module RegisterSourcesBods
     class OwnershipOrControlStatement
       UnsupportedSourceStatementTypeError = Class.new(StandardError)
 
-      ID_PREFIX = 'openownership-register-'.freeze
+      ID_PREFIX = 'openownership-register-'
 
       def self.call(bods_record, **kwargs)
         new(bods_record, **kwargs).call
@@ -33,7 +35,7 @@ module RegisterSourcesBods
       def call
         RegisterSourcesBods::OwnershipOrControlStatement[bods_record.to_h.merge(
           subject:,
-          interestedParty: interested_party,
+          interestedParty: interested_party
         ).compact]
       end
 
@@ -43,7 +45,7 @@ module RegisterSourcesBods
 
       def subject
         RegisterSourcesBods::Subject.new(
-          describedByEntityStatement: target_statement.statementID,
+          describedByEntityStatement: target_statement.statementID
         )
       end
 
@@ -51,17 +53,17 @@ module RegisterSourcesBods
         case source_statement.statementType
         when RegisterSourcesBods::StatementTypes['personStatement']
           RegisterSourcesBods::InterestedParty[{
-            describedByPersonStatement: source_statement.statementID,
+            describedByPersonStatement: source_statement.statementID
           }]
         when RegisterSourcesBods::StatementTypes['entityStatement']
           case source_statement.entityType
           when RegisterSourcesBods::EntityTypes['unknownEntity']
             RegisterSourcesBods::InterestedParty[{
-              unspecified: source_statement.unspecifiedEntityDetails,
+              unspecified: source_statement.unspecifiedEntityDetails
             }.compact]
           else
             RegisterSourcesBods::InterestedParty[{
-              describedByEntityStatement: source_statement.statementID,
+              describedByEntityStatement: source_statement.statementID
             }]
           end
         else

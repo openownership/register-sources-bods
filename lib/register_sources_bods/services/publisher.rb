@@ -84,8 +84,6 @@ module RegisterSourcesBods
         # Store pending records
         repository.store(records, await_refresh: true)
         repository.mark_replaced_statements(records)
-
-        print("Wrote records: ", records, "\n")
       end
     end
   end

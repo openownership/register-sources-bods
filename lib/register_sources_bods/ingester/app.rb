@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_common/services/bulk_transformer'
 require 'register_common/services/publisher'
 
@@ -23,31 +25,27 @@ module RegisterSourcesBods
 
       def initialize(
         bulk_transformer: nil,
-        s3_bucket: nil,
         repository: nil,
         index: nil,
-        serializer: nil,
-        deserializer: nil,
         publisher: nil,
-        stream: nil,
         es_index_creator: nil
       )
-        stream ||= ENV.fetch('BODS_STREAM', nil).presence
+        stream = ENV.fetch('BODS_STREAM', nil).presence
 
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
-          s3_bucket: s3_bucket || ENV.fetch('BODS_S3_BUCKET_NAME'),
-          set_client: Config::Adapters::SET_CLIENT,
+          s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
+          set_client: Config::Adapters::SET_CLIENT
         )
         @publisher = publisher || (stream && RegisterCommon::Services::Publisher.new(
           stream_name: stream,
           kinesis_adapter: Config::Adapters::KINESIS_ADAPTER,
           buffer_size: 25,
-          serializer: (serializer || RecordSerializer.new),
+          serializer: RecordSerializer.new
         ))
-        @deserializer = deserializer || RecordDeserializer.new
+        @deserializer = RecordDeserializer.new
         @repository = repository || Repositories::BodsStatementRepository.new(index:)
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index: index)
+        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index:)
       end
 
       def call(s3_prefix)
@@ -79,7 +77,7 @@ module RegisterSourcesBods
           publisher.finalize
         end
 
-        repository.store(new_records)
+        repository.store(new_records, await_refresh: true)
       end
     end
   end

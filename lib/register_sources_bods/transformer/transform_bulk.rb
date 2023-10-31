@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_common/services/bulk_transformer'
 
 require 'register_sources_bods/config/adapters'
@@ -25,36 +27,28 @@ module RegisterSourcesBods
 
       def initialize(
         bulk_transformer: nil,
-        raw_records_repository: nil,
-        records_repository: nil,
-        record_processor: nil,
         raw_index: nil,
         dest_index: nil,
-        deserializer: nil,
-        entity_resolver: nil,
-        bods_publisher: nil,
-        es_index_creator: nil
+        entity_resolver: nil
       )
-        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new
-
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
-          s3_bucket: s3_bucket || ENV.fetch('BODS_S3_BUCKET_NAME'),
+          s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
           set_client: Config::Adapters::SET_CLIENT
         )
-        @deserializer = deserializer || RecordDeserializer.new
-        @raw_records_repository = raw_records_repository || Repositories::BodsStatementRepository.new(index: raw_index)
-        @records_repository = records_repository || Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
+        @deserializer = RecordDeserializer.new
+        @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
+        @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
+        @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
 
-        bods_publisher ||= RegisterSourcesBods::Services::Publisher.new(
-          repository: @records_repository
-        )
-        @record_processor = record_processor || Transformer::RecordProcessor.new(
+        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new
+        @record_processor = Transformer::RecordProcessor.new(
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
-          bods_publisher:
+          bods_publisher: RegisterSourcesBods::Services::Publisher.new(
+            repository: @records_repository
+          )
         )
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index: dest_index)
       end
 
       def call(s3_prefix)
@@ -67,7 +61,8 @@ module RegisterSourcesBods
 
       private
 
-      attr_reader :bulk_transformer, :deserializer, :raw_records_repository, :records_repository, :record_processor, :es_index_creator
+      attr_reader :bulk_transformer, :deserializer, :raw_records_repository, :records_repository, :record_processor,
+                  :es_index_creator
 
       def process_rows(rows)
         records = rows.map do |record_data|

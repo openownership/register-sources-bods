@@ -291,7 +291,7 @@ module RegisterSourcesBods
           }
         end
 
-        refresh = (await_refresh || @await_refresh) ? :wait_for : false
+        refresh = await_refresh || @await_refresh ? :wait_for : false
 
         result = client.bulk(body: operations, refresh:)
 
@@ -303,13 +303,14 @@ module RegisterSourcesBods
         true
       end
 
-      def mark_replaced_statements(records)
+      def mark_replaced_statements(records, await_refresh: false)
         replaced_ids = records.map(&:replacesStatements).flatten.uniq.compact
 
         return {} if replaced_ids.empty?
 
         client.update_by_query(
           index:,
+          refresh: (await_refresh || @await_refresh),
           body: {
             script: {
               lang: 'painless',

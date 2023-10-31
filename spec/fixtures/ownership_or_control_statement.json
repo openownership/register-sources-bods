@@ -5,11 +5,10 @@
   "isComponent": false,
   "componentStatementIDs": [],
   "subject": {
-    "describedByEntityStatement": ""
+    "describedByEntityStatement": "es1"
   },
   "interestedParty": {
-    "describedByEntityStatement": "",
-    "describedByPersonStatement": "",
+    "describedByPersonStatement": "ps1",
     "unspecified": {
       "description": "some description",
       "reason": "no-beneficial-owners"

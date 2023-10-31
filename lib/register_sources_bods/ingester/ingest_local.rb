@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_common/services/publisher'
 
 require 'register_sources_bods/config/adapters'
@@ -20,23 +22,15 @@ module RegisterSourcesBods
         new(index:).call(local_path)
       end
 
-      def initialize(
-        repository: nil,
-        index: nil,
-        serializer: nil,
-        deserializer: nil,
-        publisher: nil,
-        stream: nil,
-        es_index_creator: nil
-      )
-        stream ||= ENV.fetch('BODS_STREAM', nil).presence
+      def initialize(repository: nil, index: nil, publisher: nil, es_index_creator: nil)
+        stream = ENV.fetch('BODS_STREAM', nil).presence
         @publisher = publisher || (stream && RegisterCommon::Services::Publisher.new(
           stream_name: stream,
           kinesis_adapter: Config::Adapters::KINESIS_ADAPTER,
           buffer_size: 25,
-          serializer: (serializer || RecordSerializer.new),
+          serializer: RecordSerializer.new
         ))
-        @deserializer = deserializer || RecordDeserializer.new
+        @deserializer = RecordDeserializer.new
         @repository = repository || Repositories::BodsStatementRepository.new(index:)
         @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index:)
       end
@@ -70,8 +64,7 @@ module RegisterSourcesBods
           publisher.finalize
         end
 
-        print "Storing records: #{new_records}\n"
-        repository.store(new_records)
+        repository.store(new_records, await_refresh: true)
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'xxhash'
 
@@ -34,10 +36,10 @@ module RegisterSourcesBods
 
       def call
         RegisterSourcesBods::EntityStatement[bods_entity.to_h.merge({
-          identifiers:,
-          foundingDate: founding_date,
-          dissolutionDate: dissolution_date,
-        }).compact]
+                                                                      identifiers:,
+                                                                      foundingDate: founding_date,
+                                                                      dissolutionDate: dissolution_date
+                                                                    }).compact]
       end
 
       private
@@ -54,8 +56,8 @@ module RegisterSourcesBods
         @resolver_response = entity_resolver.resolve(
           RegisterSourcesOc::ResolverRequest[{
             jurisdiction_code:,
-            name:,
-          }.compact],
+            name: bods_entity.name
+          }.compact]
         )
       end
 

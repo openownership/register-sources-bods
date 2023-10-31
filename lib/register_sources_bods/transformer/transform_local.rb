@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'register_sources_bods/config/adapters'
 require 'register_sources_bods/record_deserializer'
 require 'register_sources_bods/repositories/bods_statement_repository'
@@ -21,32 +23,20 @@ module RegisterSourcesBods
         new(raw_index:, dest_index:).call(local_path)
       end
 
-      def initialize(
-        raw_records_repository: nil,
-        records_repository: nil,
-        record_processor: nil,
-        raw_index: nil,
-        dest_index: nil,
-        deserializer: nil,
-        entity_resolver: nil,
-        bods_publisher: nil,
-        es_index_creator: nil
-      )
+      def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil)
+        @deserializer = RecordDeserializer.new
+        @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
+        @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
+
         entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new
-
-        @deserializer = deserializer || RecordDeserializer.new
-        @raw_records_repository = raw_records_repository || Repositories::BodsStatementRepository.new(index: raw_index)
-        @records_repository = records_repository || Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
-
-        bods_publisher ||= RegisterSourcesBods::Services::Publisher.new(
-          repository: @records_repository
-        )
-        @record_processor = record_processor || Transformer::RecordProcessor.new(
+        @record_processor = Transformer::RecordProcessor.new(
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
-          bods_publisher:
+          bods_publisher: RegisterSourcesBods::Services::Publisher.new(
+            repository: @records_repository
+          )
         )
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index: dest_index)
+        @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
       end
 
       def call(local_path)
