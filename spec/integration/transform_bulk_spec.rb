@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'elasticsearch'
-require 'register_sources_bods/ingester/app'
+require 'register_sources_bods/ingester/ingest_bulk'
 require 'register_sources_bods/transformer/transform_bulk'
 require 'register_sources_bods/structs/person_statement'
 require 'register_sources_bods/structs/entity_statement'
@@ -49,7 +49,7 @@ RSpec.describe RegisterSourcesBods::Transformer::TransformBulk do
 
     allow(entity_resolver).to receive(:resolve)
 
-    RegisterSourcesBods::Ingester::App.new(
+    RegisterSourcesBods::Ingester::IngestBulk.new(
       index: raw_index,
       bulk_transformer: bulk_transformer_ingest
     ).call(ingest_s3_prefix)
