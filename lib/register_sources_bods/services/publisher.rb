@@ -15,7 +15,9 @@ module RegisterSourcesBods
         )
         @producer = producer || Services::RecordsProducer.new
         @builder = builder || Services::Builder.new
-        @pending_records_builder = pending_records_builder || Services::PendingRecords.new
+        @pending_records_builder = pending_records_builder || Services::PendingRecords.new(
+          repository: @repository
+        )
       end
 
       def publish(record)

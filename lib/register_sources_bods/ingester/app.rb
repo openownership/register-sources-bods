@@ -47,11 +47,11 @@ module RegisterSourcesBods
         ))
         @deserializer = deserializer || RecordDeserializer.new
         @repository = repository || Repositories::BodsStatementRepository.new(index:)
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(es_index: index)
+        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index: index)
       end
 
       def call(s3_prefix)
-        es_index_creator.create_es_index_unless_exists
+        es_index_creator.create_index_unless_exists
 
         bulk_transformer.call(s3_prefix) do |rows|
           process_rows rows

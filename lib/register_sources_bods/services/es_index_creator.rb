@@ -17,8 +17,8 @@ module RegisterSourcesBods
         @index = index
       end
 
-      def create_es_index_unless_exists
-        create_es_index
+      def create_index_unless_exists
+        create_index
         # TODO: catch error
       end
 

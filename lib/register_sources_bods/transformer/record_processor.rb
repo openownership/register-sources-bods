@@ -24,8 +24,9 @@ module RegisterSourcesBods
 
       def process_many(bods_records)
         # Load any related statements
-        bods_records = raw_records_repository.list_associated(bods_records.map(&:statementID))
-
+        bods_records += raw_records_repository.list_associated(bods_records.map(&:statementID))
+        bods_records = bods_records.uniq(&:statementID)
+        
         # Construct Entities
         entity_type = RegisterSourcesBods::StatementTypes['entityStatement']
         entities = bods_records.filter { |bods_record| bods_record.statementType == entity_type }

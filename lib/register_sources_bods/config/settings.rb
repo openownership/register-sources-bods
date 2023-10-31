@@ -4,7 +4,7 @@ require 'register_common/structs/aws_credentials'
 
 module RegisterSourcesBods
   module Config
-    AWS_CREDENTIALS = RegisterCommon::AwsCredentials.new(
+    AWS_CREDENTIALS = RegisterCommon::Structs::AwsCredentials.new(
       ENV.fetch('BODS_AWS_REGION'),
       ENV.fetch('BODS_AWS_ACCESS_KEY_ID'),
       ENV.fetch('BODS_AWS_SECRET_ACCESS_KEY')
