@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+require 'register_sources_bods/ingester/app'
+
+RegisterSourcesBods::Ingester::App.bash_call ARGV
