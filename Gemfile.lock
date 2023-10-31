@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/openownership/register-common.git
-  revision: e17c558ee58ac7cd623d8d165a26ff82af5b849e
+  revision: e572eae117cf7626583abcca8f8d398645778297
   branch: fixes/181-large-records
   specs:
     register_common (0.1.0)
@@ -51,10 +51,15 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.6)
+    activesupport (7.1.1)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
@@ -84,6 +89,8 @@ GEM
       aws-sigv4 (~> 1.6)
     aws-sigv4 (1.6.1)
       aws-eventstream (~> 1, >= 1.0.2)
+    base64 (0.1.1)
+    bigdecimal (3.1.4)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     countries (4.0.1)
@@ -93,6 +100,8 @@ GEM
       rexml
     diff-lcs (1.5.0)
     dotenv (2.8.1)
+    drb (2.1.1)
+      ruby2_keywords
     dry-core (1.0.0)
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)
@@ -154,9 +163,10 @@ GEM
     iso8601 (0.13.0)
     jmespath (1.6.2)
     json (2.6.3)
-    minitest (5.18.1)
+    minitest (5.20.0)
     multi_json (1.15.0)
     multipart-post (2.3.0)
+    mutex_m (0.1.2)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
     nokogiri (1.15.4-x86_64-linux)
