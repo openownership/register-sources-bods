@@ -11,7 +11,7 @@ require 'register_sources_bods/repositories/bods_statement_repository'
 
 module RegisterSourcesBods
   module Ingester
-    class App
+    class IngestBulk
       def self.bash_call(args)
         index = args[-2]
         s3_prefix = args[-1]

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'elasticsearch'
-require 'register_sources_bods/ingester/app'
+require 'register_sources_bods/ingester/ingest_bulk'
 require 'register_sources_bods/structs/person_statement'
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/ownership_or_control_statement'
 
-RSpec.describe RegisterSourcesBods::Ingester::App do
+RSpec.describe RegisterSourcesBods::Ingester::IngestBulk do
   subject(:transformer) { described_class.new(index:, bulk_transformer:) }
 
   let(:index) { SecureRandom.uuid }

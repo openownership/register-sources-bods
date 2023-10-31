@@ -13,4 +13,3 @@ vendor/
 
 /.env*
 /docker-compose.*.yml
-storage/
