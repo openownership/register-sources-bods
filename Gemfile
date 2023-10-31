@@ -7,8 +7,7 @@ gem 'rubocop'
 gem 'rubocop-rspec'
 gem 'webmock'
 
-gem 'register_common', git: 'https://github.com/openownership/register-common.git',
-                       branch: 'fixes/181-large-records'
+gem 'register_common', git: 'https://github.com/openownership/register-common.git'
 gem 'register_sources_oc', git: 'https://github.com/openownership/register-sources-oc.git'
 
 gemspec
