@@ -9,7 +9,7 @@ require 'register_sources_bods/repositories/bods_statement_repository'
 
 module RegisterSourcesBods
   module Ingester
-    module App
+    class App
       def self.bash_call(args)
         index = args[-2]
         s3_prefix = args[-1]
@@ -28,18 +28,18 @@ module RegisterSourcesBods
         index: nil,
         serializer: nil,
         deserializer: nil,
-        producer: nil,
+        publisher: nil,
         stream: nil,
-        es_index_creator: nil,
+        es_index_creator: nil
       )
-        stream ||= ENV.fetch('BODS_STREAM', nil)
+        stream ||= ENV.fetch('BODS_STREAM', nil).presence
 
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: s3_bucket || ENV.fetch('BODS_S3_BUCKET_NAME'),
           set_client: Config::Adapters::SET_CLIENT,
         )
-        @producer = producer || (stream && RegisterCommon::Services::Publisher.new(
+        @publisher = publisher || (stream && RegisterCommon::Services::Publisher.new(
           stream_name: stream,
           kinesis_adapter: Config::Adapters::KINESIS_ADAPTER,
           buffer_size: 25,
@@ -47,11 +47,11 @@ module RegisterSourcesBods
         ))
         @deserializer = deserializer || RecordDeserializer.new
         @repository = repository || Repositories::BodsStatementRepository.new(index:)
-        @es_index_creator = es_index_creator || EsIndexCreator.new(es_index: index)
+        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(es_index: index)
       end
 
       def call(s3_prefix)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_es_index_unless_exists
 
         bulk_transformer.call(s3_prefix) do |rows|
           process_rows rows
@@ -60,7 +60,7 @@ module RegisterSourcesBods
 
       private
 
-      attr_reader :bulk_transformer, :deserializer, :repository, :producer, :es_index_creator
+      attr_reader :bulk_transformer, :deserializer, :repository, :publisher, :es_index_creator
 
       def process_rows(rows)
         records = rows.map do |record_data|
@@ -71,8 +71,13 @@ module RegisterSourcesBods
 
         return if new_records.empty?
 
-        producer.produce(new_records)
-        producer.finalize
+        if publisher
+          new_records.each do |record|
+            publisher.publish(record)
+          end
+
+          publisher.finalize
+        end
 
         repository.store(new_records)
       end
