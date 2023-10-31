@@ -20,8 +20,7 @@ module RegisterSourcesBods
       def create_index_unless_exists
         create_index
       rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
-        print "Got error: #{e}\n"
-        # TODO: catch error
+        raise e unless /resource_already_exists_exception/.match e.message
       end
 
       def create_index

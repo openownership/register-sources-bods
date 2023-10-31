@@ -8,6 +8,8 @@ require 'register_sources_bods/record_serializer'
 require 'register_sources_bods/services/es_index_creator'
 require 'register_sources_bods/repositories/bods_statement_repository'
 
+require 'active_support/core_ext/object/blank'
+
 module RegisterSourcesBods
   module Ingester
     class IngestLocal
