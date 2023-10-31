@@ -13,6 +13,11 @@ module RegisterSourcesBods
         @es_index = es_index
       end
 
+      def create_es_index_unless_exists
+        create_es_index
+        # TODO: catch error
+      end
+
       def create_es_index
         client.indices.create index: es_index, body: {
           mappings: {

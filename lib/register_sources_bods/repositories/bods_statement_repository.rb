@@ -23,9 +23,10 @@ module RegisterSourcesBods
         attr_reader :total_count, :aggs
       end
 
-      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_BODS_V2_INDEX)
+      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ES_BODS_V2_INDEX, await_refresh: false)
         @client = client
         @index = index
+        @await_refresh = await_refresh
       end
 
       def get(statement_id)
@@ -291,7 +292,7 @@ module RegisterSourcesBods
           }
         end
 
-        refresh = await_refresh ? :wait_for : false
+        refresh = (await_refresh || @await_refresh) ? :wait_for : false
 
         result = client.bulk(body: operations, refresh:)
 
