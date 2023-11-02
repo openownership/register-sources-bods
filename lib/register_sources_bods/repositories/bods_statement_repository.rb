@@ -22,9 +22,10 @@ module RegisterSourcesBods
         attr_reader :total_count, :aggs
       end
 
-      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ELASTICSEARCH_INDEX)
+      def initialize(client: Config::ELASTICSEARCH_CLIENT, index: Config::ELASTICSEARCH_INDEX, await_refresh: false)
         @client = client
         @index = index
+        @await_refresh = await_refresh
       end
 
       def get(statement_id)
@@ -290,7 +291,7 @@ module RegisterSourcesBods
           }
         end
 
-        refresh = await_refresh ? :wait_for : false
+        refresh = await_refresh || @await_refresh ? :wait_for : false
 
         result = client.bulk(body: operations, refresh:)
 
@@ -302,13 +303,14 @@ module RegisterSourcesBods
         true
       end
 
-      def mark_replaced_statements(records)
+      def mark_replaced_statements(records, await_refresh: false)
         replaced_ids = records.map(&:replacesStatements).flatten.uniq.compact
 
         return {} if replaced_ids.empty?
 
         client.update_by_query(
           index:,
+          refresh: (await_refresh || @await_refresh),
           body: {
             script: {
               lang: 'painless',

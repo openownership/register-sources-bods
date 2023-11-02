@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+
+require 'register_sources_bods/ingester/ingest_bulk'
+
+RegisterSourcesBods::Ingester::IngestBulk.bash_call ARGV

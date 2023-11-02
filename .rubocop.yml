@@ -17,6 +17,8 @@ Style/Documentation:
   Enabled: false
 Style/MultilineBlockChain:
   Enabled: false
+RSpec/FilePath:
+  Enabled: false
 #-------------------------------------------------------------------------------
 RSpec/ExampleLength:
   Exclude:
@@ -25,60 +27,6 @@ RSpec/ExampleLength:
     - spec/unit/register/relationship_spec.rb
     - spec/unit/services/migrator_lei_spec.rb
     - spec/unit/services/pending_records_spec.rb
-RSpec/FilePath:
-  Exclude:
-    - spec/integration/bods_statement_repository_spec.rb
-    - spec/unit/builders/entity_statement_spec.rb
-    - spec/unit/builders/ownership_or_control_statement_spec.rb
-    - spec/unit/builders/person_statement_spec.rb
-    - spec/unit/constants/publisher_spec.rb
-    - spec/unit/enums/address_types_spec.rb
-    - spec/unit/enums/annotation_motivations_spec.rb
-    - spec/unit/enums/entity_types_spec.rb
-    - spec/unit/enums/interest_levels_spec.rb
-    - spec/unit/enums/interest_types_spec.rb
-    - spec/unit/enums/name_types_spec.rb
-    - spec/unit/enums/person_types_spec.rb
-    - spec/unit/enums/source_types_spec.rb
-    - spec/unit/enums/statement_types_spec.rb
-    - spec/unit/enums/unspecified_reasons_spec.rb
-    - spec/unit/id_generators/entity_statement_spec.rb
-    - spec/unit/id_generators/ownership_or_control_statement_spec.rb
-    - spec/unit/id_generators/person_statement_spec.rb
-    - spec/unit/record_serializer_spec.rb
-    - spec/unit/register/entity_query_builder_spec.rb
-    - spec/unit/register/entity_spec.rb
-    - spec/unit/register/provenance_spec.rb
-    - spec/unit/register/relationship_spec.rb
-    - spec/unit/register_sources_bods.rb
-    - spec/unit/services/builder_spec.rb
-    - spec/unit/services/es_index_creator_spec.rb
-    - spec/unit/services/id_generator_spec.rb
-    - spec/unit/services/migrator_lei_spec.rb
-    - spec/unit/services/pending_records_spec.rb
-    - spec/unit/services/publisher_spec.rb
-    - spec/unit/structs/address_spec.rb
-    - spec/unit/structs/agent_spec.rb
-    - spec/unit/structs/annotation_spec.rb
-    - spec/unit/structs/bods_statement_spec.rb
-    - spec/unit/structs/country_spec.rb
-    - spec/unit/structs/entity_statement_spec.rb
-    - spec/unit/structs/id_spec.rb
-    - spec/unit/structs/identifier_spec.rb
-    - spec/unit/structs/interest_spec.rb
-    - spec/unit/structs/interested_party_spec.rb
-    - spec/unit/structs/jurisdiction_spec.rb
-    - spec/unit/structs/name_spec.rb
-    - spec/unit/structs/ownership_or_control_statement_spec.rb
-    - spec/unit/structs/pep_status_details_spec.rb
-    - spec/unit/structs/person_statement_spec.rb
-    - spec/unit/structs/publication_details_spec.rb
-    - spec/unit/structs/publisher_spec.rb
-    - spec/unit/structs/replaces_statements_spec.rb
-    - spec/unit/structs/share_spec.rb
-    - spec/unit/structs/source_spec.rb
-    - spec/unit/structs/statement_date_spec.rb
-    - spec/unit/structs/subject_spec.rb
 RSpec/MessageSpies:
   Exclude:
     - spec/unit/builders/entity_statement_spec.rb

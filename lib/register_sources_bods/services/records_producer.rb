@@ -10,7 +10,7 @@ module RegisterSourcesBods
   module Services
     class RecordsProducer
       def initialize(stream_name: nil, kinesis_adapter: nil, buffer_size: nil, serializer: nil)
-        stream_name ||= ENV.fetch('BODS_STREAM', nil)
+        stream_name ||= ENV.fetch('BODS_STREAM', nil).presence
         kinesis_adapter ||= RegisterSourcesBods::Config::Adapters::KINESIS_ADAPTER
         buffer_size ||= 50
         serializer ||= RecordSerializer.new

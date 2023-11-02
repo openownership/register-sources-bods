@@ -20,7 +20,9 @@ RSpec.describe RegisterSourcesBods::Publisher do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      {
+        name: ['']
+      }
     end
 
     it 'raises and error' do

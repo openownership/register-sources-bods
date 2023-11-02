@@ -9,7 +9,7 @@
     "reason": "no-beneficial-owners"
   },
   "name": "",
-  "alternateNames": "",
+  "alternateNames": ["alternateName"],
   "incorporatedInJurisdiction": { "name": "France", "code": "FR" },
   "identifiers": [
     {

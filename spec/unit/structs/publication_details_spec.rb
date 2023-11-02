@@ -25,7 +25,9 @@ RSpec.describe RegisterSourcesBods::PublicationDetails do
 
   context 'when params are invalid' do
     let(:params) do
-      {}
+      {
+        bodsVersion: ['']
+      }
     end
 
     it 'raises and error' do

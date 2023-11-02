@@ -17,6 +17,12 @@ module RegisterSourcesBods
         @index = index
       end
 
+      def create_index_unless_exists
+        create_index
+      rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
+        raise e unless /resource_already_exists_exception/.match e.message
+      end
+
       def create_index
         client.indices.create index:, body: { mappings: MAPPINGS }
       end

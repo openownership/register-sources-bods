@@ -64,9 +64,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
         ownership_or_control_statement
       ]
 
-      subject.store(records)
-
-      sleep 1 # eventually consistent, give time
+      subject.store(records, await_refresh: true)
 
       results = subject.list_all
 
@@ -94,9 +92,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
       ]
 
       subject.store(records, await_refresh: true)
-      subject.mark_replaced_statements(records)
-
-      sleep 1 # eventually consistent, give time
+      subject.mark_replaced_statements(records, await_refresh: true)
 
       results = es_client.search(
         index:,
@@ -146,9 +142,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
         ownership_or_control_statement
       ]
 
-      subject.store(records)
-
-      sleep 1 # eventually consistent, give time
+      subject.store(records, await_refresh: true)
 
       # when given single identifier
       results = subject.list_for_identifier(person_statement.identifiers.first)
@@ -170,9 +164,7 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
         ownership_or_control_statement
       ]
 
-      subject.store(records)
-
-      sleep 1 # eventually consistent, give time
+      subject.store(records, await_refresh: true)
 
       results = subject.list_matching_at_least_one_identifier([person_statement.identifiers.first])
       expect(results).to eq [person_statement]

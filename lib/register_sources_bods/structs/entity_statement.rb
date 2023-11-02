@@ -23,7 +23,7 @@ module RegisterSourcesBods
     attribute  :entityType,                 EntityTypes
     attribute? :unspecifiedEntityDetails,   UnspecifiedEntityDetails
     attribute? :name,                       Types::String
-    attribute? :alternateNames,             Types::String
+    attribute? :alternateNames,             Types.Array(Types::String)
     attribute? :incorporatedInJurisdiction, Jurisdiction
     attribute? :identifiers,                Types.Array(Identifier)
     attribute? :foundingDate,               StatementDate
