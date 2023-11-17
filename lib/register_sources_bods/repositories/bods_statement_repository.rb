@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'register_common/elasticsearch/query'
+
 require_relative '../config/elasticsearch'
 require_relative '../register/paginated_array'
 require_relative '../structs/bods_statement'
@@ -26,6 +28,24 @@ module RegisterSourcesBods
         @client = client
         @index = index
         @await_refresh = await_refresh
+      end
+
+      def each(q_must: [], q_filter: [], q_should: [], q_must_not: [], latest: true, &block)
+        q_must_not << { match: { 'metadata.replaced': true } } if latest
+        q = {
+          index:,
+          body: {
+            query: {
+              bool: {
+                must: q_must,
+                filter: q_filter,
+                should: q_should,
+                must_not: q_must_not
+              }
+            }
+          }
+        }
+        RegisterCommon::Elasticsearch::Query.search_scroll(client, q, &block)
       end
 
       def get(statement_id)
