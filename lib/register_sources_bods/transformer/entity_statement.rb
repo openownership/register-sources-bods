@@ -1,24 +1,22 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/object/try'
+require 'active_support/core_ext/string/conversions'
+require 'active_support/core_ext/time'
+require 'register_sources_oc/structs/resolver_request'
 require 'uri'
 require 'xxhash'
 
-require 'register_sources_bods/enums/entity_types'
-require 'register_sources_bods/enums/statement_types'
-require 'register_sources_bods/structs/address'
-require 'register_sources_bods/structs/entity_statement'
-require 'register_sources_bods/structs/jurisdiction'
-require 'register_sources_bods/constants/publisher'
-require 'register_sources_bods/structs/publication_details'
-require 'register_sources_bods/structs/source'
-require 'register_sources_bods/mappers/resolver_mappings'
-
-require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/object/try'
-require 'active_support/core_ext/time'
-require 'active_support/core_ext/string/conversions'
-
-require 'register_sources_oc/structs/resolver_request'
+require_relative '../constants/publisher'
+require_relative '../enums/entity_types'
+require_relative '../enums/statement_types'
+require_relative '../mappers/resolver_mappings'
+require_relative '../structs/address'
+require_relative '../structs/entity_statement'
+require_relative '../structs/jurisdiction'
+require_relative '../structs/publication_details'
+require_relative '../structs/source'
 
 module RegisterSourcesBods
   module Transformer

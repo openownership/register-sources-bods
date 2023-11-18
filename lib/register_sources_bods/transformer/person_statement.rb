@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/structs/person_statement'
+require_relative '../structs/person_statement'
 
 module RegisterSourcesBods
   module Transformer

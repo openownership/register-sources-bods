@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'ostruct'
-require 'register_sources_bods/enums/statement_types'
-require 'register_sources_bods/register/statement_loader'
-require 'register_sources_bods/register/entity_query_builder'
-require 'register_sources_bods/register/paginated_array'
 
 require_relative '../constants/identifiers'
+require_relative '../enums/statement_types'
+require_relative 'entity_query_builder'
+require_relative 'paginated_array'
+require_relative 'statement_loader'
 
 module RegisterSourcesBods
   module Register

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/register/statements_mapper'
-
 require_relative '../constants/identifiers'
+require_relative 'statements_mapper'
 
 module RegisterSourcesBods
   module Register

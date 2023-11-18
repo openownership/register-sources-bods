@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'json'
-require 'register_sources_bods/structs/bods_statement'
+
+require_relative 'structs/bods_statement'
 
 module RegisterSourcesBods
   class RecordDeserializer

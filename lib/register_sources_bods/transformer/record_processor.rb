@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/transformer/entity_statement'
-require 'register_sources_bods/transformer/person_statement'
-require 'register_sources_bods/transformer/ownership_or_control_statement'
+require_relative 'entity_statement'
+require_relative 'ownership_or_control_statement'
+require_relative 'person_statement'
 
 module RegisterSourcesBods
   module Transformer
