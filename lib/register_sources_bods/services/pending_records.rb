@@ -18,15 +18,13 @@ module RegisterSourcesBods
       end
 
       # record = { uid: record }
-      def build_all(records)
+      def build_all(records, identifiers_reject: nil)
         return [] if records.empty?
 
         preprocessed = preprocess records
 
         process(preprocessed).map do |register_identifier, h|
-          build(register_identifier, h[:pending], h[:existing]).merge(
-            uids: h[:uids]
-          )
+          build(register_identifier, h[:pending], h[:existing], identifiers_reject:).merge(uids: h[:uids])
         end.flatten
       end
 
@@ -111,7 +109,8 @@ module RegisterSourcesBods
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-      def build(register_identifier, pending, existing)
+      def build(register_identifier, pending, existing, identifiers_reject: nil)
+        identifiers_reject ||= ->(_i) { false }
         # Calculate which of the statements are the latest (ie have never been replaced)
         replaced_statement_ids = Set.new(existing.map(&:replacesStatements).flatten.compact)
         unreplaced_statements = existing.reject do |statement|
@@ -126,6 +125,7 @@ module RegisterSourcesBods
             [register_identifier] +
             unreplaced_statements.map(&:identifiers)
           ).flatten.compact.uniq.sort_by { |i| i.schemeName || i.scheme }
+                            .reject(&identifiers_reject)
 
           # Build new pending record
           pending_record = BodsStatement[pending_record.to_h.merge(identifiers: new_identifiers).compact]

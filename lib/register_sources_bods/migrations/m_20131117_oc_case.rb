@@ -16,6 +16,13 @@ module RegisterSourcesBods
         @identifiers_id_prefix = identifiers_id_prefix || 'https://opencorporates.com/companies/gb/Sc'
         @repo = Repositories::BodsStatementRepository.new
         @publisher = Services::Publisher.new
+        @identifiers_reject = lambda { |i|
+          if i.schemeName == OPEN_CORPORATES_SCHEME_NAME
+            remap_identifier_open_corporates(i) != i
+          else
+            false
+          end
+        }
       end
 
       private
@@ -57,7 +64,7 @@ module RegisterSourcesBods
 
       def do_flush_buffer
         stmts_h = @buffer.to_h { |s| [s.statementID, s] }
-        @publisher.publish_many(stmts_h)
+        @publisher.publish_many(stmts_h, identifiers_reject: @identifiers_reject)
       end
     end
   end

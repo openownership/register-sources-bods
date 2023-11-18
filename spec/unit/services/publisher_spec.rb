@@ -37,7 +37,8 @@ RSpec.describe RegisterSourcesBods::Services::Publisher do
     expect(repository).to receive(:store).with([statement], await_refresh: true)
     expect(repository).to receive(:mark_replaced_statements).with([statement])
     expect(pending_records_builder).to receive(:build_all).with(
-      { statement_uuid => statement }
+      { statement_uuid => statement },
+      { identifiers_reject: nil }
     ).and_return(
       [
         {
