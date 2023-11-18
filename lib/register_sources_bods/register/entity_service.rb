@@ -6,6 +6,8 @@ require 'register_sources_bods/register/statement_loader'
 require 'register_sources_bods/register/entity_query_builder'
 require 'register_sources_bods/register/paginated_array'
 
+require_relative '../constants/identifiers'
+
 module RegisterSourcesBods
   module Register
     class EntityService
@@ -100,7 +102,7 @@ module RegisterSourcesBods
           resolved_uri = uri.split('-unknown').first
           RegisterSourcesBods::Identifier[{
             id: resolved_uri,
-            schemeName: 'OpenOwnership Register',
+            schemeName: IDENTIFIER_NAME_REG,
             uri: resolved_uri
           }]
         end

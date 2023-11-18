@@ -13,7 +13,7 @@ module RegisterSourcesBods
 
         identifiers = record.identifiers.to_a
 
-        register_identifier = identifiers.find { |i| i.schemeName == REGISTER_SCHEME_NAME }
+        register_identifier = identifiers.find { |i| i.schemeName == IDENTIFIER_NAME_REG }
         identifiers << register_identifier(statement_id) unless register_identifier
 
         identifiers = identifiers.sort_by { |i| i.schemeName || i.scheme }
@@ -41,7 +41,7 @@ module RegisterSourcesBods
 
         RegisterSourcesBods::Identifier.new(
           id: url,
-          schemeName: REGISTER_SCHEME_NAME,
+          schemeName: IDENTIFIER_NAME_REG,
           uri: url
         )
       end

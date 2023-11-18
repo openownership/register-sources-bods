@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
+require_relative '../constants/identifiers'
 require_relative '../repositories/bods_statement_repository'
 require_relative 'builder'
 
 module RegisterSourcesBods
   module Services
     class PendingRecords
-      REGISTER_SCHEME_NAME = 'OpenOwnership Register'
-
       PreprocessedRecord = Struct.new(:uid, :record, :identifiers, :source)
 
       def initialize(repository: nil, builder: nil)
@@ -147,7 +146,7 @@ module RegisterSourcesBods
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def select_register_identifiers(identifiers)
-        identifiers.filter { |identifier| identifier.schemeName == REGISTER_SCHEME_NAME }
+        identifiers.filter { |identifier| identifier.schemeName == IDENTIFIER_NAME_REG }
       end
 
       def find_register_identifier(identifiers)

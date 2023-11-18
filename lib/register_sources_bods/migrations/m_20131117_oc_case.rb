@@ -17,11 +17,7 @@ module RegisterSourcesBods
         @repo = Repositories::BodsStatementRepository.new
         @publisher = Services::Publisher.new
         @identifiers_reject = lambda { |i|
-          if i.schemeName == OPEN_CORPORATES_SCHEME_NAME
-            remap_identifier_open_corporates(i) != i
-          else
-            false
-          end
+          i.schemeName == IDENTIFIER_NAME_OC ? remap_identifier_open_corporates(i) != i : false
         }
       end
 
@@ -34,7 +30,7 @@ module RegisterSourcesBods
             query: {
               bool: {
                 must: [
-                  { term: { 'identifiers.schemeName': OPEN_CORPORATES_SCHEME_NAME } },
+                  { term: { 'identifiers.schemeName': IDENTIFIER_NAME_OC } },
                   { prefix: { 'identifiers.id': @identifiers_id_prefix } }
                 ]
               }
@@ -50,11 +46,7 @@ module RegisterSourcesBods
       def process_doc(doc)
         stmt = BodsStatement[doc['_source'].compact]
         identifiers2 = stmt.identifiers.map do |i|
-          if i.schemeName == OPEN_CORPORATES_SCHEME_NAME
-            remap_identifier_open_corporates(i)
-          else
-            i
-          end
+          i.schemeName == IDENTIFIER_NAME_OC ? remap_identifier_open_corporates(i) : i
         end
         return if identifiers2 == stmt.identifiers
 

@@ -2,6 +2,8 @@
 
 require 'register_sources_bods/register/statements_mapper'
 
+require_relative '../constants/identifiers'
+
 module RegisterSourcesBods
   module Register
     class StatementLoader
@@ -140,7 +142,7 @@ module RegisterSourcesBods
             next unless statement.respond_to?(:identifiers)
 
             statement.identifiers.find do |identifier|
-              identifier.schemeName == 'OpenOwnership Register'
+              identifier.schemeName == IDENTIFIER_NAME_REG
             end
           end.compact
 
