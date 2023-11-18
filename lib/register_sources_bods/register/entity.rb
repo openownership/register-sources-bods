@@ -4,6 +4,7 @@ require 'active_support/core_ext/object/blank'
 require 'countries'
 require 'iso8601'
 
+require_relative '../constants/identifiers'
 require_relative 'paginated_array'
 
 module RegisterSourcesBods
@@ -116,7 +117,7 @@ module RegisterSourcesBods
 
       def id
         ident = identifiers.find do |identifier|
-          identifier.schemeName == 'OpenOwnership Register'
+          identifier.schemeName == IDENTIFIER_NAME_REG
         end
 
         ident ? ident.id.split('/').last : bods_statement.statementID
@@ -127,7 +128,7 @@ module RegisterSourcesBods
       end
 
       def identifiers_lei
-        identifiers.select { |i| i.scheme == 'XI-LEI' }
+        identifiers.select { |i| i.scheme == IDENTIFIER_SCHEME_LEI }
       end
 
       def incorporation_date

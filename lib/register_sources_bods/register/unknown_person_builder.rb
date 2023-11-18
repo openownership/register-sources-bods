@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../constants/identifiers'
 require_relative '../structs/person_statement'
 require_relative 'unknown_entity'
 
@@ -13,7 +14,7 @@ module RegisterSourcesBods
           isComponent: false,
           personType: PersonTypes['unknownPerson'],
           identifiers: bods_statement.identifiers.map do |identifier|
-            next unless identifier.schemeName == 'OpenOwnership Register'
+            next unless identifier.schemeName == IDENTIFIER_NAME_REG
 
             RegisterSourcesBods::Identifier[{
               id: "#{identifier.id}-unknown",

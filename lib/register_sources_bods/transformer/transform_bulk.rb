@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'register_common/services/bulk_transformer'
-
-require 'register_sources_bods/config/adapters'
-require 'register_sources_bods/record_deserializer'
-require 'register_sources_bods/repositories/bods_statement_repository'
-require 'register_sources_bods/services/publisher'
-require 'register_sources_bods/services/es_index_creator'
 require 'register_sources_oc/services/resolver_service'
-require 'register_sources_bods/transformer/record_processor'
+
+require_relative '../config/adapters'
+require_relative '../record_deserializer'
+require_relative '../repositories/bods_statement_repository'
+require_relative '../services/es_index_creator'
+require_relative '../services/publisher'
+require_relative 'record_processor'
 
 module RegisterSourcesBods
   module Transformer

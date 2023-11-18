@@ -24,13 +24,13 @@ module RegisterSourcesBods
         publish_many({ uid: record }).values.first
       end
 
-      def publish_many(records)
+      def publish_many(records, identifiers_reject: nil)
         records = records.transform_values { |record| BodsStatement[record.to_h.compact] }
 
         records_with_identifiers = records.to_a.filter { |_uid, r| r.respond_to?(:identifiers) }.to_h
         records_without_identifiers = records.to_a.filter { |_uid, r| !r.respond_to?(:identifiers) }.to_h
 
-        publish_records_with_identifiers(records_with_identifiers).merge(
+        publish_records_with_identifiers(records_with_identifiers, identifiers_reject:).merge(
           publish_records_without_identifiers(records_without_identifiers)
         )
       end
@@ -39,8 +39,8 @@ module RegisterSourcesBods
 
       attr_reader :builder, :repository, :producer, :pending_records_builder
 
-      def publish_records_with_identifiers(records)
-        pending_records = pending_records_builder.build_all(records)
+      def publish_records_with_identifiers(records, identifiers_reject: nil)
+        pending_records = pending_records_builder.build_all(records, identifiers_reject:)
 
         publishable_records = pending_records.map { |pend| pend[:new_records] }.flatten
         publish_new(deduplicate_existing_records(publishable_records))

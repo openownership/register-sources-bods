@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/object/blank'
 require 'register_common/services/publisher'
 
-require 'register_sources_bods/config/adapters'
-require 'register_sources_bods/record_deserializer'
-require 'register_sources_bods/record_serializer'
-require 'register_sources_bods/services/es_index_creator'
-require 'register_sources_bods/repositories/bods_statement_repository'
-
-require 'active_support/core_ext/object/blank'
+require_relative '../config/adapters'
+require_relative '../record_deserializer'
+require_relative '../record_serializer'
+require_relative '../repositories/bods_statement_repository'
+require_relative '../services/es_index_creator'
 
 module RegisterSourcesBods
   module Ingester

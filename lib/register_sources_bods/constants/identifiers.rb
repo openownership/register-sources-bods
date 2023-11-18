@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module RegisterSourcesBods
-  OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
-  REGISTER_SCHEME_NAME        = 'OpenOwnership Register'
+  IDENTIFIER_NAME_LEI   = 'Global Legal Entity Identifier Index'
+  IDENTIFIER_NAME_OC    = 'OpenCorporates'
+  IDENTIFIER_NAME_REG   = 'OpenOwnership Register'
+  IDENTIFIER_SCHEME_LEI = 'XI-LEI'
 end

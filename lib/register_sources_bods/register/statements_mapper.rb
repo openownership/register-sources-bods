@@ -2,6 +2,7 @@
 
 require 'ostruct'
 
+require_relative '../constants/identifiers'
 require_relative '../structs/bods_statement'
 require_relative 'entity'
 require_relative 'paginated_array'
@@ -31,7 +32,7 @@ module RegisterSourcesBods
         master_statement_ids = {}
         entities.each_value do |entity|
           register_identifier = entity.identifiers.find do |ident|
-            ident.schemeName == 'OpenOwnership Register'
+            ident.schemeName == IDENTIFIER_NAME_REG
           end
 
           next unless register_identifier&.uri
@@ -43,7 +44,7 @@ module RegisterSourcesBods
 
         entities.each_value do |entity|
           register_identifier = entity.identifiers.find do |ident|
-            ident.schemeName == 'OpenOwnership Register'
+            ident.schemeName == IDENTIFIER_NAME_REG
           end
 
           next unless register_identifier&.uri

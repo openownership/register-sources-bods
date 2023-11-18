@@ -20,7 +20,7 @@ module RegisterSourcesBods
 
       def log_doc(doc)
         identifier = doc['_source']['identifiers']&.select do |i|
-          i['schemeName'] == REGISTER_SCHEME_NAME
+          i['schemeName'] == IDENTIFIER_NAME_REG
         end&.first
         puts [
           doc['_index'],

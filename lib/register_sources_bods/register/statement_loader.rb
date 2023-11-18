@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'register_sources_bods/register/statements_mapper'
+require_relative '../constants/identifiers'
+require_relative 'statements_mapper'
 
 module RegisterSourcesBods
   module Register
@@ -140,7 +141,7 @@ module RegisterSourcesBods
             next unless statement.respond_to?(:identifiers)
 
             statement.identifiers.find do |identifier|
-              identifier.schemeName == 'OpenOwnership Register'
+              identifier.schemeName == IDENTIFIER_NAME_REG
             end
           end.compact
 

@@ -2,6 +2,7 @@
 
 require 'register_sources_oc/repositories/add_id_repository'
 
+require_relative '../constants/identifiers'
 require_relative '../mappers/resolver_mappings'
 require_relative '../repositories/bods_statement_repository'
 require_relative 'publisher'
@@ -38,7 +39,7 @@ module RegisterSourcesBods
           # construct new statements
           new_statements = ent_sts.map do |ent_st|
             # filter to get OpenCorporates identifiers
-            oc_ids = ent_st.identifiers.filter { |identifier| identifier.schemeName == 'OpenCorporates' }
+            oc_ids = ent_st.identifiers.filter { |identifier| identifier.schemeName == IDENTIFIER_NAME_OC }
 
             # get list of LEI identifiers for these OpenCorporates identifiers
             lei_identifiers = oc_ids.map { |oc_id| lei_map.key(oc_id) }.compact.uniq

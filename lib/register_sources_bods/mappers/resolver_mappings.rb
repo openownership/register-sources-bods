@@ -5,6 +5,7 @@ require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/string/conversions'
 require 'active_support/core_ext/time'
 
+require_relative '../constants/identifiers'
 require_relative '../enums/entity_types'
 require_relative '../enums/statement_types'
 require_relative '../structs/address'
@@ -15,10 +16,6 @@ require_relative '../structs/jurisdiction'
 module RegisterSourcesBods
   module Mappers
     module ResolverMappings
-      LEI_SCHEME                  = 'XI-LEI'
-      LEI_SCHEME_NAME             = 'Global Legal Entity Identifier Index'
-      OPEN_CORPORATES_SCHEME_NAME = 'OpenCorporates'
-
       def addresses
         return [] unless resolver_response&.company
 
@@ -40,8 +37,8 @@ module RegisterSourcesBods
         uri = "https://search.gleif.org/#/record/#{add_id.uid}"
         RegisterSourcesBods::Identifier[{
           id: add_id.uid,
-          scheme: LEI_SCHEME,
-          schemeName: LEI_SCHEME_NAME,
+          scheme: IDENTIFIER_SCHEME_LEI,
+          schemeName: IDENTIFIER_NAME_LEI,
           uri:
         }]
       end
@@ -50,7 +47,7 @@ module RegisterSourcesBods
         uri = "https://opencorporates.com/companies/#{jurisdiction_code}/#{company_number.upcase}"
         RegisterSourcesBods::Identifier[{
           id: uri,
-          schemeName: OPEN_CORPORATES_SCHEME_NAME,
+          schemeName: IDENTIFIER_NAME_OC,
           uri:
         }]
       end
@@ -113,6 +110,11 @@ module RegisterSourcesBods
       rescue Date::Error
         LOGGER.warn "Entity has invalid dissolution_date: #{date}"
         nil
+      end
+
+      def remap_identifier_open_corporates(identifier)
+        parts = identifier.id.split('/')
+        identifier_open_corporates_from_company(parts[-2], parts[-1])
       end
 
       private
