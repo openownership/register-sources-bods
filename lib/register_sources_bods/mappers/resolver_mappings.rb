@@ -115,6 +115,11 @@ module RegisterSourcesBods
         nil
       end
 
+      def remap_identifier_open_corporates(identifier)
+        parts = identifier.id.split('/')
+        identifier_open_corporates_from_company(parts[-2], parts[-1])
+      end
+
       private
 
       attr_reader :resolver_response

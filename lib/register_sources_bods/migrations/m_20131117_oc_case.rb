@@ -44,8 +44,7 @@ module RegisterSourcesBods
         stmt = BodsStatement[doc['_source'].compact]
         identifiers2 = stmt.identifiers.map do |i|
           if i.schemeName == OPEN_CORPORATES_SCHEME_NAME
-            id2 = i.id.split('/')
-            identifier_open_corporates_from_company(id2[-2], id2[-1])
+            remap_identifier_open_corporates(i)
           else
             i
           end
