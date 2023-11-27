@@ -30,3 +30,31 @@ Run the tests:
 ```sh
 docker compose run sources-bods test
 ```
+
+## Usage
+
+### Static BODS
+
+To ingest bulk data from AWS S3 prefix `xx/` into the `raw-xx` index:
+
+```sh
+docker compose run sources-bods ingest-bulk raw-xx xx/
+```
+
+To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index:
+
+```sh
+docker compose run sources-bods ingest-local raw-xx statements/xx.jsonl
+```
+
+To transform bulk data from AWS S3 prefix `xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:
+
+```sh
+docker compose run sources-bods transform-bulk raw-xx bods_v2_xx_dev1 xx/
+```
+
+To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index:
+
+```sh
+docker compose run sources-bods transform-local raw-xx bods_v2_xx_dev1 statements/xx.jsonl
+```
