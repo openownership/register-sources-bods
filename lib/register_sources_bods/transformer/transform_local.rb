@@ -3,6 +3,7 @@
 require 'register_sources_oc/services/resolver_service'
 
 require_relative '../config/adapters'
+require_relative '../logging'
 require_relative '../record_deserializer'
 require_relative '../repositories/bods_statement_repository'
 require_relative '../services/es_index_creator'
@@ -53,8 +54,10 @@ module RegisterSourcesBods
       attr_reader :deserializer, :raw_records_repository, :records_repository, :record_processor, :es_index_creator
 
       def process_rows(rows)
-        records = rows.map do |record_data|
-          deserializer.deserialize record_data
+        records = rows.map do |row|
+          record = deserializer.deserialize(row)
+          Logging.log(record)
+          record
         end
 
         record_processor.process_many records

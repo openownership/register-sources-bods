@@ -15,19 +15,19 @@ RSpec.describe RegisterSourcesBods::Ingester::IngestBulk do
     [
       RegisterSourcesBods::PersonStatement.new(
         **JSON.parse(
-          File.read('spec/fixtures/person_statement.json'),
+          File.read('spec/fixtures/person_statement_pruned.json'),
           symbolize_names: true
         ).compact
       ),
       RegisterSourcesBods::EntityStatement.new(
         **JSON.parse(
-          File.read('spec/fixtures/entity_statement.json'),
+          File.read('spec/fixtures/entity_statement_pruned.json'),
           symbolize_names: true
         )
       ),
       RegisterSourcesBods::OwnershipOrControlStatement.new(
         **JSON.parse(
-          File.read('spec/fixtures/ownership_or_control_statement.json'),
+          File.read('spec/fixtures/ownership_or_control_statement_pruned.json'),
           symbolize_names: true
         )
       )

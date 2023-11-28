@@ -1,0 +1,52 @@
+{
+  "statementID": "ocs1",
+  "statementType": "ownershipOrControlStatement",
+  "statementDate": "2022-03-02",
+  "isComponent": false,
+  "componentStatementIDs": [],
+  "subject": {
+    "describedByEntityStatement": "es1"
+  },
+  "interestedParty": {
+    "describedByPersonStatement": "ps1",
+    "unspecified": {
+      "description": "some description",
+      "reason": "no-beneficial-owners"
+    }
+  },
+  "interests": [
+    {
+      "type": "shareholding",
+      "details": "ownership-of-shares-25-to-50-percent",
+      "share": {
+        "maximum": 50.0,
+        "minimum": 25.0,
+        "exclusiveMinimum": true,
+        "exclusiveMaximum": false
+      },
+      "startDate": "2016-07-27",
+      "endDate": "2017-03-30"
+    }
+  ],
+  "publicationDetails": {
+    "publicationDate": "2023-03-15",
+    "bodsVersion": "0.2",
+    "license": "https://register.openownership.org/terms-and-conditions",
+    "publisher": {
+      "name": "OpenOwnership Register",
+      "url": "https://register.openownership.org"
+    }
+  },
+  "source": {
+    "type": "officialRegister",
+    "description": "GB Persons Of Significant Control Register",
+    "url": "http://download.companieshouse.gov.uk/en_pscdata.html",
+    "retrievedAt": "2023-03-15",
+    "assertedBy": {
+        "name": "NAME",
+        "url": "URL"
+    }
+  },
+  "annotations": [],
+  "replacesStatements": []
+}

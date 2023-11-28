@@ -1,0 +1,45 @@
+{
+  "statementID": "es1",
+  "statementType": "entityStatement",
+  "statementDate": "2022-09-03",
+  "isComponent": false,
+  "entityType": "legalEntity",
+  "unspecifiedEntityDetails": {
+    "description": "some description",
+    "reason": "no-beneficial-owners"
+  },
+  "name": "",
+  "alternateNames": ["alternateName"],
+  "incorporatedInJurisdiction": { "name": "France", "code": "FR" },
+  "identifiers": [
+    {
+      "scheme": "scheme",
+      "uri": "abc/id1"
+    }
+  ],
+  "foundingDate": "2022-08-09",
+  "dissolutionDate": "2022-06-05",
+  "addresses": [],
+  "uri": "",
+  "replacesStatements": [],
+  "publicationDetails": {
+    "publicationDate": "",
+    "bodsVersion": "",
+    "license": "",
+    "publisher": {
+      "name": "",
+      "url": ""
+    }
+  },
+  "source": {
+    "type": "officialRegister",
+    "description": "DESCRIPTION",
+    "url": "URL",
+    "retrievedAt": "RETRIEVED_AT",
+    "assertedBy": {
+        "name": "NAME",
+        "url": "URL"
+    }
+  },
+  "annotations": []
+}

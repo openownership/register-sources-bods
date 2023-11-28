@@ -5,6 +5,7 @@ require 'register_common/services/bulk_transformer'
 require 'register_common/services/publisher'
 
 require_relative '../config/adapters'
+require_relative '../logging'
 require_relative '../record_deserializer'
 require_relative '../record_serializer'
 require_relative '../repositories/bods_statement_repository'
@@ -62,8 +63,10 @@ module RegisterSourcesBods
       attr_reader :bulk_transformer, :deserializer, :repository, :publisher, :es_index_creator
 
       def process_rows(rows)
-        records = rows.map do |record_data|
-          deserializer.deserialize record_data
+        records = rows.map do |row|
+          record = deserializer.deserialize(row)
+          Logging.log(record)
+          record
         end
 
         new_records = records.reject { |record| repository.get(record.statementID) }

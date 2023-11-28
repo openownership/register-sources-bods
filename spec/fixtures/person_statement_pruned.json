@@ -1,0 +1,62 @@
+{
+  "statementID": "ps1",
+  "statementType": "personStatement",
+  "statementDate": "2022-09-07",
+  "isComponent": false,
+  "personType": "knownPerson",
+  "unspecifiedPersonDetails": {
+    "description": "some description",
+    "reason": "no-beneficial-owners"
+  },
+  "names": [
+    { "type": "individual", "fullName": "Mike", "familyName": "Jones" }
+  ],
+  "identifiers": [
+    {
+      "id": "id2",
+      "scheme": "scheme",
+      "schemeName": "schemeName"
+    },
+    {
+      "id": "another-id2",
+      "scheme": "XI-LEI",
+      "schemeName": "schemeName2"
+    }
+  ],
+  "nationalities": [
+    { "name": "France", "code": "FR" }
+  ],
+  "placeOfBirth": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
+  "birthDate": "1990-05-03",
+  "deathDate": null,
+  "placeOfResidence": { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" },
+  "taxResidencies": [
+    { "name": "France", "code": "FR" }
+  ],
+  "addresses": [
+    { "type": "placeOfBirth", "postCode": "ABC", "country": "FR", "address": "free address field" }
+  ],
+  "hasPepStatus": false,
+  "pepStatusDetails": null,
+  "publicationDetails": {
+    "publicationDate": "",
+    "bodsVersion": "",
+    "license": "",
+    "publisher": {
+      "name": "",
+      "url": "URL"
+    }
+  },
+  "source": {
+    "type": "officialRegister",
+    "description": "DESCRIPTION",
+    "url": "URL",
+    "retrievedAt": "RETRIEVED_AT",
+    "assertedBy": {
+      "name": "NAME",
+      "url": "URL"
+    }
+  },
+  "annotations": [],
+  "replacesStatements": []
+}
