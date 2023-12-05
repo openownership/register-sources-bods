@@ -54,7 +54,7 @@ module RegisterSourcesBods
       end
 
       def do_flush_buffer
-        @processor.process_many(@buffer)
+        @buffer.each { |s| @processor.process(s) }
       end
     end
   end
