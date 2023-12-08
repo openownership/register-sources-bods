@@ -41,10 +41,10 @@ To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index:
 docker compose run sources-bods ingest-bulk raw/xx/ raw-xx
 ```
 
-To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index and publish to `bods-xx-dev` stream:
+To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index and publish to the `xx-dev` stream:
 
 ```sh
-docker compose run sources-bods ingest-bulk raw/xx/ raw-xx bods-xx-dev
+docker compose run sources-bods ingest-bulk raw/xx/ raw-xx xx-dev
 ```
 
 To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index:
@@ -53,10 +53,10 @@ To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index:
 docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx
 ```
 
-To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index and publish to `bods-xx-dev` stream:
+To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index and publish to the `xx-dev` stream:
 
 ```sh
-docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx bods-xx-dev
+docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx xx-dev
 ```
 
 To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:
@@ -65,8 +65,20 @@ To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to t
 docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1
 ```
 
+To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index and publish to the `bods-xx-dev` stream:
+
+```sh
+docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1 bods-xx-dev
+```
+
 To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index:
 
 ```sh
 docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1
+```
+
+To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index and publish to the `bods-xx-dev` stream:
+
+```sh
+docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
