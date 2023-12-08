@@ -14,6 +14,8 @@ require_relative 'record_processor'
 module RegisterSourcesBods
   module Transformer
     class TransformBulk
+      BULK_NAMESPACE = 'BULK_TRANSFORMER'
+
       def self.bash_call(args)
         s3_prefix, raw_index, dest_index = args
 
@@ -33,7 +35,8 @@ module RegisterSourcesBods
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
-          set_client: Config::Adapters::SET_CLIENT
+          set_client: Config::Adapters::SET_CLIENT,
+          namespace: BULK_NAMESPACE
         )
         @deserializer = RecordDeserializer.new
         @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)

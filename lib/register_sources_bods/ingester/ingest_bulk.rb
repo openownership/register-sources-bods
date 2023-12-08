@@ -14,6 +14,8 @@ require_relative '../services/es_index_creator'
 module RegisterSourcesBods
   module Ingester
     class IngestBulk
+      BULK_NAMESPACE = 'BULK_INGESTER'
+
       def self.bash_call(args)
         s3_prefix, index, stream = args
 
@@ -36,7 +38,8 @@ module RegisterSourcesBods
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
-          set_client: Config::Adapters::SET_CLIENT
+          set_client: Config::Adapters::SET_CLIENT,
+          namespace: BULK_NAMESPACE
         )
         @publisher = publisher || (stream && RegisterCommon::Services::Publisher.new(
           stream_name: stream,
