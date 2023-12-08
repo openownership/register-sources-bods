@@ -85,7 +85,7 @@ module RegisterSourcesBods
         end
 
         if @publisher
-          new_records.each do |record|
+          records.each do |record|
             @publisher.publish(record)
           end
           @publisher.finalize
