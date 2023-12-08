@@ -15,25 +15,24 @@ module RegisterSourcesBods
   module Ingester
     class IngestBulk
       def self.bash_call(args)
-        index = args[-2]
-        s3_prefix = args[-1]
+        s3_prefix, index, stream = args
 
-        call(index:, s3_prefix:)
+        call(s3_prefix:, index:, stream:)
       end
 
-      def self.call(index:, s3_prefix:)
-        new(index:).call(s3_prefix)
+      def self.call(s3_prefix:, index:, stream:)
+        new(index:, stream:).call(s3_prefix)
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def initialize(
         bulk_transformer: nil,
         repository: nil,
         index: nil,
         publisher: nil,
-        es_index_creator: nil
+        es_index_creator: nil,
+        stream: nil
       )
-        stream = ENV.fetch('BODS_STREAM', nil).presence
-
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
@@ -49,6 +48,7 @@ module RegisterSourcesBods
         @repository = repository || Repositories::BodsStatementRepository.new(index:)
         @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index:)
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def call(s3_prefix)
         es_index_creator.create_index_unless_exists

@@ -35,16 +35,28 @@ docker compose run sources-bods test
 
 ### Static BODS
 
-To ingest bulk data from AWS S3 prefix `xx/` into the `raw-xx` index:
+To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index:
 
 ```sh
-docker compose run sources-bods ingest-bulk raw-xx xx/
+docker compose run sources-bods ingest-bulk raw/xx/ raw-xx
+```
+
+To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index and publish to `bods-xx-dev` stream:
+
+```sh
+docker compose run sources-bods ingest-bulk raw/xx/ raw-xx bods-xx-dev
 ```
 
 To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index:
 
 ```sh
-docker compose run sources-bods ingest-local raw-xx statements/xx.jsonl
+docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx
+```
+
+To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index and publish to `bods-xx-dev` stream:
+
+```sh
+docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx bods-xx-dev
 ```
 
 To transform bulk data from AWS S3 prefix `xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:

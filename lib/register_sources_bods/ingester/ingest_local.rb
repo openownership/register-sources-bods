@@ -14,18 +14,16 @@ module RegisterSourcesBods
   module Ingester
     class IngestLocal
       def self.bash_call(args)
-        index = args[-2]
-        local_path = args[-1]
+        local_path, index, stream = args
 
-        call(index:, local_path:)
+        call(local_path:, index:, stream:)
       end
 
-      def self.call(index:, local_path:)
-        new(index:).call(local_path)
+      def self.call(local_path:, index:, stream:)
+        new(index:, stream:).call(local_path)
       end
 
-      def initialize(repository: nil, index: nil, publisher: nil, es_index_creator: nil)
-        stream = ENV.fetch('BODS_STREAM', nil).presence
+      def initialize(repository: nil, index: nil, publisher: nil, es_index_creator: nil, stream: nil)
         @publisher = publisher || (stream && RegisterCommon::Services::Publisher.new(
           stream_name: stream,
           kinesis_adapter: Config::Adapters::KINESIS_ADAPTER,
