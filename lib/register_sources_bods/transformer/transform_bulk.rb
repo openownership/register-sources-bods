@@ -15,9 +15,7 @@ module RegisterSourcesBods
   module Transformer
     class TransformBulk
       def self.bash_call(args)
-        raw_index = args[-3]
-        dest_index = args[-2]
-        s3_prefix = args[-1]
+        s3_prefix, raw_index, dest_index = args
 
         call(raw_index:, dest_index:, s3_prefix:)
       end

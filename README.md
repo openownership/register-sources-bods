@@ -59,14 +59,14 @@ To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index and publish to 
 docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx bods-xx-dev
 ```
 
-To transform bulk data from AWS S3 prefix `xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:
+To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:
 
 ```sh
-docker compose run sources-bods transform-bulk raw-xx bods_v2_xx_dev1 xx/
+docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1
 ```
 
 To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index:
 
 ```sh
-docker compose run sources-bods transform-local raw-xx bods_v2_xx_dev1 statements/xx.jsonl
+docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1
 ```

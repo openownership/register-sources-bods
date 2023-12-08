@@ -14,9 +14,7 @@ module RegisterSourcesBods
   module Transformer
     class TransformLocal
       def self.bash_call(args)
-        raw_index = args[-3]
-        dest_index = args[-2]
-        local_path = args[-1]
+        local_path, raw_index, dest_index = args
 
         call(raw_index:, dest_index:, local_path:)
       end
