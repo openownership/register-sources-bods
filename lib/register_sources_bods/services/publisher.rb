@@ -9,11 +9,11 @@ require_relative 'records_producer'
 module RegisterSourcesBods
   module Services
     class Publisher
-      def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil)
+      def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil, stream_name: nil)
         @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
           client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
         )
-        @producer = producer || Services::RecordsProducer.new
+        @producer = producer || Services::RecordsProducer.new(stream_name:)
         @builder = builder || Services::Builder.new
         @pending_records_builder = pending_records_builder || Services::PendingRecords.new(
           repository: @repository

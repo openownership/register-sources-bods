@@ -17,20 +17,21 @@ module RegisterSourcesBods
       BULK_NAMESPACE = 'BULK_TRANSFORMER'
 
       def self.bash_call(args)
-        s3_prefix, raw_index, dest_index = args
+        s3_prefix, raw_index, dest_index, stream = args
 
-        call(raw_index:, dest_index:, s3_prefix:)
+        call(raw_index:, dest_index:, s3_prefix:, stream:)
       end
 
-      def self.call(raw_index:, dest_index:, s3_prefix:)
-        new(raw_index:, dest_index:).call(s3_prefix)
+      def self.call(raw_index:, dest_index:, s3_prefix:, stream:)
+        new(raw_index:, dest_index:, stream:).call(s3_prefix)
       end
 
       def initialize(
         bulk_transformer: nil,
         raw_index: nil,
         dest_index: nil,
-        entity_resolver: nil
+        entity_resolver: nil,
+        stream: nil
       )
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
@@ -48,7 +49,8 @@ module RegisterSourcesBods
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
           bods_publisher: RegisterSourcesBods::Services::Publisher.new(
-            repository: @records_repository
+            repository: @records_repository,
+            stream_name: stream
           )
         )
       end

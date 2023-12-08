@@ -14,16 +14,16 @@ module RegisterSourcesBods
   module Transformer
     class TransformLocal
       def self.bash_call(args)
-        local_path, raw_index, dest_index = args
+        local_path, raw_index, dest_index, stream = args
 
-        call(raw_index:, dest_index:, local_path:)
+        call(raw_index:, dest_index:, local_path:, stream:)
       end
 
-      def self.call(raw_index:, dest_index:, local_path:)
-        new(raw_index:, dest_index:).call(local_path)
+      def self.call(raw_index:, dest_index:, local_path:, stream:)
+        new(raw_index:, dest_index:, stream:).call(local_path)
       end
 
-      def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil)
+      def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil, stream: nil)
         @deserializer = RecordDeserializer.new
         @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
         @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
@@ -33,7 +33,8 @@ module RegisterSourcesBods
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
           bods_publisher: RegisterSourcesBods::Services::Publisher.new(
-            repository: @records_repository
+            repository: @records_repository,
+            stream_name: stream
           )
         )
         @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
