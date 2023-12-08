@@ -21,7 +21,7 @@ module RegisterSourcesBods
       def log_doc(doc)
         identifier = doc['_source']['identifiers']&.select do |i|
           i['schemeName'] == IDENTIFIER_NAME_REG
-        end&.first
+        end&.min_by { |i| i['id'] }
         puts [
           doc['_index'],
           doc['_id'].ljust(20),
