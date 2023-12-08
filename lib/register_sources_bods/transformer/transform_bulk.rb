@@ -14,28 +14,30 @@ require_relative 'record_processor'
 module RegisterSourcesBods
   module Transformer
     class TransformBulk
-      def self.bash_call(args)
-        raw_index = args[-3]
-        dest_index = args[-2]
-        s3_prefix = args[-1]
+      BULK_NAMESPACE = 'BULK_TRANSFORMER'
 
-        call(raw_index:, dest_index:, s3_prefix:)
+      def self.bash_call(args)
+        s3_prefix, raw_index, dest_index, stream = args
+
+        call(raw_index:, dest_index:, s3_prefix:, stream:)
       end
 
-      def self.call(raw_index:, dest_index:, s3_prefix:)
-        new(raw_index:, dest_index:).call(s3_prefix)
+      def self.call(raw_index:, dest_index:, s3_prefix:, stream:)
+        new(raw_index:, dest_index:, stream:).call(s3_prefix)
       end
 
       def initialize(
         bulk_transformer: nil,
         raw_index: nil,
         dest_index: nil,
-        entity_resolver: nil
+        entity_resolver: nil,
+        stream: nil
       )
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
-          set_client: Config::Adapters::SET_CLIENT
+          set_client: Config::Adapters::SET_CLIENT,
+          namespace: BULK_NAMESPACE
         )
         @deserializer = RecordDeserializer.new
         @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
@@ -47,7 +49,8 @@ module RegisterSourcesBods
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
           bods_publisher: RegisterSourcesBods::Services::Publisher.new(
-            repository: @records_repository
+            repository: @records_repository,
+            stream_name: stream
           )
         )
       end
