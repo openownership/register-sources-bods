@@ -84,11 +84,12 @@ module RegisterSourcesBods
           record
         end
 
-        if @publisher
+        if publisher
           new_records.each do |record|
-            @publisher.publish(record)
+            publisher.publish(record)
           end
-          @publisher.finalize
+
+          publisher.finalize
         end
 
         record_processor.process_many records
