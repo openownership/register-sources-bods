@@ -37,6 +37,13 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                         }
                       },
                       {
+                        match_phrase: {
+                          alternateNames: {
+                            query: 'Some Company'
+                          }
+                        }
+                      },
+                      {
                         nested: {
                           path: 'names',
                           query: {
@@ -116,6 +123,13 @@ RSpec.describe RegisterSourcesBods::Register::EntityQueryBuilder do
                           name: {
                             query: 'Some Company',
                             slop: 50
+                          }
+                        }
+                      },
+                      {
+                        match_phrase: {
+                          alternateNames: {
+                            query: 'Some Company'
                           }
                         }
                       },
