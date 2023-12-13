@@ -58,6 +58,12 @@ module RegisterSourcesBods
         resolver_response.company.name
       end
 
+      def alternate_names
+        return unless resolver_response&.resolved && resolver_response&.alt_names
+
+        resolver_response.alt_names.map(&:name)
+      end
+
       def lei_identifier
         return unless resolver_response&.resolved && resolver_response&.add_ids
 
