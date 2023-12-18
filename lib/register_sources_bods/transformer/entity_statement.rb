@@ -33,11 +33,14 @@ module RegisterSourcesBods
       end
 
       def call
-        RegisterSourcesBods::EntityStatement[bods_entity.to_h.merge({
-                                                                      identifiers:,
-                                                                      foundingDate: founding_date,
-                                                                      dissolutionDate: dissolution_date
-                                                                    }).compact]
+        RegisterSourcesBods::EntityStatement[bods_entity.to_h.merge(
+          {
+            alternateNames: alternate_names,
+            identifiers:,
+            foundingDate: founding_date,
+            dissolutionDate: dissolution_date
+          }
+        ).compact]
       end
 
       private
@@ -57,6 +60,10 @@ module RegisterSourcesBods
             name: bods_entity.name
           }.compact]
         )
+      end
+
+      def alternate_names
+        [bods_entity.alternateNames, super].flatten.compact.uniq
       end
 
       def identifiers

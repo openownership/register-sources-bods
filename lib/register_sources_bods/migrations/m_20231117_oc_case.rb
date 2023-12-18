@@ -8,7 +8,7 @@ require_relative 'base'
 
 module RegisterSourcesBods
   module Migrations
-    class M20131117OCCase < Base
+    class M20231117OCCase < Base
       include RegisterSourcesBods::Mappers::ResolverMappings
 
       def initialize(identifiers_id_prefix = nil)

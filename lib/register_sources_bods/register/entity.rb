@@ -163,6 +163,10 @@ module RegisterSourcesBods
         end
       end
 
+      def alternate_names
+        bods_statement.alternateNames&.sort || []
+      end
+
       def natural_person?
         return false unless bods_statement
 

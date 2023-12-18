@@ -49,6 +49,13 @@ module RegisterSourcesBods
                       }
                     },
                     {
+                      match_phrase: {
+                        alternateNames: {
+                          query:
+                        }
+                      }
+                    },
+                    {
                       nested: {
                         path: 'names',
                         query: {
