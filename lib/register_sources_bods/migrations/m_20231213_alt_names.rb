@@ -49,7 +49,7 @@ module RegisterSourcesBods
 
       def process_stmt(doc, id, stmt)
         alternate_name = doc['_source']['name']
-        stmt.alternateNames ||= []
+        stmt = stmt.new(alternateNames: []) unless stmt.alternateNames
         return if stmt.alternateNames.include?(alternate_name)
 
         stmt.alternateNames << alternate_name
