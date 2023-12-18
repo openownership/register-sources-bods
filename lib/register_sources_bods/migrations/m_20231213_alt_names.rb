@@ -9,7 +9,7 @@ require_relative 'base'
 
 module RegisterSourcesBods
   module Migrations
-    class M20131213AltNames < Base
+    class M20231213AltNames < Base
       include RegisterSourcesBods::Mappers::ResolverMappings
 
       def initialize(jurisdiction_codes = nil, company_numbers = nil)
