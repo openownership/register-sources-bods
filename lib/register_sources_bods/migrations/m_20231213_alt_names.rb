@@ -44,7 +44,7 @@ module RegisterSourcesBods
                 else
                   @repo_bods.list_matching_at_least_one_identifier([id], latest: true)
                 end
-        stmts.each { |stmt| process_stmt(doc, id, stmt) }
+        stmts.compact.each { |stmt| process_stmt(doc, id, stmt) }
       end
 
       def process_stmt(doc, id, stmt)
