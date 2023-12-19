@@ -33,52 +33,34 @@ docker compose run sources-bods test
 
 ## Usage
 
-### Static BODS
+### Static BODS Local
 
-To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index:
-
-```sh
-docker compose run sources-bods ingest-bulk raw/xx/ raw-xx
-```
-
-To ingest bulk data from AWS S3 prefix `raw/xx/` into the `raw-xx` index and publish to `xx-dev` stream:
-
-```sh
-docker compose run sources-bods ingest-bulk raw/xx/ raw-xx xx-dev
-```
-
-To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index:
+To local ingest `xx.jsonl` file into `raw-xx` index, optionally publishing to `xx-dev` Kinesis stream:
 
 ```sh
 docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx
-```
-
-To ingest a local file (e.g. `xx.jsonl`) into the `raw-xx` index and publish to `xx-dev` stream:
-
-```sh
 docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx xx-dev
 ```
 
-To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index:
-
-```sh
-docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1
-```
-
-To transform bulk data from AWS S3 prefix `raw/xx/` from the `raw-xx` index to the `bods_v2_xx_dev1` index and publish to `bods-xx-dev` stream:
-
-```sh
-docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1 bods-xx-dev
-```
-
-To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index:
+To local transform `xx.jsonl` file from `raw-xx` index into `bods_v2_xx_dev1` index, optionally publishing to `bods-xx-dev` Kinesis stream:
 
 ```sh
 docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1
+docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
 
-To transform a local file (e.g. `xx.jsonl`) from the `raw-xx` index to the `bods_v2_xx_dev1` index and publish to `bods-xx-dev` stream:
+### Static BODS Bulk
+
+To bulk ingest `raw/xx/` S3 prefix into `raw-xx` index, optionally publishing to `xx-dev` Kinesis stream:
 
 ```sh
-docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
+docker compose run sources-bods ingest-bulk raw/xx/ raw-xx
+docker compose run sources-bods ingest-bulk raw/xx/ raw-xx xx-dev
+```
+
+To bulk transform `raw/xx/` S3 prefix from `raw-xx` index into `bods_v2_xx_dev1` index, optionally publishing to `bods-xx-dev` Kinesis stream:
+
+```sh
+docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1
+docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
