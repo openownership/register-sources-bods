@@ -49,6 +49,8 @@ docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_
 docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
 
+Optionally, `0` can be appended to the command to disable resolving via Open Corporates. In case disabling is required but publishing to a Kinesis stream isn't, `'' 0` can be used as the final two arguments.
+
 ### Static BODS Bulk
 
 To bulk ingest `raw/xx/` S3 prefix into `raw-xx` index, optionally publishing to `xx-dev` Kinesis stream:
@@ -64,3 +66,5 @@ To bulk transform `raw/xx/` S3 prefix from `raw-xx` index into `bods_v2_xx_dev1`
 docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1
 docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
+
+Optionally, `0` can be appended to the command to disable resolving via Open Corporates. In case disabling is required but publishing to a Kinesis stream isn't, `'' 0` can be used as the final two arguments.
