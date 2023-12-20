@@ -17,22 +17,27 @@ module RegisterSourcesBods
       BULK_NAMESPACE = 'BULK_TRANSFORMER'
 
       def self.bash_call(args)
-        s3_prefix, raw_index, dest_index, stream = args
+        s3_prefix, raw_index, dest_index, stream, resolve = args
+        stream  = nil if stream.blank?
+        resolve = resolve.blank? || resolve.nil? ? nil : resolve != '0'
 
-        call(raw_index:, dest_index:, s3_prefix:, stream:)
+        call(raw_index:, dest_index:, s3_prefix:, stream:, resolve:)
       end
 
-      def self.call(raw_index:, dest_index:, s3_prefix:, stream:)
-        new(raw_index:, dest_index:, stream:).call(s3_prefix)
+      def self.call(raw_index:, dest_index:, s3_prefix:, stream:, resolve:)
+        new(raw_index:, dest_index:, stream:, resolve:).call(s3_prefix)
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def initialize(
         bulk_transformer: nil,
         raw_index: nil,
         dest_index: nil,
         entity_resolver: nil,
-        stream: nil
+        stream: nil,
+        resolve: nil
       )
+        resolve = true if resolve.nil?
         @bulk_transformer = bulk_transformer || RegisterCommon::Services::BulkTransformer.new(
           s3_adapter: Config::Adapters::S3_ADAPTER,
           s3_bucket: ENV.fetch('BODS_S3_BUCKET_NAME'),
@@ -44,7 +49,7 @@ module RegisterSourcesBods
         @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
         @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
 
-        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new
+        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new if resolve
         @record_processor = Transformer::RecordProcessor.new(
           entity_resolver:,
           raw_records_repository: @raw_records_repository,
@@ -54,6 +59,7 @@ module RegisterSourcesBods
           )
         )
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def call(s3_prefix)
         es_index_creator.create_index_unless_exists

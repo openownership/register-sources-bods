@@ -14,21 +14,24 @@ module RegisterSourcesBods
   module Transformer
     class TransformLocal
       def self.bash_call(args)
-        local_path, raw_index, dest_index, stream = args
+        local_path, raw_index, dest_index, stream, resolve = args
+        stream  = nil if stream.blank?
+        resolve = resolve.blank? || resolve.nil? ? nil : resolve != '0'
 
-        call(raw_index:, dest_index:, local_path:, stream:)
+        call(raw_index:, dest_index:, local_path:, stream:, resolve:)
       end
 
-      def self.call(raw_index:, dest_index:, local_path:, stream:)
-        new(raw_index:, dest_index:, stream:).call(local_path)
+      def self.call(raw_index:, dest_index:, local_path:, stream:, resolve:)
+        new(raw_index:, dest_index:, stream:, resolve:).call(local_path)
       end
 
-      def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil, stream: nil)
+      def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil, stream: nil, resolve: nil)
+        resolve = true if resolve.nil?
         @deserializer = RecordDeserializer.new
         @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
         @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
 
-        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new
+        entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new if resolve
         @record_processor = Transformer::RecordProcessor.new(
           entity_resolver:,
           raw_records_repository: @raw_records_repository,

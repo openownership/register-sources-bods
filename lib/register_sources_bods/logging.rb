@@ -29,35 +29,34 @@ module RegisterSourcesBods
     end
 
     def self.entity_statement(obj)
-      identifier = obj.identifiers&.select do |i|
-        i&.schemeName == IDENTIFIER_NAME_REG
-      end&.first&.id
       [
-        obj.statementID.ljust(20),
-        identifier.to_s.ljust(30),
-        obj.statementType.ljust(30),
+        format_id(obj.statementID),
+        format_type(obj.statementType),
         obj.name
       ].join(' ')
     end
 
     def self.person_statement(obj)
-      identifier = obj.identifiers&.select do |i|
-        i&.schemeName == IDENTIFIER_NAME_REG
-      end&.first&.id
       [
-        obj.statementID.ljust(20),
-        identifier.to_s.ljust(30),
-        obj.statementType.ljust(30),
+        format_id(obj.statementID),
+        format_type(obj.statementType),
         obj.names.first&.fullName
       ].join(' ')
     end
 
     def self.ownership_or_control_statement(obj)
       [
-        obj.statementID.ljust(20),
-        nil.to_s.ljust(30),
-        obj.statementType.ljust(30)
+        format_id(obj.statementID),
+        format_type(obj.statementType)
       ].join(' ')
+    end
+
+    def self.format_id(id)
+      id.ljust(36)
+    end
+
+    def self.format_type(type)
+      type.chomp('Statement').ljust(18)
     end
   end
 end
