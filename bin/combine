@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 
 src=$1
+dst_f_=data/exports/$(date -Is).jsonl.gz
+dst_f=${2:-$dst_f_}
 
 ns=register-files-combiner
 tmp=$(mktemp -d)
@@ -50,5 +52,33 @@ done
 echo -e "\n=== LOAD\n"
 
 _redis --pipe < "$tmp_redis"
+#-------------------------------------------------------------------------------
+echo -e "\n=== COMBINE\n"
+
+dst_k=$ns/dst/$dst_f
+tmp_k=$dst_k.tmp
+
+touch "$dst_f"
+_redis -c DEL "$tmp_k" >/dev/null
+
+for src_f in "${src_fs[@]}" ; do
+    src_k=$ns/src/$src_f
+    rtn_src=$(_redis -c SCARD "$src_k")
+    rtn_tmp=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
+    ids_s=$(_redis --csv -c SMEMBERS "$tmp_k")
+    if [ -n "$ids_s" ] ; then
+        jq -c ". | select(.statementID | IN($ids_s))" < "$src_f" | gzip -c >> "$dst_f"
+    fi
+    rtn=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    if [ "$rtn_tmp" -eq 0 ] ; then
+        echo ". $src_f [$rtn_tmp] [$rtn]"
+    elif [ "$rtn_tmp" -eq "$rtn_src" ] ; then
+        echo "> $src_f [$rtn_tmp] [$rtn]"
+    else
+        echo "+ $src_f [$rtn_tmp] [$rtn]"
+    fi
+    _redis -c DEL "$tmp_k" >/dev/null
+done
+
 #-------------------------------------------------------------------------------
 echo
