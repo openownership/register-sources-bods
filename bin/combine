@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+src=$1
+
+ns=register-files-combiner
+ns_src=$ns/src
+
+tmp=$(mktemp -d)
+tmp_redis=$tmp/batch.redis
+touch "$tmp_redis"
+#-------------------------------------------------------------------------------
+function _clean() {
+    rm -rf "${tmp:?}"
+}
+
+function _redis() {
+    redis-cli -u "$REDIS_URL" "$@"
+}
+
+function _index() {
+    key=$1
+    file=$2
+    mapfile -t ids < <(
+        jq -r '.statementID' < "$file")
+    echo "SADD '$key' ${ids[*]@Q}" >> "$tmp_redis"
+}
+
+trap _clean EXIT
+#-------------------------------------------------------------------------------
+echo -e "\n=== PING\n"
+
+_redis -c PING
+#-------------------------------------------------------------------------------
+echo -e "\n=== LIST\n"
+
+mapfile -d '' src_fs < <(
+    find "$src" \( -name '.*' -prune \) -o -type f -print0 | sort -z)
+
+echo "${#src_fs[@]} files"
+#-------------------------------------------------------------------------------
+echo -e "\n=== INDEX\n"
+
+for src_f in "${src_fs[@]}" ; do
+    src_k=$ns_src/$src_f
+    rtn=$(_redis -c SCARD "$src_k")
+    if [ "$rtn" -eq 0 ] ; then
+        _index "$src_k" "$src_f"
+        echo "* $src_f"
+    else
+        echo "- $src_f [$rtn]"
+    fi
+done
+#-------------------------------------------------------------------------------
+echo -e "\n=== LOAD\n"
+
+_redis --pipe < "$tmp_redis"
+#-------------------------------------------------------------------------------
+echo
