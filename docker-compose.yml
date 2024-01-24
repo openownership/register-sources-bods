@@ -52,13 +52,13 @@ services:
       - redis
       - sources
     volumes:
+      - ${DC_SOURCES_BODS_DATA:-./data}:/home/x/r/data
       - ${DC_SOURCES_BODS_LIB_REGISTER_COMMON:-.dockerempty}:/home/x/lib/register-common
       - ${DC_SOURCES_BODS_LIB_REGISTER_SOURCES_OC:-.dockerempty}:/home/x/lib/register-sources-oc
       - ./.rubocop.yml:/home/x/r/.rubocop.yml
       - ./Gemfile.lock:/home/x/r/Gemfile.lock
       - ./Gemfile:/home/x/r/Gemfile
       - ./bin:/home/x/r/bin
-      - ./data:/home/x/r/data
       - ./lib:/home/x/r/lib
       - ./register_sources_bods.gemspec:/home/x/r/register_sources_bods.gemspec
       - ./spec:/home/x/r/spec
