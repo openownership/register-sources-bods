@@ -37,16 +37,18 @@ echo -e "\n=== INDEX\n"
 
 for src_f in "${src_fs[@]}" ; do
     src_k=$ns/src/$src_f
-    rtn=$(_redis -c SCARD "$src_k")
-    if [ "$rtn" -eq 0 ] ; then
+    src_k_n=$(_redis -c SCARD "$src_k")
+    if [ "$src_k_n" -eq 0 ] ; then
         mapfile -t ids < <(
             jq -r '.statementID' < "$src_f"
         )
         echo "SADD '$src_k' ${ids[*]@Q}" >> "$tmp_redis"
-        echo "* $src_f"
+        state='*'
+        src_k_n=''
     else
-        echo ". $src_f [$rtn]"
+        state='.'
     fi
+    echo "$state $src_f [$src_k_n]"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
@@ -63,20 +65,21 @@ _redis -c DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
     src_k=$ns/src/$src_f
-    rtn_src=$(_redis -c SCARD "$src_k")
-    rtn_tmp=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
+    src_k_n=$(_redis -c SCARD "$src_k")
+    dst_k_d=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
     ids_s=$(_redis --csv -c SMEMBERS "$tmp_k")
     if [ -n "$ids_s" ] ; then
         jq -c ". | select(.statementID | IN($ids_s))" < "$src_f" | gzip -c >> "$dst_f"
     fi
-    rtn=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
-    if [ "$rtn_tmp" -eq 0 ] ; then
-        echo ". $src_f [$rtn_tmp] [$rtn]"
-    elif [ "$rtn_tmp" -eq "$rtn_src" ] ; then
-        echo "> $src_f [$rtn_tmp] [$rtn]"
+    dst_k_n=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    if [ "$dst_k_d" -eq 0 ] ; then
+        state='.'
+    elif [ "$dst_k_d" -eq "$src_k_n" ] ; then
+        state='>'
     else
-        echo "+ $src_f [$rtn_tmp] [$rtn]"
+        state='+'
     fi
+    echo "$state $src_f [$dst_k_d] [$dst_k_n]"
     _redis -c DEL "$tmp_k" >/dev/null
 done
 
