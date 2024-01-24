@@ -44,7 +44,7 @@ for src_f in "${src_fs[@]}" ; do
         )
         echo "SADD '$src_k' ${ids[*]@Q}" >> "$tmp_redis"
         state='*'
-        src_k_n=''
+        src_k_n=${#ids[@]}
     else
         state='.'
     fi
