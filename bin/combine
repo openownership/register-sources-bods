@@ -58,7 +58,7 @@ for src_f in "${src_fs[@]}" ; do
     src_n=$(_redis SCARD "$src_k")
     
     if [ "$src_n" -eq 0 ] ; then
-        mapfile -t ids < <(jq -r '.statementID' < "$src_f")
+        mapfile -t ids < <(jq -r '.statementID' < "$src_f" | sort -u)
         
         src_n=${#ids[@]}
         
