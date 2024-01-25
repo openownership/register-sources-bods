@@ -17,24 +17,6 @@ function _redis() {
     redis-cli -u "$REDIS_URL" "$@"
 }
 
-function _index_status() {
-    if [ "$1" -eq 0 ] ; then
-        echo '*'
-    else
-        echo '.'
-    fi
-}
-
-function _combine_status() {
-    if [ "$1" -eq 0 ] ; then
-        echo '.'
-    elif [ "$1" -eq "$2" ] ; then
-        echo '>'
-    else
-        echo '+'
-    fi
-}
-
 trap _clean EXIT
 #-------------------------------------------------------------------------------
 echo -e "\n=== PING\n"
@@ -60,15 +42,18 @@ for src_f in "${src_fs[@]}" ; do
     if [ "$src_n" -eq 0 ] ; then
         mapfile -t ids < <(jq -r '.statementID' < "$src_f" | sort -u)
         
-        src_n=${#ids[@]}
-        
         for ((i=0 ; i < ${#ids[@]}; i+=rds_chunk_n)) ; do
             chunk=( "${ids[@]:i:$rds_chunk_n}" )
             echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp/redis"
         done
+        
+        st='*'
+        src_n=${#ids[@]}
+    else
+        st='.'
     fi
     
-    printf "%s %s %5s\n" "$(_index_status "$src_n")" "$src_f" "$src_n"
+    printf "%s %s %6s\n" "$st" "$src_f" "$src_n"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
@@ -105,8 +90,15 @@ for src_f in "${src_fs[@]}" ; do
     
     _redis DEL "$tmp_k" >/dev/null
     
-    printf "%s %s %5s %5s %5s\n" "$(_combine_status "$diff_n" "$src_n")" \
-        "$src_f" "$diff_n" "$dst_n" "$dst_s"
+    if [ "$diff_n" -eq 0 ] ; then
+        st='.'
+    elif [ "$diff_n" -eq "$src_n" ] ; then
+        st='>'
+    else
+        st='+'
+    fi
+    
+    printf "%s %s %6s %6s %5s\n" "$st" "$src_f" "$diff_n" "$dst_n" "$dst_s"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== OUTPUT\n"
