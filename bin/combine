@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-src=$1
-dst_f_=data/exports/$(date -Is).jsonl.gz
-dst_f=${2:-$dst_f_}
+src_d=$1
+dst_f=${2:-data/exports/$(date -Is).jsonl.gz}
 
-ns=register-files-combiner
+rds_chunk_n=750
+rds_ns=register-files-combiner
+
 tmp=$(mktemp -d)
-tmp_redis=$tmp/batch.redis
-tmp_jq=$tmp/slurp.jq
-chunk_size=750
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -19,80 +17,98 @@ function _redis() {
     redis-cli -u "$REDIS_URL" "$@"
 }
 
+function _index_status() {
+    if [ "$1" -eq 0 ] ; then
+        echo '*'
+    else
+        echo '.'
+    fi
+}
+
+function _combine_status() {
+    if [ "$1" -eq 0 ] ; then
+        echo '.'
+    elif [ "$1" -eq "$2" ] ; then
+        echo '>'
+    else
+        echo '+'
+    fi
+}
+
 trap _clean EXIT
 #-------------------------------------------------------------------------------
 echo -e "\n=== PING\n"
 
 _redis -c PING
 
-touch "$tmp_redis"
+touch "$tmp/redis"
 #-------------------------------------------------------------------------------
 echo -e "\n=== LIST\n"
 
-mapfile -d '' src_fs < <(
-    find "$src" \( -name '.*' -prune \) -o -type f -print0 | sort -z
-)
+mapfile -d '' src_fs < <(find "$src_d" \
+    \( -name '.*' -prune \) -o -type f -print0 | sort -z)
 
 echo "${#src_fs[@]} files"
 #-------------------------------------------------------------------------------
 echo -e "\n=== INDEX\n"
 
 for src_f in "${src_fs[@]}" ; do
-    src_k=$ns/src/$src_f
-    src_k_n=$(_redis -c SCARD "$src_k")
-    if [ "$src_k_n" -eq 0 ] ; then
-        mapfile -t ids < <(
-            jq -r '.statementID' < "$src_f"
-        )
-        for ((i=0 ; i < ${#ids[@]}; i+=chunk_size)) ; do
-            chunk=( "${ids[@]:i:$chunk_size}" )
-            echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp_redis"
+    src_k=$rds_ns/src/$src_f
+    
+    src_n=$(_redis -c SCARD "$src_k")
+    
+    if [ "$src_n" -eq 0 ] ; then
+        mapfile -t ids < <(jq -r '.statementID' < "$src_f")
+        
+        src_n=${#ids[@]}
+        
+        for ((i=0 ; i < ${#ids[@]}; i+=rds_chunk_n)) ; do
+            chunk=( "${ids[@]:i:$rds_chunk_n}" )
+            echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp/redis"
         done
-        state='*'
-        src_k_n=${#ids[@]}
-    else
-        state='.'
     fi
-    printf "%s %s %5s\n" \
-        "$state" "$src_f" "$src_k_n"
+    
+    printf "%s %s %5s\n" "$(_index_status "$src_n")" "$src_f" "$src_n"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
 
-ls -lh "$tmp_redis"
+ls -lh "$tmp/redis"
 echo
 
-_redis --pipe < "$tmp_redis"
+_redis --pipe < "$tmp/redis"
 #-------------------------------------------------------------------------------
 echo -e "\n=== COMBINE\n"
 
-dst_k=$ns/dst/$dst_f
+dst_k=$rds_ns/dst/$dst_f
 tmp_k=$dst_k.tmp
 
 touch "$dst_f"
+
 _redis -c DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
-    src_k=$ns/src/$src_f
-    src_k_n=$(_redis -c SCARD "$src_k")
-    dst_k_d=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
-    _redis -c SMEMBERS "$tmp_k" | jq -R > "$tmp_jq"
-    jq -c --slurpfile ids "$tmp_jq" \
+    src_k=$rds_ns/src/$src_f
+    
+    diff_n=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
+    
+    _redis -c SMEMBERS "$tmp_k" | jq -R > "$tmp/jq"
+    
+    jq -c --slurpfile ids "$tmp/jq" \
         '. | select(.statementID | IN($ids[]))' \
         < "$src_f" | gzip -c >> "$dst_f"
-    dst_k_n=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
-    if [ "$dst_k_d" -eq 0 ] ; then
-        state='.'
-    elif [ "$dst_k_d" -eq "$src_k_n" ] ; then
-        state='>'
-    else
-        state='+'
-    fi
+    
+    dst_n=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    
     # shellcheck disable=SC2012
-    dst_f_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
-    printf "%s %s %5s %5s %5s\n" \
-        "$state" "$src_f" "$dst_k_d" "$dst_k_n" "$dst_f_s"
+    dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
+    
+    src_n=$(_redis -c SCARD "$src_k")
+    
     _redis -c DEL "$tmp_k" >/dev/null
+    
+    printf "%s %s %5s %5s %5s\n" "$(_combine_status "$diff_n" "$src_n")" \
+        "$src_f" "$diff_n" "$dst_n" "$dst_s"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== OUTPUT\n"
