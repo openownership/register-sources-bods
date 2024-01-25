@@ -8,6 +8,7 @@ dst_f=${2:-$dst_f_}
 ns=register-files-combiner
 tmp=$(mktemp -d)
 tmp_redis=$tmp/batch.redis
+tmp_jq=$tmp/slurp.jq
 chunk_size=750
 #-------------------------------------------------------------------------------
 function _clean() {
@@ -74,10 +75,10 @@ for src_f in "${src_fs[@]}" ; do
     src_k=$ns/src/$src_f
     src_k_n=$(_redis -c SCARD "$src_k")
     dst_k_d=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
-    ids_s=$(_redis --csv -c SMEMBERS "$tmp_k")
-    if [ -n "$ids_s" ] ; then
-        jq -c ". | select(.statementID | IN($ids_s))" < "$src_f" | gzip -c >> "$dst_f"
-    fi
+    _redis -c SMEMBERS "$tmp_k" | jq -R > "$tmp_jq"
+    jq -c --slurpfile ids "$tmp_jq" \
+        '. | select(.statementID | IN($ids[]))' \
+        < "$src_f" | gzip -c >> "$dst_f"
     dst_k_n=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     if [ "$dst_k_d" -eq 0 ] ; then
         state='.'
