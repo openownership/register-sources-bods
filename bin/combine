@@ -94,9 +94,9 @@ for src_f in "${src_fs[@]}" ; do
     
     _redis SMEMBERS "$tmp_k" | jq -R > "$tmp/jq"
     
-    jq -c --slurpfile ids "$tmp/jq" \
+    uniq "$src_f" | jq -c --slurpfile ids "$tmp/jq" \
         '. | select(.statementID | IN($ids[]))' \
-        < "$src_f" | gzip -c >> "$dst_f"
+        | gzip -c >> "$dst_f"
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     
