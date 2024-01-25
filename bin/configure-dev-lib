@@ -6,7 +6,7 @@ libs=(
     register-sources-oc
 )
 
-echo -e "\n=== Configuring dev libs\n"
+echo -e "\n=== CONFIGURE DEV LIB\n"
 
 bundle config disable_local_branch_check true
 
