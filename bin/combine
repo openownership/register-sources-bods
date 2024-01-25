@@ -8,6 +8,7 @@ dst_f=${2:-$dst_f_}
 ns=register-files-combiner
 tmp=$(mktemp -d)
 tmp_redis=$tmp/batch.redis
+chunk_size=750
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -42,7 +43,10 @@ for src_f in "${src_fs[@]}" ; do
         mapfile -t ids < <(
             jq -r '.statementID' < "$src_f"
         )
-        echo "SADD '$src_k' ${ids[*]@Q}" >> "$tmp_redis"
+        for ((i=0 ; i < ${#ids[@]}; i+=chunk_size)) ; do
+            chunk=( "${ids[@]:i:$chunk_size}" )
+            echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp_redis"
+        done
         state='*'
         src_k_n=${#ids[@]}
     else
