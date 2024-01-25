@@ -86,7 +86,9 @@ for src_f in "${src_fs[@]}" ; do
     else
         state='+'
     fi
-    echo "$state $src_f [$dst_k_d] [$dst_k_n]"
+    # shellcheck disable=SC2012
+    dst_f_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
+    echo "$state $src_f [$dst_k_d] [$dst_k_n] [$dst_f_s]"
     _redis -c DEL "$tmp_k" >/dev/null
 done
 #-------------------------------------------------------------------------------
