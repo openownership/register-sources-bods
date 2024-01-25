@@ -92,11 +92,9 @@ for src_f in "${src_fs[@]}" ; do
     
     diff_n=$(_redis SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
     
-    _redis SMEMBERS "$tmp_k" | jq -R > "$tmp/jq"
+    _redis SMEMBERS "$tmp_k" | jq -R | sed 's/^/"statementID":/' > "$tmp/grep"
     
-    uniq "$src_f" | jq -c --slurpfile ids "$tmp/jq" \
-        '. | select(.statementID | IN($ids[]))' \
-        | gzip -c >> "$dst_f"
+    uniq "$src_f" | jq -c '.' | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     
