@@ -39,7 +39,7 @@ trap _clean EXIT
 #-------------------------------------------------------------------------------
 echo -e "\n=== PING\n"
 
-_redis -c PING
+_redis PING
 
 touch "$tmp/redis"
 #-------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ echo -e "\n=== INDEX\n"
 for src_f in "${src_fs[@]}" ; do
     src_k=$rds_ns/src/$src_f
     
-    src_n=$(_redis -c SCARD "$src_k")
+    src_n=$(_redis SCARD "$src_k")
     
     if [ "$src_n" -eq 0 ] ; then
         mapfile -t ids < <(jq -r '.statementID' < "$src_f")
@@ -85,27 +85,27 @@ tmp_k=$dst_k.tmp
 
 touch "$dst_f"
 
-_redis -c DEL "$tmp_k" >/dev/null
+_redis DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
     src_k=$rds_ns/src/$src_f
     
-    diff_n=$(_redis -c SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
+    diff_n=$(_redis SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
     
-    _redis -c SMEMBERS "$tmp_k" | jq -R > "$tmp/jq"
+    _redis SMEMBERS "$tmp_k" | jq -R > "$tmp/jq"
     
     jq -c --slurpfile ids "$tmp/jq" \
         '. | select(.statementID | IN($ids[]))' \
         < "$src_f" | gzip -c >> "$dst_f"
     
-    dst_n=$(_redis -c SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     
     # shellcheck disable=SC2012
     dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
     
-    src_n=$(_redis -c SCARD "$src_k")
+    src_n=$(_redis SCARD "$src_k")
     
-    _redis -c DEL "$tmp_k" >/dev/null
+    _redis DEL "$tmp_k" >/dev/null
     
     printf "%s %s %5s %5s %5s\n" "$(_combine_status "$diff_n" "$src_n")" \
         "$src_f" "$diff_n" "$dst_n" "$dst_s"
