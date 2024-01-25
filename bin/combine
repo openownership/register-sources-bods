@@ -53,7 +53,8 @@ for src_f in "${src_fs[@]}" ; do
     else
         state='.'
     fi
-    echo "$state $src_f [$src_k_n]"
+    printf "%s %s %5s\n" \
+        "$state" "$src_f" "$src_k_n"
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
@@ -89,7 +90,8 @@ for src_f in "${src_fs[@]}" ; do
     fi
     # shellcheck disable=SC2012
     dst_f_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
-    echo "$state $src_f [$dst_k_d] [$dst_k_n] [$dst_f_s]"
+    printf "%s %s %5s %5s %5s\n" \
+        "$state" "$src_f" "$dst_k_d" "$dst_k_n" "$dst_f_s"
     _redis -c DEL "$tmp_k" >/dev/null
 done
 #-------------------------------------------------------------------------------
