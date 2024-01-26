@@ -28,17 +28,21 @@ function _log() {
 function _debug_dups() {
     f=$1
     
-    c_t=$(wc -l < "$f")
+    c_t=$(wc -l < "$f")                 # source containing duplication
     _log "$c_t"
-    c_u=$(uniq "$f" | wc -l)
+    c_u=$(uniq "$f" | wc -l)            # consecutive-line deduplication
     _log "$c_u"
-    c_s=$(sort -u "$f" | wc -l)
+    c_s=$(sort -u "$f" | wc -l)         # best-case deduplication (incorrect order)
     _log "$c_s"
+    c_a=$(awk '!x[$0]++' "$f" | wc -l)  # whole-file deduplication (correct order)
+    _log "$c_a"
     
     if [ "$c_t" -eq "$c_s" ] ; then
         st='='
     elif [ "$c_u" -eq "$c_s" ] ; then
         st='~'
+    elif [ "$c_a" -eq "$c_s" ] ; then
+        st='*'
     else
         st='!'
     fi
@@ -120,7 +124,8 @@ for src_f in "${src_fs[@]}" ; do
     if [ "$diff_n" -gt 0 ] ; then
         _redis SMEMBERS "$tmp_k" | jq -R |
             sed 's/^/"statementID":/' > "$tmp/grep"
-        jq -cS '.' "$src_f" | uniq | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
+        jq -cS '.' "$src_f" | grep -f "$tmp/grep" -F | awk '!x[$0]++' |
+            gzip -c >> "$dst_f"
     fi
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
