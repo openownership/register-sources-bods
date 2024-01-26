@@ -146,7 +146,10 @@ echo -e "\n=== OUTPUT\n"
 
 if [ "$debug" -eq 1 ] ; then
     echo "debug:"
-    _debug_dups "$dst_f"
+    tmp_f=$tmp/debug
+    zcat "$dst_f" > "$tmp_f"
+    _debug_dups "$tmp_f"
+    rm "$tmp_f"
     echo
 fi
 
