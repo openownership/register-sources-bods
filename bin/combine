@@ -110,8 +110,11 @@ done
 #-------------------------------------------------------------------------------
 echo -e "\n=== OUTPUT\n"
 
-echo "src:  $src_d"
-echo "dst:  $dst_f"
-echo "time: ${SECONDS}s"
-#-------------------------------------------------------------------------------
-echo
+cat << EOF
+source:      $src_d
+destination: $dst_f
+statements:  $dst_n
+size:        $dst_s
+duration:    ${SECONDS}s
+
+EOF
