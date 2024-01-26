@@ -97,6 +97,7 @@ for src_f in "${src_fs[@]}" ; do
     _log "$src_n"
     
     if [ "$debug" -eq 1 ] ; then
+        _log "$st"
         tmp_f=$tmp/debug
         _log '|'
         jq -cS '.' "$src_f" > "$tmp_f"
