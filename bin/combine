@@ -6,12 +6,18 @@ dst_f=${2:-data/exports/$(date -Is).jsonl.gz}
 
 debug=${COMBINE_DEBUG:-0}
 
+log_f=$dst_f.log
 rds_chunk_n=750
 rds_ns=register-files-combiner
 tmp=$(mktemp -d)
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
+}
+
+function _echo() {
+    msg=${1:-}
+    echo -e "$msg" | tee -a "$log_f"
 }
 
 function _redis() {
@@ -22,7 +28,7 @@ function _log() {
     msg=$1
     sep=${2:-" "}
     
-    printf "%7s$sep" "$msg"
+    printf "%7s$sep" "$msg" | tee -a "$log_f"
 }
 
 function _debug_dups() {
@@ -52,18 +58,20 @@ function _debug_dups() {
 
 trap _clean EXIT
 #-------------------------------------------------------------------------------
-echo -e "\n=== PING\n"
+echo
+_echo "=== PING\n"
 
-_redis PING
+rtn=$(_redis PING)
+_echo "$rtn"
 touch "$tmp/redis"
 #-------------------------------------------------------------------------------
-echo -e "\n=== LIST\n"
+_echo "\n=== LIST\n"
 
 mapfile -d '' src_fs < <(find "$src_d" \
     \( -name '.*' -prune \) -o -type f -print0 | sort -z)
-echo "files: ${#src_fs[@]}"
+_echo "files: ${#src_fs[@]}"
 #-------------------------------------------------------------------------------
-echo -e "\n=== INDEX\n"
+_echo "\n=== INDEX\n"
 
 for src_f in "${src_fs[@]}" ; do
     _log "$src_f"
@@ -86,7 +94,6 @@ for src_f in "${src_fs[@]}" ; do
     fi
     
     _log "$src_n"
-    _log "$st"
     
     if [ "$debug" -eq 1 ] ; then
         tmp_f=$tmp/debug
@@ -94,19 +101,21 @@ for src_f in "${src_fs[@]}" ; do
         jq -cS '.' "$src_f" > "$tmp_f"
         _debug_dups "$tmp_f"
         rm "$tmp_f"
+        _echo
+    else
+        _log "$st" "\n"
     fi
-    
-    echo
 done
 #-------------------------------------------------------------------------------
-echo -e "\n=== LOAD\n"
+_echo "\n=== LOAD\n"
 
 # shellcheck disable=SC2012
 dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
-echo -e "loading: $dst_s\n"
-_redis --pipe < "$tmp/redis"
+_echo "loading: $dst_s\n"
+rtn=$(_redis --pipe < "$tmp/redis")
+_echo "$rtn"
 #-------------------------------------------------------------------------------
-echo -e "\n=== COMBINE\n"
+_echo "\n=== COMBINE\n"
 
 dst_k=$rds_ns/dst/$dst_f
 tmp_k=$dst_k.tmp
@@ -147,22 +156,21 @@ for src_f in "${src_fs[@]}" ; do
     _log "$st" "\n"
 done
 #-------------------------------------------------------------------------------
-echo -e "\n=== OUTPUT\n"
+_echo "\n=== OUTPUT\n"
 
 if [ "$debug" -eq 1 ] ; then
-    echo "debug:"
+    _echo "debug:"
     tmp_f=$tmp/debug
     zcat "$dst_f" > "$tmp_f"
     _debug_dups "$tmp_f"
     rm "$tmp_f"
-    echo
+    _echo
 fi
 
-cat << EOF
-source:      $src_d
-destination: $dst_f
-statements:  $dst_n
-size:        $dst_s
-duration:    ${SECONDS}s
-
-EOF
+_echo "source:      $src_d"
+_echo "destination: $dst_f"
+_echo "log:         $log_f"
+_echo "statements:  $dst_n"
+_echo "size:        $dst_s"
+_echo "duration:    ${SECONDS}s"
+echo
