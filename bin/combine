@@ -2,7 +2,8 @@
 set -Eeuo pipefail
 
 src_d=$1
-dst_f=${2:-data/exports/$(date -Is).jsonl.gz}
+tag=$2
+dst_f=${3:-data/exports/$(date -Is).$tag.jsonl.gz}
 
 debug=${COMBINE_DEBUG:-0}
 
