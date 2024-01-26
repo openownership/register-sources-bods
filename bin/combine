@@ -99,9 +99,12 @@ for src_f in "${src_fs[@]}" ; do
     
     _log "$diff_n"
     
-    _redis SMEMBERS "$tmp_k" | jq -R | sed 's/^/"statementID":/' > "$tmp/grep"
-    
-    uniq "$src_f" | jq -c '.' | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
+    if [ "$diff_n" -gt 0 ] ; then
+        _redis SMEMBERS "$tmp_k" | jq -R |
+            sed 's/^/"statementID":/' > "$tmp/grep"
+        
+        uniq "$src_f" | jq -c '.' | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
+    fi
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     
