@@ -4,6 +4,8 @@ set -Eeuo pipefail
 src_d=$1
 dst_f=${2:-data/exports/$(date -Is).jsonl.gz}
 
+debug=${COMBINE_DEBUG:-0}
+
 rds_chunk_n=750
 rds_ns=register-files-combiner
 tmp=$(mktemp -d)
@@ -19,7 +21,29 @@ function _redis() {
 function _log() {
     msg=$1
     sep=${2:-" "}
+    
     printf "%7s$sep" "$msg"
+}
+
+function _debug_dups() {
+    f=$1
+    
+    c_t=$(wc -l < "$f")
+    _log "$c_t"
+    c_u=$(uniq "$f" | wc -l)
+    _log "$c_u"
+    c_s=$(sort -u "$f" | wc -l)
+    _log "$c_s"
+    
+    if [ "$c_t" -eq "$c_s" ] ; then
+        st='='
+    elif [ "$c_u" -eq "$c_s" ] ; then
+        st='~'
+    else
+        st='!'
+    fi
+    
+    _log "$st"
 }
 
 trap _clean EXIT
@@ -58,7 +82,17 @@ for src_f in "${src_fs[@]}" ; do
     fi
     
     _log "$src_n"
-    _log "$st" "\n"
+    _log "$st"
+    
+    if [ "$debug" -eq 1 ] ; then
+        tmp_f=$tmp/debug
+        _log '|'
+        jq -c '.' "$src_f" > "$tmp_f"
+        _debug_dups "$tmp_f"
+        rm "$tmp_f"
+    fi
+    
+    echo
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
@@ -109,6 +143,12 @@ for src_f in "${src_fs[@]}" ; do
 done
 #-------------------------------------------------------------------------------
 echo -e "\n=== OUTPUT\n"
+
+if [ "$debug" -eq 1 ] ; then
+    echo "debug:"
+    _debug_dups "$dst_f"
+    echo
+fi
 
 cat << EOF
 source:      $src_d
