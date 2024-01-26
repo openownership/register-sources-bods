@@ -37,7 +37,7 @@ echo -e "\n=== LIST\n"
 mapfile -d '' src_fs < <(find "$src_d" \
     \( -name '.*' -prune \) -o -type f -print0 | sort -z)
 
-echo "${#src_fs[@]} files"
+echo "files: ${#src_fs[@]}"
 #-------------------------------------------------------------------------------
 echo -e "\n=== INDEX\n"
 
@@ -70,8 +70,10 @@ done
 #-------------------------------------------------------------------------------
 echo -e "\n=== LOAD\n"
 
-ls -lh "$tmp/redis"
-echo
+# shellcheck disable=SC2012
+dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
+
+echo -e "loading: $dst_s\n"
 
 _redis --pipe < "$tmp/redis"
 #-------------------------------------------------------------------------------
@@ -127,6 +129,8 @@ done
 #-------------------------------------------------------------------------------
 echo -e "\n=== OUTPUT\n"
 
-ls -lh "$dst_f"
+echo "src:  $src_d"
+echo "dst:  $dst_f"
+echo "time: ${SECONDS}s"
 #-------------------------------------------------------------------------------
 echo
