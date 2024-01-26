@@ -87,7 +87,7 @@ for src_f in "${src_fs[@]}" ; do
     if [ "$debug" -eq 1 ] ; then
         tmp_f=$tmp/debug
         _log '|'
-        jq -c '.' "$src_f" > "$tmp_f"
+        jq -cS '.' "$src_f" > "$tmp_f"
         _debug_dups "$tmp_f"
         rm "$tmp_f"
     fi
@@ -120,7 +120,7 @@ for src_f in "${src_fs[@]}" ; do
     if [ "$diff_n" -gt 0 ] ; then
         _redis SMEMBERS "$tmp_k" | jq -R |
             sed 's/^/"statementID":/' > "$tmp/grep"
-        jq -c '.' "$src_f" | uniq | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
+        jq -cS '.' "$src_f" | uniq | grep -f "$tmp/grep" -F | gzip -c >> "$dst_f"
     fi
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
