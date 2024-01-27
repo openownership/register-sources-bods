@@ -9,21 +9,13 @@ rds_ns=register-files-combiner
 
 src_d=$1
 dst_d=${2:-data/exports}
-dst_full_f=$dst_d/${3:-$date}$dst_ext
-incr=${4:-full}
+dst_f=$dst_d/${3:-$date}$dst_ext
 
 debug=${COMBINE_DEBUG:-0}
 
-if [ "$incr" == "incr" ] ; then
-    dst_incr_f=$dst_full_f.$date$dst_ext
-else
-    dst_incr_f=$dst_full_f
-fi
-
 src_d=$(realpath -s --relative-base . "$src_d")
-dst_full_f=$(realpath -s --relative-base . "$dst_full_f")
-dst_incr_f=$(realpath -s --relative-base . "$dst_incr_f")
-log_f=$(dirname "$dst_full_f")/$(basename "$dst_full_f" "$dst_ext")$log_ext
+dst_f=$(realpath -s --relative-base . "$dst_f")
+log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext")$log_ext
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -136,9 +128,9 @@ _echo "$rtn"
 #-------------------------------------------------------------------------------
 _echo "\n=== COMBINE\n"
 
-dst_k=$rds_ns/dst/$dst_full_f
+dst_k=$rds_ns/dst/$dst_f
 tmp_k=$dst_k.tmp
-touch "$dst_incr_f"
+touch "$dst_f"
 _redis DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
@@ -153,13 +145,13 @@ for src_f in "${src_fs[@]}" ; do
         _redis SMEMBERS "$tmp_k" | jq -R |
             sed 's/^/"statementID":/' > "$tmp/grep"
         jq -cS '.' "$src_f" | grep -f "$tmp/grep" -F | awk '!x[$0]++' |
-            gzip -c >> "$dst_incr_f"
+            gzip -c >> "$dst_f"
     fi
     
     dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
     _log "$dst_n"
     # shellcheck disable=SC2012
-    dst_s=$(ls -lh "$dst_incr_f" | awk '{ print $5 }')
+    dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
     _log "$dst_s"
     src_n=$(_redis SCARD "$src_k")
     _redis DEL "$tmp_k" >/dev/null
@@ -180,19 +172,16 @@ _echo "\n=== OUTPUT\n"
 if [ "$debug" -eq 1 ] ; then
     _echo "debug:"
     tmp_f=$tmp/debug
-    zcat "$dst_incr_f" > "$tmp_f"
+    zcat "$dst_f" > "$tmp_f"
     _debug_dups "$tmp_f"
     rm "$tmp_f"
     _echo
 fi
 
-_echo "src:      $src_d"
-_echo "dst full: $dst_full_f"
-if [ "$dst_incr_f" != "$dst_full_f" ] ; then
-    _echo "dst incr: $dst_incr_f"
-fi
-_echo "values:   $dst_n"
-_echo "size:     $dst_s"
-_echo "log:      $log_f"
-_echo "duration: ${SECONDS}s"
+_echo "source:      $src_d"
+_echo "destination: $dst_f"
+_echo "values:      $dst_n"
+_echo "size:        $dst_s"
+_echo "log:         $log_f"
+_echo "duration:    ${SECONDS}s"
 echo
