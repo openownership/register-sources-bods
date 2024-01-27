@@ -16,6 +16,7 @@ debug=${COMBINE_DEBUG:-0}
 src_d=$(realpath -s --relative-base . "$src_d")
 dst_f=$(realpath -s --relative-base . "$dst_f")
 log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext")$log_ext
+snp_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$dst_ext
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -167,6 +168,10 @@ for src_f in "${src_fs[@]}" ; do
     _log "$st" "\n"
 done
 #-------------------------------------------------------------------------------
+_echo "\n=== SNAPSHOT\n"
+
+cp "$dst_f" "$snp_f"
+#-------------------------------------------------------------------------------
 _echo "\n=== OUTPUT\n"
 
 if [ "$debug" -eq 1 ] ; then
@@ -180,6 +185,7 @@ fi
 
 _echo "source:      $src_d"
 _echo "destination: $dst_f"
+_echo "snapshot:    $snp_f"
 _echo "values:      $dst_n"
 _echo "size:        $dst_s"
 _echo "log:         $log_f"
