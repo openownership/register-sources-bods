@@ -56,9 +56,13 @@ function _redis_sadd() {
 function _redis_scopy() {
     src_k=$1
     dst_k=$2
-    mapfile -t members < <(_redis SMEMBERS "$src_k")
-    _redis_sadd "$dst_k" "${members[@]}"
-    _redis_flush >/dev/null
+    mapfile -t members < <(_redis SMEMBERS "$src_k" | sed '/^$/d')
+    
+    if [ "${#members[@]}" -gt 0 ] ; then
+        _redis_sadd "$dst_k" "${members[@]}"
+        _redis_flush >/dev/null
+    fi
+    
     _redis SCARD "$dst_k"
 }
 
@@ -160,7 +164,7 @@ for src_f in "${src_fs[@]}" ; do
     _log "$diff_n"
     
     if [ "$diff_n" -gt 0 ] ; then
-        _redis SMEMBERS "$tmp_k" | jq -R |
+        _redis SMEMBERS "$tmp_k" | sed '/^$/d' | jq -R |
             sed 's/^/"statementID":/' > "$tmp/grep"
         jq -cS '.' "$src_f" | grep -f "$tmp/grep" -F | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
