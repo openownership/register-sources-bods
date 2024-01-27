@@ -12,5 +12,6 @@ vendor/
 .rspec_status
 
 /.env*
+/data/exports/
+/data/imports/
 /docker-compose.*.yml
-/statements/

@@ -1,3 +1,4 @@
+name: register
 networks:
   elasticsearch: {}
   redis: {}
@@ -51,6 +52,8 @@ services:
       - redis
       - sources
     volumes:
+      - ${DC_SOURCES_BODS_DATA_EXPORTS:-./data/exports}:/home/x/r/data/exports
+      - ${DC_SOURCES_BODS_DATA_IMPORTS:-./data/imports}:/home/x/r/data/imports:ro
       - ${DC_SOURCES_BODS_LIB_REGISTER_COMMON:-.dockerempty}:/home/x/lib/register-common
       - ${DC_SOURCES_BODS_LIB_REGISTER_SOURCES_OC:-.dockerempty}:/home/x/lib/register-sources-oc
       - ./.rubocop.yml:/home/x/r/.rubocop.yml
@@ -60,7 +63,6 @@ services:
       - ./lib:/home/x/r/lib
       - ./register_sources_bods.gemspec:/home/x/r/register_sources_bods.gemspec
       - ./spec:/home/x/r/spec
-      - ./statements:/home/x/r/statements
 version: "3.8"
 volumes:
   elasticsearch: {}

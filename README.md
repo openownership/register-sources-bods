@@ -38,15 +38,15 @@ docker compose run sources-bods test
 To local ingest `xx.jsonl` file into `raw-xx` index, optionally publishing to `xx-dev` Kinesis stream:
 
 ```sh
-docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx
-docker compose run sources-bods ingest-local statements/xx.jsonl raw-xx xx-dev
+docker compose run sources-bods ingest-local data/imports/xx.jsonl raw-xx
+docker compose run sources-bods ingest-local data/imports/xx.jsonl raw-xx xx-dev
 ```
 
 To local transform `xx.jsonl` file from `raw-xx` index into `bods_v2_xx_dev1` index, optionally publishing to `bods-xx-dev` Kinesis stream:
 
 ```sh
-docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1
-docker compose run sources-bods transform-local statements/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
+docker compose run sources-bods transform-local data/imports/xx.jsonl raw-xx bods_v2_xx_dev1
+docker compose run sources-bods transform-local data/imports/xx.jsonl raw-xx bods_v2_xx_dev1 bods-xx-dev
 ```
 
 Optionally, `0` can be appended to the command to disable resolving via Open Corporates. In case disabling is required but publishing to a Kinesis stream isn't, `'' 0` can be used as the final two arguments.

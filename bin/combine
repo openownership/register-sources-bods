@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+date=$(date -Is)
+dst_ext=.jsonl.gz
+log_ext=.log
+rds_chunk_n=750
+rds_ns=register-files-combiner
+
+src_d=$1
+dst_d=${2:-data/exports}
+dst_f=$dst_d/${3:-$date}$dst_ext
+
+debug=${COMBINE_DEBUG:-0}
+
+src_d=$(realpath -s --relative-base . "$src_d")
+dst_f=$(realpath -s --relative-base . "$dst_f")
+log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext")$log_ext
+snp_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$dst_ext
+#-------------------------------------------------------------------------------
+function _clean() {
+    rm -rf "${tmp:?}"
+}
+
+function _echo() {
+    msg=${1:-}
+    echo -e "$msg" | tee -a "$log_f"
+}
+
+function _log() {
+    msg=$1
+    sep=${2:-" "}
+    
+    printf "%7s$sep" "$msg" | tee -a "$log_f"
+}
+
+function _redis() {
+    redis-cli -u "$REDIS_URL" "$@"
+}
+
+function _debug_dups() {
+    f=$1
+    
+    c_t=$(wc -l < "$f")                 # source containing duplication
+    _log "$c_t"
+    c_u=$(uniq "$f" | wc -l)            # consecutive-line deduplication
+    _log "$c_u"
+    c_s=$(sort -u "$f" | wc -l)         # best-case deduplication (incorrect order)
+    _log "$c_s"
+    c_a=$(awk '!x[$0]++' "$f" | wc -l)  # whole-file deduplication (correct order)
+    _log "$c_a"
+    
+    if [ "$c_t" -eq "$c_s" ] ; then
+        st='='
+    elif [ "$c_u" -eq "$c_s" ] ; then
+        st='~'
+    elif [ "$c_a" -eq "$c_s" ] ; then
+        st='*'
+    else
+        st='!'
+    fi
+    
+    _log "$st"
+}
+
+trap _clean EXIT
+tmp=$(mktemp -d)
+#-------------------------------------------------------------------------------
+echo
+_echo "$(printf '%-80s' ' ' | tr ' ' '-')"
+_echo "$date"
+#-------------------------------------------------------------------------------
+_echo "\n=== PING\n"
+
+rtn=$(_redis PING)
+_echo "$rtn"
+touch "$tmp/redis"
+#-------------------------------------------------------------------------------
+_echo "\n=== LIST\n"
+
+mapfile -d '' src_fs < <(find "$src_d" \
+    \( -name '.*' -prune \) -o -type f -print0 | sort -z)
+_echo "files: ${#src_fs[@]}"
+#-------------------------------------------------------------------------------
+_echo "\n=== INDEX\n"
+
+for src_f in "${src_fs[@]}" ; do
+    _log "$src_f"
+    src_k=$rds_ns/src/$src_f
+    src_n=$(_redis SCARD "$src_k")
+    _log "$src_n"
+    
+    if [ "$src_n" -eq 0 ] ; then
+        mapfile -t ids < <(jq -r '.statementID' < "$src_f" | sort -u)
+        
+        for ((i=0 ; i < ${#ids[@]}; i+=rds_chunk_n)) ; do
+            chunk=( "${ids[@]:i:$rds_chunk_n}" )
+            echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp/redis"
+        done
+        
+        src_n=${#ids[@]}
+        st="*"
+    else
+        st="."
+    fi
+    
+    _log "$src_n"
+    
+    if [ "$debug" -eq 1 ] ; then
+        _log "$st"
+        tmp_f=$tmp/debug
+        _log '|'
+        jq -cS '.' "$src_f" > "$tmp_f"
+        _debug_dups "$tmp_f"
+        rm "$tmp_f"
+        _echo
+    else
+        _log "$st" "\n"
+    fi
+done
+#-------------------------------------------------------------------------------
+_echo "\n=== LOAD\n"
+
+# shellcheck disable=SC2012
+dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
+_echo "loading: $dst_s\n"
+rtn=$(_redis --pipe < "$tmp/redis")
+_echo "$rtn"
+#-------------------------------------------------------------------------------
+_echo "\n=== COMBINE\n"
+
+dst_k=$rds_ns/dst/$dst_f
+tmp_k=$dst_k.tmp
+touch "$dst_f"
+_redis DEL "$tmp_k" >/dev/null
+
+for src_f in "${src_fs[@]}" ; do
+    _log "$src_f"
+    src_k=$rds_ns/src/$src_f
+    src_n=$(_redis SCARD "$src_k")
+    _log "$src_n"
+    diff_n=$(_redis SDIFFSTORE "$tmp_k" "$src_k" "$dst_k")
+    _log "$diff_n"
+    
+    if [ "$diff_n" -gt 0 ] ; then
+        _redis SMEMBERS "$tmp_k" | jq -R |
+            sed 's/^/"statementID":/' > "$tmp/grep"
+        jq -cS '.' "$src_f" | grep -f "$tmp/grep" -F | awk '!x[$0]++' |
+            gzip -c >> "$dst_f"
+    fi
+    
+    dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    _log "$dst_n"
+    # shellcheck disable=SC2012
+    dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
+    _log "$dst_s"
+    src_n=$(_redis SCARD "$src_k")
+    _redis DEL "$tmp_k" >/dev/null
+    
+    if [ "$diff_n" -eq 0 ] ; then
+        st='.'
+    elif [ "$diff_n" -eq "$src_n" ] ; then
+        st='*'
+    else
+        st='~'
+    fi
+    
+    _log "$st" "\n"
+done
+#-------------------------------------------------------------------------------
+_echo "\n=== SNAPSHOT\n"
+
+cp "$dst_f" "$snp_f"
+#-------------------------------------------------------------------------------
+_echo "\n=== OUTPUT\n"
+
+if [ "$debug" -eq 1 ] ; then
+    _echo "debug:"
+    tmp_f=$tmp/debug
+    zcat "$dst_f" > "$tmp_f"
+    _debug_dups "$tmp_f"
+    rm "$tmp_f"
+    _echo
+fi
+
+_echo "source:      $src_d"
+_echo "destination: $dst_f"
+_echo "snapshot:    $snp_f"
+_echo "values:      $dst_n"
+_echo "size:        $dst_s"
+_echo "log:         $log_f"
+_echo "duration:    ${SECONDS}s"
+echo
