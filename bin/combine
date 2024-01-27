@@ -31,11 +31,39 @@ function _log() {
     msg=$1
     sep=${2:-" "}
     
-    printf "%7s$sep" "$msg" | tee -a "$log_f"
+    printf "%9s$sep" "$msg" | tee -a "$log_f"
 }
 
 function _redis() {
     redis-cli -u "$REDIS_URL" "$@"
+}
+
+function _redis_flush() {
+    _redis --pipe < "$tmp/redis"
+    truncate -s0 "$tmp/redis"
+}
+
+function _redis_sadd() {
+    key=$1
+    shift
+    members=("$@")
+    for ((i=0 ; i < ${#members[@]}; i+=rds_chunk_n)) ; do
+        chunk=( "${members[@]:i:$rds_chunk_n}" )
+        echo "SADD '$key' ${chunk[*]@Q}" >> "$tmp/redis"
+    done
+}
+
+function _redis_scopy() {
+    src_k=$1
+    dst_k=$2
+    mapfile -t members < <(_redis SMEMBERS "$src_k" | sed '/^$/d')
+    
+    if [ "${#members[@]}" -gt 0 ] ; then
+        _redis_sadd "$dst_k" "${members[@]}"
+        _redis_flush >/dev/null
+    fi
+    
+    _redis SCARD "$dst_k"
 }
 
 function _debug_dups() {
@@ -65,6 +93,7 @@ function _debug_dups() {
 
 trap _clean EXIT
 tmp=$(mktemp -d)
+touch "$tmp/redis"
 #-------------------------------------------------------------------------------
 echo
 _echo "$date"
@@ -73,7 +102,6 @@ _echo "\n=== PING\n"
 
 rtn=$(_redis PING)
 _echo "$rtn"
-touch "$tmp/redis"
 #-------------------------------------------------------------------------------
 _echo "\n=== LIST\n"
 
@@ -91,12 +119,7 @@ for src_f in "${src_fs[@]}" ; do
     
     if [ "$src_n" -eq 0 ] ; then
         mapfile -t ids < <(jq -r '.statementID' < "$src_f" | sort -u)
-        
-        for ((i=0 ; i < ${#ids[@]}; i+=rds_chunk_n)) ; do
-            chunk=( "${ids[@]:i:$rds_chunk_n}" )
-            echo "SADD '$src_k' ${chunk[*]@Q}" >> "$tmp/redis"
-        done
-        
+        _redis_sadd "$src_k" "${ids[@]}"
         src_n=${#ids[@]}
         st="*"
     else
@@ -123,14 +146,13 @@ _echo "\n=== LOAD\n"
 # shellcheck disable=SC2012
 dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
 _echo "loading: $dst_s\n"
-rtn=$(_redis --pipe < "$tmp/redis")
+rtn=$(_redis_flush)
 _echo "$rtn"
 #-------------------------------------------------------------------------------
 _echo "\n=== COMBINE\n"
 
 dst_k=$rds_ns/dst/$dst_f
 tmp_k=$dst_k.tmp
-touch "$dst_f"
 _redis DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
@@ -142,13 +164,13 @@ for src_f in "${src_fs[@]}" ; do
     _log "$diff_n"
     
     if [ "$diff_n" -gt 0 ] ; then
-        _redis SMEMBERS "$tmp_k" | jq -R |
+        _redis SMEMBERS "$tmp_k" | sed '/^$/d' | jq -R |
             sed 's/^/"statementID":/' > "$tmp/grep"
         jq -cS '.' "$src_f" | grep -f "$tmp/grep" -F | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
     
-    dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    dst_n=$(_redis_scopy "$tmp_k" "$dst_k")
     _log "$dst_n"
     # shellcheck disable=SC2012
     dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
