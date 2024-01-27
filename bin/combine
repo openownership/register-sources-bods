@@ -38,6 +38,11 @@ function _redis() {
     redis-cli -u "$REDIS_URL" "$@"
 }
 
+function _redis_flush() {
+    _redis --pipe < "$tmp/redis"
+    truncate -s0 "$tmp/redis"
+}
+
 function _redis_sadd() {
     key=$1
     shift
@@ -48,9 +53,13 @@ function _redis_sadd() {
     done
 }
 
-function _redis_flush() {
-    _redis --pipe < "$tmp/redis"
-    truncate -s0 "$tmp/redis"
+function _redis_scopy() {
+    src_k=$1
+    dst_k=$2
+    mapfile -t members < <(_redis SMEMBERS "$src_k")
+    _redis_sadd "$dst_k" "${members[@]}"
+    _redis_flush >/dev/null
+    _redis SCARD "$dst_k"
 }
 
 function _debug_dups() {
@@ -157,7 +166,7 @@ for src_f in "${src_fs[@]}" ; do
             gzip -c >> "$dst_f"
     fi
     
-    dst_n=$(_redis SUNIONSTORE "$dst_k" "$dst_k" "$tmp_k")
+    dst_n=$(_redis_scopy "$tmp_k" "$dst_k")
     _log "$dst_n"
     # shellcheck disable=SC2012
     dst_s=$(ls -lh "$dst_f" | awk '{ print $5 }')
