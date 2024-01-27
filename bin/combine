@@ -11,9 +11,13 @@ tag=$2
 dst_d=${3:-data/exports}
 dst_full_f=${4:-$dst_d/$(date -Is).$tag$dst_ext}
 dst_incr_f=${5:-$dst_full_f}
-log_f=$(dirname "$dst_incr_f")/$(basename "$dst_incr_f" "$dst_ext")$log_ext
 
 debug=${COMBINE_DEBUG:-0}
+
+src_d=$(realpath -s --relative-base . "$src_d")
+dst_full_f=$(realpath -s --relative-base . "$dst_full_f")
+dst_incr_f=$(realpath -s --relative-base . "$dst_incr_f")
+log_f=$(dirname "$dst_incr_f")/$(basename "$dst_incr_f" "$dst_ext")$log_ext
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
