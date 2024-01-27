@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-src_d=$1
-tag=$2
-dst_f=${3:-data/exports/$(date -Is).$tag.jsonl.gz}
-
-debug=${COMBINE_DEBUG:-0}
-
-log_f=$dst_f.log
+dst_ext=.jsonl.gz
+log_ext=.log
 rds_chunk_n=750
 rds_ns=register-files-combiner
-tmp=$(mktemp -d)
+
+src_d=$1
+tag=$2
+dst_d=${3:-data/exports}
+dst_f=${4:-$dst_d/$(date -Is).$tag$dst_ext}
+log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext")$log_ext
+
+debug=${COMBINE_DEBUG:-0}
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -21,15 +23,15 @@ function _echo() {
     echo -e "$msg" | tee -a "$log_f"
 }
 
-function _redis() {
-    redis-cli -u "$REDIS_URL" "$@"
-}
-
 function _log() {
     msg=$1
     sep=${2:-" "}
     
     printf "%7s$sep" "$msg" | tee -a "$log_f"
+}
+
+function _redis() {
+    redis-cli -u "$REDIS_URL" "$@"
 }
 
 function _debug_dups() {
@@ -58,6 +60,7 @@ function _debug_dups() {
 }
 
 trap _clean EXIT
+tmp=$(mktemp -d)
 #-------------------------------------------------------------------------------
 echo
 _echo "=== PING\n"
