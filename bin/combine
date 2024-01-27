@@ -130,7 +130,6 @@ _echo "\n=== COMBINE\n"
 
 dst_k=$rds_ns/dst/$dst_f
 tmp_k=$dst_k.tmp
-touch "$dst_f"
 _redis DEL "$tmp_k" >/dev/null
 
 for src_f in "${src_fs[@]}" ; do
