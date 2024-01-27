@@ -9,15 +9,21 @@ rds_ns=register-files-combiner
 
 src_d=$1
 dst_d=${2:-data/exports}
-dst_full_f=${3:-$dst_d/$date$dst_ext}
-dst_incr_f=${4:-$dst_full_f}
+dst_full_f=$dst_d/${3:-$date}$dst_ext
+incr=${4:-full}
 
 debug=${COMBINE_DEBUG:-0}
+
+if [ "$incr" == "incr" ] ; then
+    dst_incr_f=$dst_full_f.$date$dst_ext
+else
+    dst_incr_f=$dst_full_f
+fi
 
 src_d=$(realpath -s --relative-base . "$src_d")
 dst_full_f=$(realpath -s --relative-base . "$dst_full_f")
 dst_incr_f=$(realpath -s --relative-base . "$dst_incr_f")
-log_f=$(dirname "$dst_incr_f")/$(basename "$dst_incr_f" "$dst_ext")$log_ext
+log_f=$(dirname "$dst_full_f")/$(basename "$dst_full_f" "$dst_ext")$log_ext
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
