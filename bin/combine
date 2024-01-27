@@ -7,10 +7,9 @@ rds_chunk_n=750
 rds_ns=register-files-combiner
 
 src_d=$1
-tag=$2
-dst_d=${3:-data/exports}
-dst_full_f=${4:-$dst_d/$(date -Is).$tag$dst_ext}
-dst_incr_f=${5:-$dst_full_f}
+dst_d=${2:-data/exports}
+dst_full_f=${3:-$dst_d/$(date -Is)$dst_ext}
+dst_incr_f=${4:-$dst_full_f}
 
 debug=${COMBINE_DEBUG:-0}
 
