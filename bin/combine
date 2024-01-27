@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+date=$(date -Is)
 dst_ext=.jsonl.gz
 log_ext=.log
 rds_chunk_n=750
@@ -8,7 +9,7 @@ rds_ns=register-files-combiner
 
 src_d=$1
 dst_d=${2:-data/exports}
-dst_full_f=${3:-$dst_d/$(date -Is)$dst_ext}
+dst_full_f=${3:-$dst_d/$date$dst_ext}
 dst_incr_f=${4:-$dst_full_f}
 
 debug=${COMBINE_DEBUG:-0}
@@ -67,7 +68,10 @@ trap _clean EXIT
 tmp=$(mktemp -d)
 #-------------------------------------------------------------------------------
 echo
-_echo "=== PING\n"
+_echo "$(printf '%-80s' ' ' | tr ' ' '-')"
+_echo "$date"
+#-------------------------------------------------------------------------------
+_echo "\n=== PING\n"
 
 rtn=$(_redis PING)
 _echo "$rtn"
