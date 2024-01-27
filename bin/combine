@@ -15,7 +15,7 @@ debug=${COMBINE_DEBUG:-0}
 
 src_d=$(realpath -s --relative-base . "$src_d")
 dst_f=$(realpath -s --relative-base . "$dst_f")
-log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext")$log_ext
+log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$log_ext
 snp_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$dst_ext
 #-------------------------------------------------------------------------------
 function _clean() {
@@ -67,7 +67,6 @@ trap _clean EXIT
 tmp=$(mktemp -d)
 #-------------------------------------------------------------------------------
 echo
-_echo "$(printf '%-80s' ' ' | tr ' ' '-')"
 _echo "$date"
 #-------------------------------------------------------------------------------
 _echo "\n=== PING\n"
