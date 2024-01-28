@@ -69,8 +69,8 @@ function _index_diff() {
     local src=$1
     local dst=$2
     local buf=$3
-    if test -f "$(_idxf "$dst")" && \
-            grep -q -F "$src" "$(_idxf "$dst")" ; then
+    touch "$(_idxf "$dst")"
+    if grep -q -F "$src" "$(_idxf "$dst")" ; then
         echo 0
     else
         comm -23 "$(_idx "$src")" "$(_idx "$dst")" > "$buf"
