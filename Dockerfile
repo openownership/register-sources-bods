@@ -5,7 +5,6 @@ FROM docker.io/library/ruby@sha256:7681a3d37560dbe8ff7d0a38f3ce35971595426f0fe2f
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         jq \
-        redis-tools \
         shellcheck \
         && \
     rm -rf /var/lib/apt/lists/*
