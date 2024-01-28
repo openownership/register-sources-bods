@@ -85,9 +85,11 @@ function _index_insert() {
     idx=$(_index_f_idx "$f")
     idxn=$(_index_f_idxn "$f")
     tmp_idx=$tmp/idx
-    cat "$idx" "$fi" | sort -u > "$tmp_idx"
-    mv "$tmp_idx" "$idx"
-    wc -l < "$idx" > "$idxn"
+    if [ -s "$fi" ] ; then
+        cat "$idx" "$fi" | sort -u > "$tmp_idx"
+        mv "$tmp_idx" "$idx"
+        wc -l < "$idx" > "$idxn"
+    fi
 }
 
 trap _clean EXIT
