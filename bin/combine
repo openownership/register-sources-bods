@@ -20,88 +20,74 @@ function _clean() {
 }
 
 function _echo() {
-    local msg
-    msg=${1:-}
+    local msg=${1:-}
     echo -e "$msg" | tee -a "$log_f"
 }
 
 function _log() {
-    local msg sep
-    msg=$1
-    sep=${2:-" "}
+    local msg=$1
+    local sep=${2:-" "}
     printf "%9s$sep" "$msg" | tee -a "$log_f"
 }
 
-function _index_f_idx() {
+function _idx() {
     echo "$idx_d/$1.idx"
 }
 
-function _index_f_idxn() {
+function _idxn() {
     echo "$idx_d/$1.idxn"
 }
 
-function _index_f_idxf() {
+function _idxf() {
     echo "$idx_d/$1.idxf"
 }
 
 function _index_size() {
-    local f idxn
-    f=$1
-    idxn=$(_index_f_idxn "$f")
-    if [ -f "$idxn" ] ; then
-        cat "$idxn"
+    local f=$1
+    if [ -f "$(_idxn "$f")" ] ; then
+        cat "$(_idxn "$f")"
     else
         echo 0
     fi
 }
 
 function _index_create() {
-    local f idx idxn
-    f=$1
-    idx=$(_index_f_idx "$f")
-    idxn=$(_index_f_idxn "$f")
-    mkdir -p "$(dirname "$idx")"
+    local f=$1
+    mkdir -p "$(dirname "$(_idx "$f")")"
     if [ ! -f "$f" ] ; then
-        touch "$idx"
+        touch "$(_idx "$f")"
     elif [ "$(file -b --mime-type "$f")" == 'application/gzip' ] ; then
-        zcat "$f" | jq -r '.statementID' | sort -u > "$idx"
+        zcat "$f" | jq -r '.statementID' | sort -u > "$(_idx "$f")"
     else
-        jq -r '.statementID' < "$f" | sort -u > "$idx"
+        # shellcheck disable=SC2094
+        jq -r '.statementID' < "$f" | sort -u > "$(_idx "$f")"
     fi
-    wc -l < "$idx" > "$idxn"
+    wc -l < "$(_idx "$f")" > "$(_idxn "$f")"
 }
 
 function _index_diff() {
-    local f1 f2 fo idx1 idx2 idxf
-    f1=$1
-    f2=$2
-    fo=$3
-    idx1=$(_index_f_idx "$f1")
-    idx2=$(_index_f_idx "$f2")
-    idxf=$(_index_f_idxf "$f2")
-    if test -f "$idxf" && grep -q -F "$f1" "$idxf" ; then
+    local src=$1
+    local dst=$2
+    local buf=$3
+    if test -f "$(_idxf "$dst")" && \
+            grep -q -F "$src" "$(_idxf "$dst")" ; then
         echo 0
     else
-        comm -23 "$idx1" "$idx2" > "$fo"
-        wc -l < "$fo"
+        comm -23 "$(_idx "$src")" "$(_idx "$dst")" > "$buf"
+        wc -l < "$buf"
     fi
 }
 
 function _index_insert() {
-    local f fi cache_tag idx idxn idxf tmp_idx
-    f=$1
-    fi=$2
-    cache_tag=$3
-    idx=$(_index_f_idx "$f")
-    idxn=$(_index_f_idxn "$f")
-    idxf=$(_index_f_idxf "$f")
-    tmp_idx=$tmp/idx
-    if [ -s "$fi" ] ; then
-        cat "$idx" "$fi" | sort -u > "$tmp_idx"
-        mv "$tmp_idx" "$idx"
-        wc -l < "$idx" > "$idxn"
+    local dst=$1
+    local buf=$2
+    local tag=$3
+    if [ -s "$buf" ] ; then
+        cat "$(_idx "$dst")" "$buf" | sort -u > "$tmp/idx"
+        mv "$tmp/idx" "$(_idx "$dst")"
+        wc -l < "$(_idx "$dst")" > "$(_idxn "$dst")"
     fi
-    echo "$cache_tag" >> "$idxf"
+    echo "$tag" >> "$(_idxf "$dst")"
 }
 
 trap _clean EXIT
@@ -139,16 +125,14 @@ for src_f in "${src_fs[@]}" ; do
     _log "$src_f"
     src_n=$(_index_size "$src_f")
     _log "$src_n"
-    tmp_diff=$tmp/diff
-    diff_n=$(_index_diff "$src_f" "$dst_f" "$tmp_diff")
+    diff_n=$(_index_diff "$src_f" "$dst_f" "$tmp/diff")
     _log "$diff_n"
     if [ "$diff_n" -gt 0 ] ; then
-        tmp_grep=$tmp/grep
-        jq -R '.' "$tmp_diff" | sed 's/^/"statementID":/' > "$tmp_grep"
-        jq -cS '.' "$src_f" | grep -F -f "$tmp_grep" | awk '!x[$0]++' |
+        jq -R '.' "$tmp/diff" | sed 's/^/"statementID":/' > "$tmp/grep"
+        jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
-    _index_insert "$dst_f" "$tmp_diff" "$src_f"
+    _index_insert "$dst_f" "$tmp/diff" "$src_f"
     dst_n=$(_index_size "$dst_f")
     _log "$dst_n"
     # shellcheck disable=SC2012
