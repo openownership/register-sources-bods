@@ -82,10 +82,11 @@ function _index_insert() {
     local src=$1
     local dst=$2
     local buf=$3
-    if [ -s "$buf" ] ; then
-        cat "$(_idx "$dst")" "$buf" | sort -u > "$tmp/idx"
-        mv "$tmp/idx" "$(_idx "$dst")"
-        wc -l < "$(_idx "$dst")" > "$(_idxn "$dst")"
+    local buf_n=$4
+    if [ "$buf_n" -gt 0 ] ; then
+        dst_n=$(_index_size "$dst")
+        cat "$(_idx "$dst")" "$buf" | sort -u -o "$(_idx "$dst")"
+        echo $(( dst_n + buf_n )) > "$(_idxn "$dst")"
     fi
     if ! grep -q -F "$src" "$(_idxf "$dst")" ; then
         echo "$src" >> "$(_idxf "$dst")"
@@ -134,7 +135,7 @@ for src_f in "${src_fs[@]}" ; do
         jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
-    _index_insert "$src_f" "$dst_f" "$tmp/diff"
+    _index_insert "$src_f" "$dst_f" "$tmp/diff" "$diff_n"
     dst_n=$(_index_size "$dst_f")
     _log "$dst_n"
     # shellcheck disable=SC2012
