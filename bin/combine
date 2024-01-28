@@ -87,7 +87,9 @@ function _index_insert() {
         mv "$tmp/idx" "$(_idx "$dst")"
         wc -l < "$(_idx "$dst")" > "$(_idxn "$dst")"
     fi
-    echo "$src" >> "$(_idxf "$dst")"
+    if ! grep -q -F "$src" "$(_idxf "$dst")" ; then
+        echo "$src" >> "$(_idxf "$dst")"
+    fi
 }
 
 trap _clean EXIT
