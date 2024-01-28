@@ -11,8 +11,6 @@ src_d=$1
 dst_d=${2:-data/exports}
 dst_f=$dst_d/${3:-$date}$dst_ext
 
-debug=${COMBINE_DEBUG:-0}
-
 src_d=$(realpath -s --relative-base . "$src_d")
 dst_f=$(realpath -s --relative-base . "$dst_f")
 log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$log_ext
@@ -68,31 +66,6 @@ function _redis_scopy() {
     _redis SCARD "$dst_k"
 }
 
-function _debug_dups() {
-    f=$1
-    
-    c_t=$(wc -l < "$f")                 # source containing duplication
-    _log "$c_t"
-    c_u=$(uniq "$f" | wc -l)            # consecutive-line deduplication
-    _log "$c_u"
-    c_s=$(sort -u "$f" | wc -l)         # best-case deduplication (incorrect order)
-    _log "$c_s"
-    c_a=$(awk '!x[$0]++' "$f" | wc -l)  # whole-file deduplication (correct order)
-    _log "$c_a"
-    
-    if [ "$c_t" -eq "$c_s" ] ; then
-        st='='
-    elif [ "$c_u" -eq "$c_s" ] ; then
-        st='~'
-    elif [ "$c_a" -eq "$c_s" ] ; then
-        st='*'
-    else
-        st='!'
-    fi
-    
-    _log "$st"
-}
-
 trap _clean EXIT
 tmp=$(mktemp -d)
 #-------------------------------------------------------------------------------
@@ -128,18 +101,7 @@ for src_f in "${src_fs[@]}" ; do
     fi
     
     _log "$src_n"
-    
-    if [ "$debug" -eq 1 ] ; then
-        _log "$st"
-        tmp_f=$tmp/debug
-        _log '|'
-        jq -cS '.' "$src_f" > "$tmp_f"
-        _debug_dups "$tmp_f"
-        rm "$tmp_f"
-        _echo
-    else
-        _log "$st" "\n"
-    fi
+    _log "$st" "\n"
 done
 #-------------------------------------------------------------------------------
 _echo "\n=== LOAD\n"
@@ -198,15 +160,6 @@ _echo "\n=== SNAPSHOT\n"
 cp "$dst_f" "$snp_f"
 #-------------------------------------------------------------------------------
 _echo "\n=== OUTPUT\n"
-
-if [ "$debug" -eq 1 ] ; then
-    _echo "debug:"
-    tmp_f=$tmp/debug
-    zcat "$dst_f" > "$tmp_f"
-    _debug_dups "$tmp_f"
-    rm "$tmp_f"
-    _echo
-fi
 
 _echo "source:      $src_d"
 _echo "destination: $dst_f"
