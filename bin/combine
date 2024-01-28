@@ -79,15 +79,15 @@ function _index_diff() {
 }
 
 function _index_insert() {
-    local dst=$1
-    local buf=$2
-    local tag=$3
+    local src=$1
+    local dst=$2
+    local buf=$3
     if [ -s "$buf" ] ; then
         cat "$(_idx "$dst")" "$buf" | sort -u > "$tmp/idx"
         mv "$tmp/idx" "$(_idx "$dst")"
         wc -l < "$(_idx "$dst")" > "$(_idxn "$dst")"
     fi
-    echo "$tag" >> "$(_idxf "$dst")"
+    echo "$src" >> "$(_idxf "$dst")"
 }
 
 trap _clean EXIT
@@ -132,7 +132,7 @@ for src_f in "${src_fs[@]}" ; do
         jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
-    _index_insert "$dst_f" "$tmp/diff" "$src_f"
+    _index_insert "$src_f" "$dst_f" "$tmp/diff"
     dst_n=$(_index_size "$dst_f")
     _log "$dst_n"
     # shellcheck disable=SC2012
