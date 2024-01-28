@@ -39,8 +39,10 @@ function _redis() {
 }
 
 function _redis_flush() {
-    _redis --pipe < "$tmp/redis"
-    truncate -s0 "$tmp/redis"
+    if [ -f "$tmp/redis" ] ; then
+        _redis --pipe < "$tmp/redis"
+        truncate -s0 "$tmp/redis"
+    fi
 }
 
 function _redis_sadd() {
@@ -93,7 +95,6 @@ function _debug_dups() {
 
 trap _clean EXIT
 tmp=$(mktemp -d)
-touch "$tmp/redis"
 #-------------------------------------------------------------------------------
 echo
 _echo "$date"
@@ -143,9 +144,12 @@ done
 #-------------------------------------------------------------------------------
 _echo "\n=== LOAD\n"
 
-# shellcheck disable=SC2012
-dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
-_echo "loading: $dst_s\n"
+if [ -f "$tmp/redis" ] ; then
+    # shellcheck disable=SC2012
+    dst_s=$(ls -lh "$tmp/redis" | awk '{ print $5 }')
+    _echo "loading: $dst_s\n"
+fi
+
 rtn=$(_redis_flush)
 _echo "$rtn"
 #-------------------------------------------------------------------------------
