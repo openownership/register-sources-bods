@@ -40,6 +40,10 @@ function _index_f_idxn() {
     echo "$idx_d/$1.idxn"
 }
 
+function _index_f_idxf() {
+    echo "$idx_d/$1.idxf"
+}
+
 function _index_size() {
     local f idxn
     f=$1
@@ -68,28 +72,36 @@ function _index_create() {
 }
 
 function _index_diff() {
-    local f1 f2 fo idx1 idx2
+    local f1 f2 fo idx1 idx2 idxf
     f1=$1
     f2=$2
     fo=$3
     idx1=$(_index_f_idx "$f1")
     idx2=$(_index_f_idx "$f2")
-    comm -23 "$idx1" "$idx2" > "$fo"
-    wc -l < "$fo"
+    idxf=$(_index_f_idxf "$f2")
+    if test -f "$idxf" && grep -q -F "$f1" "$idxf" ; then
+        echo 0
+    else
+        comm -23 "$idx1" "$idx2" > "$fo"
+        wc -l < "$fo"
+    fi
 }
 
 function _index_insert() {
-    local f idx idxn
+    local f fi cache_tag idx idxn idxf tmp_idx
     f=$1
     fi=$2
+    cache_tag=$3
     idx=$(_index_f_idx "$f")
     idxn=$(_index_f_idxn "$f")
+    idxf=$(_index_f_idxf "$f")
     tmp_idx=$tmp/idx
     if [ -s "$fi" ] ; then
         cat "$idx" "$fi" | sort -u > "$tmp_idx"
         mv "$tmp_idx" "$idx"
         wc -l < "$idx" > "$idxn"
     fi
+    echo "$cache_tag" >> "$idxf"
 }
 
 trap _clean EXIT
@@ -133,10 +145,10 @@ for src_f in "${src_fs[@]}" ; do
     if [ "$diff_n" -gt 0 ] ; then
         tmp_grep=$tmp/grep
         jq -R '.' "$tmp_diff" | sed 's/^/"statementID":/' > "$tmp_grep"
-        jq -cS '.' "$src_f" | grep -f "$tmp_grep" -F | awk '!x[$0]++' |
+        jq -cS '.' "$src_f" | grep -F -f "$tmp_grep" | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
-    _index_insert "$dst_f" "$tmp_diff"
+    _index_insert "$dst_f" "$tmp_diff" "$src_f"
     dst_n=$(_index_size "$dst_f")
     _log "$dst_n"
     # shellcheck disable=SC2012
