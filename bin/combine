@@ -4,6 +4,7 @@ set -Eeuo pipefail
 date=$(date -Is)
 dst_ext=.jsonl.gz
 log_ext=.log
+index_rewrite_n=100000
 
 src_d=$1
 dst_d=${2:-data/exports}
@@ -30,8 +31,12 @@ function _log() {
     printf "%9s$sep" "$msg" | tee -a "$log_f"
 }
 
-function _idx() {
+function _idx0() {
     echo "$idx_d/$1.idx"
+}
+
+function _idx1() {
+    echo "$idx_d/$1.idx1"
 }
 
 function _idxn() {
@@ -53,16 +58,17 @@ function _index_size() {
 
 function _index_create() {
     local f=$1
-    mkdir -p "$(dirname "$(_idx "$f")")"
+    mkdir -p "$(dirname "$(_idx0 "$f")")"
     if [ ! -f "$f" ] ; then
-        touch "$(_idx "$f")"
+        touch "$(_idx0 "$f")"
     elif [ "$(file -b --mime-type "$f")" == 'application/gzip' ] ; then
-        zcat "$f" | jq -r '.statementID' | sort -u > "$(_idx "$f")"
+        zcat "$f" | jq -r '.statementID' | sort -u > "$(_idx0 "$f")"
     else
         # shellcheck disable=SC2094
-        jq -r '.statementID' < "$f" | sort -u > "$(_idx "$f")"
+        jq -r '.statementID' < "$f" | sort -u > "$(_idx0 "$f")"
     fi
-    wc -l < "$(_idx "$f")" > "$(_idxn "$f")"
+    rm -f "$(_idx1 "$f")"
+    wc -l < "$(_idx0 "$f")" > "$(_idxn "$f")"
 }
 
 function _index_diff() {
@@ -73,7 +79,9 @@ function _index_diff() {
     if grep -q -F "$src" "$(_idxf "$dst")" ; then
         echo 0
     else
-        comm -23 "$(_idx "$src")" "$(_idx "$dst")" > "$buf"
+        touch "$(_idx1 "$dst")"
+        comm -23 "$(_idx0 "$src")" "$(_idx1 "$dst")" |
+            comm -23 - "$(_idx0 "$dst")" > "$buf"
         wc -l < "$buf"
     fi
 }
@@ -82,13 +90,27 @@ function _index_insert() {
     local src=$1
     local dst=$2
     local buf=$3
-    if [ -s "$buf" ] ; then
-        cat "$(_idx "$dst")" "$buf" | sort -u > "$tmp/idx"
-        mv "$tmp/idx" "$(_idx "$dst")"
-        wc -l < "$(_idx "$dst")" > "$(_idxn "$dst")"
+    local buf_n=$4
+    if [ "$buf_n" -gt 0 ] ; then
+        dst_n=$(_index_size "$dst")
+        cat "$(_idx1 "$dst")" "$buf" | sort -u > "$tmp/idx"
+        mv "$tmp/idx" "$(_idx1 "$dst")"
+        _index_rewrite "$dst"
+        echo $(( dst_n + buf_n )) > "$(_idxn "$dst")"
     fi
     if ! grep -q -F "$src" "$(_idxf "$dst")" ; then
         echo "$src" >> "$(_idxf "$dst")"
+    fi
+}
+
+function _index_rewrite() {
+    local dst=$1
+    local force=${2:-0}
+    idx1_n=$(wc -l < "$(_idx1 "$dst")")
+    if [ "$force" -eq 1 ] || [ "$idx1_n" -gt "$index_rewrite_n" ] ; then
+        cat "$(_idx0 "$dst")" "$(_idx1 "$dst")" | sort -u > "$tmp/idx"
+        mv "$tmp/idx" "$(_idx0 "$dst")"
+        truncate -s0 "$(_idx1 "$dst")"
     fi
 }
 
@@ -134,7 +156,7 @@ for src_f in "${src_fs[@]}" ; do
         jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" | awk '!x[$0]++' |
             gzip -c >> "$dst_f"
     fi
-    _index_insert "$src_f" "$dst_f" "$tmp/diff"
+    _index_insert "$src_f" "$dst_f" "$tmp/diff" "$diff_n"
     dst_n=$(_index_size "$dst_f")
     _log "$dst_n"
     # shellcheck disable=SC2012
@@ -149,6 +171,8 @@ for src_f in "${src_fs[@]}" ; do
     fi
     _log "$st" "\n"
 done
+
+_index_rewrite "$dst_f" 1
 #-------------------------------------------------------------------------------
 _echo "\n=== SNAPSHOT\n"
 
