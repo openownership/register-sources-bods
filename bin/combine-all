@@ -11,4 +11,4 @@ dst_f=$dst_d/all.$date$dst_ext
 mapfile -d '' src_fs < <(find "$src_d" \
     -maxdepth 1 -name "*$dst_ext" -type f -print0 | sort -z)
 mkdir -p "$dst_d"
-zcat "${src_fs[@]}" | gzip > "$dst_f"
+cat "${src_fs[@]}" > "$dst_f"
