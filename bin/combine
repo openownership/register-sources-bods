@@ -153,9 +153,8 @@ for src_f in "${src_fs[@]}" ; do
     _log "$diff_n"
     if [ "$diff_n" -gt 0 ] ; then
         jq -R '.' "$tmp/diff" | sed 's/^/"statementID":/' > "$tmp/grep"
-        jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" |
-            awk '{ split($0, s1, "\"statementID\":\""); split(s1[2], s2, "\",\"") } !x[s2[1]]++' |
-            gzip -c >> "$dst_f"
+        jq -cSs '. |= unique_by(.statementID) | .[]' "$src_f" |
+            grep -F -f "$tmp/grep" | gzip -c >> "$dst_f"
     fi
     _index_insert "$src_f" "$dst_f" "$tmp/diff" "$diff_n"
     dst_n=$(_index_size "$dst_f")
