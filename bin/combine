@@ -6,15 +6,15 @@ dst_ext=.jsonl.gz
 log_ext=.log
 index_rewrite_n=100000
 
-src_d=$1
-dst_d=${2:-data/exports}
+src_d=$(realpath -s --relative-base . "$1")
+dst_d=$(realpath -s --relative-base . "${2:-data/exports}")
 dst_f=$dst_d/${3:-$date}$dst_ext
 
-src_d=$(realpath -s --relative-base . "$src_d")
-dst_f=$(realpath -s --relative-base . "$dst_f")
-log_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$log_ext
-snp_f=$(dirname "$dst_f")/$(basename "$dst_f" "$dst_ext").$date$dst_ext
 idx_d=$dst_d/indexes
+snp_d=$dst_d/snapshots
+snp_f=$snp_d/$(basename "$dst_f" "$dst_ext").$date$dst_ext
+log_d=$dst_d/logs
+log_f=$log_d/$(basename "$dst_f" "$dst_ext").$date$log_ext
 #-------------------------------------------------------------------------------
 function _clean() {
     rm -rf "${tmp:?}"
@@ -116,6 +116,7 @@ function _index_rewrite() {
 
 trap _clean EXIT
 tmp=$(mktemp -d)
+mkdir -p "$log_d"
 #-------------------------------------------------------------------------------
 echo
 _echo "$date"
@@ -153,8 +154,8 @@ for src_f in "${src_fs[@]}" ; do
     _log "$diff_n"
     if [ "$diff_n" -gt 0 ] ; then
         jq -R '.' "$tmp/diff" | sed 's/^/"statementID":/' > "$tmp/grep"
-        jq -cS '.' "$src_f" | grep -F -f "$tmp/grep" | awk '!x[$0]++' |
-            gzip -c >> "$dst_f"
+        jq -cSs '. |= unique_by(.statementID) | .[]' "$src_f" |
+            grep -F -f "$tmp/grep" | gzip -c >> "$dst_f"
     fi
     _index_insert "$src_f" "$dst_f" "$tmp/diff" "$diff_n"
     dst_n=$(_index_size "$dst_f")
@@ -176,6 +177,7 @@ _index_rewrite "$dst_f" 1
 #-------------------------------------------------------------------------------
 _echo "\n=== SNAPSHOT\n"
 
+mkdir -p "$snp_d"
 cp "$dst_f" "$snp_f"
 #-------------------------------------------------------------------------------
 _echo "\n=== OUTPUT\n"

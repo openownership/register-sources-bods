@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+date=$(date -Is)
+dst_ext=.jsonl.gz
+
+src_d=${1:-data/exports}
+dst_d=${2:-$src_d/all}
+dst_f=$dst_d/all.$date$dst_ext
+
+mapfile -d '' src_fs < <(find "$src_d" \
+    -maxdepth 1 -name "*$dst_ext" -type f -print0 | sort -z)
+mkdir -p "$dst_d"
+zcat "${src_fs[@]}" | gzip > "$dst_f"
