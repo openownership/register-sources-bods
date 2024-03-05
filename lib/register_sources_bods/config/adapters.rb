@@ -14,10 +14,7 @@ module RegisterSourcesBods
       HTTP_ADAPTER    = RegisterCommon::Adapters::HttpAdapter.new
       KINESIS_ADAPTER = RegisterCommon::Adapters::KinesisAdapter.new(credentials: AWS_CREDENTIALS)
       S3_ADAPTER      = RegisterCommon::Adapters::S3Adapter.new(credentials: AWS_CREDENTIALS)
-      REDIS_ADAPTER   = RegisterCommon::Adapters::RedisAdapter.new(
-        host: ENV.fetch('REDIS_HOST'),
-        port: ENV.fetch('REDIS_PORT')
-      )
+      REDIS_ADAPTER   = RegisterCommon::Adapters::RedisAdapter.new(url: ENV.fetch('REDIS_URL'))
       SET_CLIENT = RegisterCommon::Services::SetClientRedis.new(redis_adapter: REDIS_ADAPTER)
     end
   end
