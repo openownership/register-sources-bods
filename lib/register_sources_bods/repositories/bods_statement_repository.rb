@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'register_common/elasticsearch/query'
+require 'register_common/utils/paginated_array'
 
 require_relative '../config/elasticsearch'
-require_relative '../register/paginated_array'
 require_relative '../structs/bods_statement'
 
 module RegisterSourcesBods
@@ -375,8 +375,14 @@ module RegisterSourcesBods
           )
         )
 
-        Register::PaginatedArray.new(res, current_page: page, records_per_page: per_page, limit_value: nil,
-                                          total_count: res.total_count, aggs: res.aggs)
+        RegisterCommon::Utils::PaginatedArray.new(
+          res,
+          current_page: page,
+          records_per_page: per_page,
+          limit_value: nil,
+          total_count: res.total_count,
+          aggs: res.aggs
+        )
       end
 
       def count(query)

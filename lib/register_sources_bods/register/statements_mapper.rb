@@ -5,7 +5,6 @@ require 'ostruct'
 require_relative '../constants/identifiers'
 require_relative '../structs/bods_statement'
 require_relative 'entity'
-require_relative 'paginated_array'
 require_relative 'relationship'
 require_relative 'unknown_person_builder'
 
