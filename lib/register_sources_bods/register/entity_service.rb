@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'ostruct'
+require 'register_common/utils/paginated_array'
 
 require_relative '../constants/identifiers'
 require_relative '../enums/statement_types'
 require_relative 'entity_query_builder'
-require_relative 'paginated_array'
 require_relative 'statement_loader'
 
 module RegisterSourcesBods
@@ -35,7 +35,7 @@ module RegisterSourcesBods
             result.relationships[statement_id]
         end.compact.uniq
 
-        Register::PaginatedArray.new(
+        RegisterCommon::Utils::PaginatedArray.new(
           new_results,
           current_page: statements.current_page,
           records_per_page: statements.records_per_page,
@@ -62,12 +62,14 @@ module RegisterSourcesBods
             result.relationships[statement_id]
         end.compact.uniq
 
-        Register::PaginatedArray.new(new_results,
-                                     current_page: statements.current_page,
-                                     records_per_page: statements.records_per_page,
-                                     limit_value: nil,
-                                     total_count: statements.total_count,
-                                     aggs: statements.aggs)
+        RegisterCommon::Utils::PaginatedArray.new(
+          new_results,
+          current_page: statements.current_page,
+          records_per_page: statements.records_per_page,
+          limit_value: nil,
+          total_count: statements.total_count,
+          aggs: statements.aggs
+        )
       end
 
       def count_legal_entities

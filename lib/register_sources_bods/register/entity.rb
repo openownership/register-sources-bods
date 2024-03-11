@@ -3,9 +3,9 @@
 require 'active_support/core_ext/object/blank'
 require 'countries'
 require 'iso8601'
+require 'register_common/utils/paginated_array'
 
 require_relative '../constants/identifiers'
-require_relative 'paginated_array'
 
 module RegisterSourcesBods
   module Register
@@ -18,7 +18,7 @@ module RegisterSourcesBods
         @bods_statement = bods_statement
 
         @master_entity = nil
-        @merged_entities = Register::PaginatedArray.new([])
+        @merged_entities = RegisterCommon::Utils::PaginatedArray.new([])
         @relationships_as_source = []
         @relationships_as_target = []
         @replaced_bods_statements = []
