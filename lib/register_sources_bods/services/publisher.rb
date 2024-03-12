@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../structs/bods_statement'
 require_relative 'builder'
 require_relative 'pending_records'
@@ -10,7 +10,7 @@ module RegisterSourcesBods
   module Services
     class Publisher
       def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil, stream_name: nil)
-        @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
+        @repository = repository || RegisterSourcesBods::Repository.new(
           client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
         )
         @producer = producer || Services::RecordsProducer.new(stream_name:)

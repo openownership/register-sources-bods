@@ -3,7 +3,7 @@
 require 'register_sources_bods/services/es_index_creator'
 
 RSpec.describe RegisterSourcesBods::Services::EsIndexCreator do
-  subject { described_class.new(client:, index:) }
+  subject { described_class.new(client:) }
 
   let(:client) { double 'client', indices: double('indices') }
   let(:index) { double 'index' }
@@ -14,7 +14,7 @@ RSpec.describe RegisterSourcesBods::Services::EsIndexCreator do
         index:
       )
 
-      subject.create_index
+      subject.create_index(index)
     end
   end
 end

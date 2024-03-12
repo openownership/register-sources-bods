@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 require 'elasticsearch'
-require 'register_sources_bods/repositories/bods_statement_repository'
+require 'register_sources_bods/repository'
 require 'register_sources_bods/services/es_index_creator'
 require 'register_sources_bods/structs/person_statement'
 require 'register_sources_bods/structs/entity_statement'
 require 'register_sources_bods/structs/ownership_or_control_statement'
 
-RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
+RSpec.describe RegisterSourcesBods::Repository do
   subject { described_class.new(client: es_client, index:) }
 
-  let(:index) { SecureRandom.uuid }
+  let(:index) { "tmp-#{SecureRandom.uuid}" }
   let(:es_client) { Elasticsearch::Client.new }
 
   let(:person_statement) do
@@ -49,11 +49,8 @@ RSpec.describe RegisterSourcesBods::Repositories::BodsStatementRepository do
   end
 
   before do
-    index_creator = RegisterSourcesBods::Services::EsIndexCreator.new(
-      index:,
-      client: es_client
-    )
-    index_creator.create_index
+    index_creator = RegisterSourcesBods::Services::EsIndexCreator.new(client: es_client)
+    index_creator.create_index(index)
   end
 
   describe '#store' do

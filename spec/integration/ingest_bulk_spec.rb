@@ -9,7 +9,7 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Ingester::IngestBulk do
   subject(:transformer) { described_class.new(index:, bulk_transformer:) }
 
-  let(:index) { SecureRandom.uuid }
+  let(:index) { "tmp-#{SecureRandom.uuid}" }
 
   let(:statements) do
     [

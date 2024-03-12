@@ -4,7 +4,7 @@ require 'register_sources_oc/services/resolver_service'
 
 require_relative '../constants/identifiers'
 require_relative '../mappers/resolver_mappings'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/publisher'
 require_relative '../transformer/record_processor'
 require_relative 'base'
@@ -17,8 +17,8 @@ module RegisterSourcesBods
       def initialize(identifiers_id_prefix = nil, index_raw = nil, index_dst = nil)
         super()
         @identifiers_id_prefix = identifiers_id_prefix || 'https://opencorporates.com/companies/gb/SC'
-        @repo_dst = Repositories::BodsStatementRepository.new(index: index_dst, await_refresh: true)
-        @repo_raw = Repositories::BodsStatementRepository.new(index: index_raw)
+        @repo_dst = Repository.new(index: index_dst, await_refresh: true)
+        @repo_raw = Repository.new(index: index_raw)
         @publisher = Services::Publisher.new(repository: @repo_dst)
         @resolver = RegisterSourcesOc::Services::ResolverService.new
         @processor = Transformer::RecordProcessor.new(bods_publisher: @publisher,

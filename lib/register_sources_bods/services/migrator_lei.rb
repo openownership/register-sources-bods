@@ -4,7 +4,7 @@ require 'register_sources_oc/repositories/add_id_repository'
 
 require_relative '../constants/identifiers'
 require_relative '../mappers/resolver_mappings'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative 'publisher'
 
 module RegisterSourcesBods
@@ -15,7 +15,7 @@ module RegisterSourcesBods
       def initialize(
         add_id_repository: RegisterSourcesOc::Repositories::AddIdRepository.new,
         publisher: Services::Publisher.new,
-        bods_statement_repository: Repositories::BodsStatementRepository.new
+        bods_statement_repository: Repository.new
       )
         @publisher = publisher
         @repository_ai = add_id_repository

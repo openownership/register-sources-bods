@@ -12,8 +12,8 @@ RSpec.describe RegisterSourcesBods::Transformer::TransformBulk do
     described_class.new(raw_index:, dest_index:, entity_resolver:, bulk_transformer: bulk_transformer_transform)
   end
 
-  let(:raw_index) { SecureRandom.uuid }
-  let(:dest_index) { SecureRandom.uuid }
+  let(:raw_index) { "tmp-#{SecureRandom.uuid}" }
+  let(:dest_index) { "tmp-#{SecureRandom.uuid}" }
 
   let(:statements) do
     [

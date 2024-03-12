@@ -10,7 +10,7 @@ RSpec.describe RegisterSourcesBods::Services::MigratorLEI do
 
   let(:add_id_repository) { instance_double(RegisterSourcesOc::Repositories::AddIdRepository) }
   let(:publisher) { instance_double(RegisterSourcesBods::Services::Publisher) }
-  let(:bods_statement_repository) { instance_double(RegisterSourcesBods::Repositories::BodsStatementRepository) }
+  let(:bods_statement_repository) { instance_double(RegisterSourcesBods::Repository) }
 
   let(:ex_oc_identifier) do
     uri = 'https://opencorporates.com/companies/gb/123456'

@@ -2,7 +2,7 @@
 
 require_relative '../constants/identifiers'
 require_relative '../mappers/resolver_mappings'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/publisher'
 require_relative 'base'
 
@@ -14,7 +14,7 @@ module RegisterSourcesBods
       def initialize(identifiers_id_prefix = nil)
         super()
         @identifiers_id_prefix = identifiers_id_prefix || 'https://opencorporates.com/companies/gb/Sc'
-        @repo = Repositories::BodsStatementRepository.new
+        @repo = Repository.new
         @publisher = Services::Publisher.new
         @identifiers_reject = lambda { |i|
           i.schemeName == IDENTIFIER_NAME_OC ? remap_identifier_open_corporates(i) != i : false
