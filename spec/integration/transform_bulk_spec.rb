@@ -12,6 +12,7 @@ RSpec.describe RegisterSourcesBods::Transformer::TransformBulk do
     described_class.new(raw_index:, dest_index:, entity_resolver:, bulk_transformer: bulk_transformer_transform)
   end
 
+  let(:es_client) { Elasticsearch::Client.new }
   let(:raw_index) { "tmp-#{SecureRandom.uuid}" }
   let(:dest_index) { "tmp-#{SecureRandom.uuid}" }
 
@@ -53,6 +54,11 @@ RSpec.describe RegisterSourcesBods::Transformer::TransformBulk do
       index: raw_index,
       bulk_transformer: bulk_transformer_ingest
     ).call(ingest_s3_prefix)
+  end
+
+  after do
+    es_client.indices.delete(index: raw_index)
+    es_client.indices.delete(index: dest_index)
   end
 
   describe '#call' do
