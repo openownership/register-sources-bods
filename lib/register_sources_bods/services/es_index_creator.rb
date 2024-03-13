@@ -9,27 +9,23 @@ module RegisterSourcesBods
     class EsIndexCreator
       MAPPINGS = JSON.parse(File.read(File.expand_path('mappings/mapping.json', __dir__)))
 
-      def initialize(
-        client: Config::ELASTICSEARCH_CLIENT,
-        index: Config::ELASTICSEARCH_INDEX
-      )
+      def initialize(client: Config::ELASTICSEARCH_CLIENT)
         @client = client
-        @index = index
       end
 
-      def create_index_unless_exists
-        create_index
+      def create_index_unless_exists(index)
+        create_index(index)
       rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
         raise e unless /resource_already_exists_exception/.match e.message
       end
 
-      def create_index
+      def create_index(index)
         client.indices.create index:, body: { mappings: MAPPINGS }
       end
 
       private
 
-      attr_reader :client, :index
+      attr_reader :client
     end
   end
 end

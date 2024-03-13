@@ -6,7 +6,7 @@ require 'register_sources_oc/services/resolver_service'
 require_relative '../config/adapters'
 require_relative '../logging'
 require_relative '../record_deserializer'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/es_index_creator'
 require_relative '../services/publisher'
 require_relative 'record_processor'
@@ -45,9 +45,10 @@ module RegisterSourcesBods
           namespace: BULK_NAMESPACE
         )
         @deserializer = RecordDeserializer.new
-        @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
-        @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
-        @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
+        @raw_records_repository = Repository.new(index: raw_index)
+        @records_repository = Repository.new(index: dest_index, await_refresh: true)
+        @es_index_creator = Services::EsIndexCreator.new
+        @dest_index = dest_index
 
         entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new if resolve
         @record_processor = Transformer::RecordProcessor.new(
@@ -62,7 +63,7 @@ module RegisterSourcesBods
       # rubocop:enable Metrics/ParameterLists
 
       def call(s3_prefix)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_index_unless_exists(@dest_index)
 
         bulk_transformer.call(s3_prefix) do |rows|
           process_rows rows

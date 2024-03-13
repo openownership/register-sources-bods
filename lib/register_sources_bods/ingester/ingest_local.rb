@@ -7,7 +7,7 @@ require_relative '../config/adapters'
 require_relative '../logging'
 require_relative '../record_deserializer'
 require_relative '../record_serializer'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/es_index_creator'
 
 module RegisterSourcesBods
@@ -31,12 +31,13 @@ module RegisterSourcesBods
           serializer: RecordSerializer.new
         ))
         @deserializer = RecordDeserializer.new
-        @repository = repository || Repositories::BodsStatementRepository.new(index:)
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index:)
+        @repository = repository || Repository.new(index:)
+        @es_index_creator = es_index_creator || Services::EsIndexCreator.new
+        @index = index
       end
 
       def call(local_path)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_index_unless_exists(@index)
 
         File.foreach(local_path) do |row|
           process_rows [row]

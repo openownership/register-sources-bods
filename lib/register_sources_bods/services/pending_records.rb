@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../constants/identifiers'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative 'builder'
 
 module RegisterSourcesBods
@@ -10,8 +10,9 @@ module RegisterSourcesBods
       PreprocessedRecord = Struct.new(:uid, :record, :identifiers, :source)
 
       def initialize(repository: nil, builder: nil)
-        @repository = repository || RegisterSourcesBods::Repositories::BodsStatementRepository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
+        @repository = repository || RegisterSourcesBods::Repository.new(
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+          index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX
         )
         @builder = builder || Services::Builder.new
       end

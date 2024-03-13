@@ -9,7 +9,8 @@ require 'register_sources_bods/structs/ownership_or_control_statement'
 RSpec.describe RegisterSourcesBods::Ingester::IngestBulk do
   subject(:transformer) { described_class.new(index:, bulk_transformer:) }
 
-  let(:index) { SecureRandom.uuid }
+  let(:es_client) { Elasticsearch::Client.new }
+  let(:index) { "tmp-#{SecureRandom.uuid}" }
 
   let(:statements) do
     [
@@ -38,6 +39,10 @@ RSpec.describe RegisterSourcesBods::Ingester::IngestBulk do
 
   before do
     allow(bulk_transformer).to receive(:call).with('s3_prefix').and_yield statements
+  end
+
+  after do
+    es_client.indices.delete(index:)
   end
 
   describe '#call' do

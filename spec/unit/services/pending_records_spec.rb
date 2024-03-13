@@ -10,7 +10,7 @@ RSpec.describe RegisterSourcesBods::Services::PendingRecords do
     described_class.new(repository:, builder:)
   end
 
-  let(:repository) { instance_double(RegisterSourcesBods::Repositories::BodsStatementRepository) }
+  let(:repository) { instance_double(RegisterSourcesBods::Repository) }
   let(:builder) { instance_double(RegisterSourcesBods::Services::Builder) }
 
   let(:statement) do

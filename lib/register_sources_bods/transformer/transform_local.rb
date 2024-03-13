@@ -5,7 +5,7 @@ require 'register_sources_oc/services/resolver_service'
 require_relative '../config/adapters'
 require_relative '../logging'
 require_relative '../record_deserializer'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/es_index_creator'
 require_relative '../services/publisher'
 require_relative 'record_processor'
@@ -28,8 +28,8 @@ module RegisterSourcesBods
       def initialize(raw_index: nil, dest_index: nil, entity_resolver: nil, stream: nil, resolve: nil)
         resolve = true if resolve.nil?
         @deserializer = RecordDeserializer.new
-        @raw_records_repository = Repositories::BodsStatementRepository.new(index: raw_index)
-        @records_repository = Repositories::BodsStatementRepository.new(index: dest_index, await_refresh: true)
+        @raw_records_repository = Repository.new(index: raw_index)
+        @records_repository = Repository.new(index: dest_index, await_refresh: true)
 
         entity_resolver ||= RegisterSourcesOc::Services::ResolverService.new if resolve
         @record_processor = Transformer::RecordProcessor.new(
@@ -40,11 +40,12 @@ module RegisterSourcesBods
             stream_name: stream
           )
         )
-        @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
+        @es_index_creator = Services::EsIndexCreator.new
+        @dest_index = dest_index
       end
 
       def call(local_path)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_index_unless_exists(@dest_index)
 
         File.foreach(local_path) do |row|
           process_rows [row]

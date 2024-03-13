@@ -3,7 +3,7 @@
 require 'register_sources_oc/repositories/alt_name_repository'
 
 require_relative '../mappers/resolver_mappings'
-require_relative '../repositories/bods_statement_repository'
+require_relative '../repository'
 require_relative '../services/publisher'
 require_relative 'base'
 
@@ -18,7 +18,7 @@ module RegisterSourcesBods
         @jurisdiction_codes = jurisdiction_codes&.split(',') || []
         @company_numbers = company_numbers&.split(',') || []
         @repo_ocan = RegisterSourcesOc::Repositories::AltNameRepository.new
-        @repo_bods = Repositories::BodsStatementRepository.new
+        @repo_bods = Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
       end
 

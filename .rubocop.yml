@@ -22,7 +22,7 @@ RSpec/FilePath:
 #-------------------------------------------------------------------------------
 RSpec/ExampleLength:
   Exclude:
-    - spec/integration/bods_statement_repository_spec.rb
+    - spec/integration/repository_spec.rb
     - spec/unit/register/entity_query_builder_spec.rb
     - spec/unit/register/relationship_spec.rb
     - spec/unit/services/migrator_lei_spec.rb
@@ -39,7 +39,7 @@ RSpec/MessageSpies:
     - spec/unit/services/publisher_spec.rb
 RSpec/MultipleExpectations:
   Exclude:
-    - spec/integration/bods_statement_repository_spec.rb
+    - spec/integration/repository_spec.rb
     - spec/unit/builders/entity_statement_spec.rb
     - spec/unit/builders/ownership_or_control_statement_spec.rb
     - spec/unit/builders/person_statement_spec.rb
@@ -48,13 +48,14 @@ RSpec/MultipleExpectations:
     - spec/unit/services/migrator_lei_spec.rb
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-    - spec/integration/bods_statement_repository_spec.rb
+    - spec/integration/repository_spec.rb
+    - spec/integration/transform_bulk_spec.rb
     - spec/unit/services/builder_spec.rb
     - spec/unit/services/migrator_lei_spec.rb
     - spec/unit/services/publisher_spec.rb
 RSpec/NamedSubject:
   Exclude:
-    - spec/integration/bods_statement_repository_spec.rb
+    - spec/integration/repository_spec.rb
     - spec/unit/builders/entity_statement_spec.rb
     - spec/unit/builders/ownership_or_control_statement_spec.rb
     - spec/unit/builders/person_statement_spec.rb
