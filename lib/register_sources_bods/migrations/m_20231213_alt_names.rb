@@ -18,7 +18,7 @@ module RegisterSourcesBods
         @jurisdiction_codes = jurisdiction_codes&.split(',') || []
         @company_numbers = company_numbers&.split(',') || []
         @repo_ocan = RegisterSourcesOc::Repositories::AltNameRepository.new
-        @repo_bods = Repository.new
+        @repo_bods = Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
       end
 

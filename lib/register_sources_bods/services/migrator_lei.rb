@@ -15,7 +15,7 @@ module RegisterSourcesBods
       def initialize(
         add_id_repository: RegisterSourcesOc::Repositories::AddIdRepository.new,
         publisher: Services::Publisher.new,
-        bods_statement_repository: Repository.new
+        bods_statement_repository: Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
       )
         @publisher = publisher
         @repository_ai = add_id_repository

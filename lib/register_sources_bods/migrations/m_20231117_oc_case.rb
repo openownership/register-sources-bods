@@ -14,7 +14,7 @@ module RegisterSourcesBods
       def initialize(identifiers_id_prefix = nil)
         super()
         @identifiers_id_prefix = identifiers_id_prefix || 'https://opencorporates.com/companies/gb/Sc'
-        @repo = Repository.new
+        @repo = Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
         @identifiers_reject = lambda { |i|
           i.schemeName == IDENTIFIER_NAME_OC ? remap_identifier_open_corporates(i) != i : false

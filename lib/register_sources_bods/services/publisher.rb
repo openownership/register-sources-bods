@@ -11,7 +11,8 @@ module RegisterSourcesBods
     class Publisher
       def initialize(repository: nil, producer: nil, builder: nil, pending_records_builder: nil, stream_name: nil)
         @repository = repository || RegisterSourcesBods::Repository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+          index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX
         )
         @producer = producer || Services::RecordsProducer.new(stream_name:)
         @builder = builder || Services::Builder.new

@@ -11,7 +11,8 @@ module RegisterSourcesBods
 
       def initialize(repository: nil, builder: nil)
         @repository = repository || RegisterSourcesBods::Repository.new(
-          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT
+          client: RegisterSourcesBods::Config::ELASTICSEARCH_CLIENT,
+          index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX
         )
         @builder = builder || Services::Builder.new
       end
