@@ -32,11 +32,12 @@ module RegisterSourcesBods
         ))
         @deserializer = RecordDeserializer.new
         @repository = repository || Repository.new(index:)
-        @es_index_creator = es_index_creator || Services::EsIndexCreator.new(index:)
+        @es_index_creator = es_index_creator || Services::EsIndexCreator.new
+        @index = index
       end
 
       def call(local_path)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_index_unless_exists(@index)
 
         File.foreach(local_path) do |row|
           process_rows [row]

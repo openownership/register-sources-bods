@@ -40,11 +40,12 @@ module RegisterSourcesBods
             stream_name: stream
           )
         )
-        @es_index_creator = Services::EsIndexCreator.new(index: dest_index)
+        @es_index_creator = Services::EsIndexCreator.new
+        @dest_index = dest_index
       end
 
       def call(local_path)
-        es_index_creator.create_index_unless_exists
+        es_index_creator.create_index_unless_exists(@dest_index)
 
         File.foreach(local_path) do |row|
           process_rows [row]
