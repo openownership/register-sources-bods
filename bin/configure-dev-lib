@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-libs=(
-    register-common
-    register-sources-oc
-)
+libs=(register-common register-sources-oc)
 
-echo -e "\n=== CONFIGURE DEV LIB\n"
+echo -e "\n=== CONFIGURE DEV LIBS\n"
 
 bundle config disable_local_branch_check true
 
