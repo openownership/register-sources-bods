@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'logger'
 require 'register_common/services/stream_client_kinesis'
 require 'register_sources_oc/services/resolver_service'
 
@@ -12,8 +13,9 @@ module RegisterSourcesBods
       # rubocop:disable Metrics/ParameterLists
       def initialize(credentials:, consumer_id:, record_processor:, record_struct:, s3_adapter:, stream_name:)
         s3_bucket = ENV.fetch('BODS_S3_BUCKET_NAME')
+        @logger = Logger.new($stdout)
         @stream_client = RegisterCommon::Services::StreamClientKinesis.new(
-          credentials:, s3_adapter:, s3_bucket:, stream_name:
+          credentials:, s3_adapter:, s3_bucket:, stream_name:, logger: @logger
         )
         @consumer_id = consumer_id
         @record_struct = record_struct
