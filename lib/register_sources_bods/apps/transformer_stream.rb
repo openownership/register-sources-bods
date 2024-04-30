@@ -28,6 +28,10 @@ module RegisterSourcesBods
       def transform
         @stream_client.consume(@consumer_id) do |record_data|
           record_h = JSON.parse(record_data, symbolize_names: true)
+          unless record_h[:company_number]
+            match = %r{/company/(?<company_number>\w+)/}.match(record_h[:data][:links][:self])
+            record_h[:company_number] = match[:company_number] if match
+          end
           record = @record_struct[**record_h]
           @bods_mapper.process(record)
         end
