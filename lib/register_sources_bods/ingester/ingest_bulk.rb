@@ -26,7 +26,6 @@ module RegisterSourcesBods
         new(index:, stream:).call(s3_prefix)
       end
 
-      # rubocop:disable Metrics/ParameterLists
       def initialize(
         bulk_transformer: nil,
         repository: nil,

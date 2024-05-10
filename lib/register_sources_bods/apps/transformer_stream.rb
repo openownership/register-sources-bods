@@ -12,8 +12,8 @@ require_relative '../services/publisher'
 module RegisterSourcesBods
   module Apps
     class TransformerStream
-      # rubocop:disable Metrics/ParameterLists
-      def initialize(credentials:, consumer_id:, record_processor:, record_struct:, s3_adapter:, stream_name:)
+      def initialize(credentials:, consumer_id:, namespace_transformed:, record_processor:, record_struct:,
+                     s3_adapter:, stream_name:)
         s3_bucket = ENV.fetch('BODS_S3_BUCKET_NAME')
         @logger = Logger.new($stdout)
         @stream_client = RegisterCommon::Services::StreamClientKinesis.new(
@@ -26,7 +26,7 @@ module RegisterSourcesBods
         @bods_mapper = record_processor.new(entity_resolver:, bods_publisher:)
         redis = Redis.new(url: ENV.fetch('REDIS_URL'))
         @exp_set = RegisterCommon::Utils::ExpiringSet.new(
-          redis:, namespace: consumer_id, ttl: REDIS_TRANSFORMED_TTL
+          redis:, namespace: namespace_transformed, ttl: REDIS_TRANSFORMED_TTL
         )
       end
       # rubocop:enable Metrics/ParameterLists
