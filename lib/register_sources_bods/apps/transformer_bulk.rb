@@ -14,7 +14,8 @@ module RegisterSourcesBods
     class TransformerBulk
       BATCH_SIZE = 25
 
-      def initialize(namespace:, parallel_files:, record_processor:, record_struct:, s3_adapter:)
+      def initialize(namespace:, namespace_transformed:, parallel_files:, record_processor:, record_struct:,
+                     s3_adapter:)
         @redis = Redis.new(url: ENV.fetch('REDIS_URL'))
         @s3_bucket = ENV.fetch('BODS_S3_BUCKET_NAME')
         @file_reader = RegisterCommon::Services::FileReader.new(
@@ -28,7 +29,7 @@ module RegisterSourcesBods
         @namespace = namespace
         @parallel_files = parallel_files
         @exp_set = RegisterCommon::Utils::ExpiringSet.new(
-          redis: @redis, namespace:, ttl: REDIS_TRANSFORMED_TTL
+          redis: @redis, namespace: namespace_transformed, ttl: REDIS_TRANSFORMED_TTL
         )
       end
 
