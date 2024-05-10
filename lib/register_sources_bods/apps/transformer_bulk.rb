@@ -3,8 +3,10 @@
 require 'json'
 require 'redis'
 require 'register_common/services/file_reader'
+require 'register_common/utils/expiring_set'
 require 'register_sources_oc/services/resolver_service'
 
+require_relative '../constants/redis'
 require_relative '../services/publisher'
 
 module RegisterSourcesBods
@@ -21,10 +23,13 @@ module RegisterSourcesBods
         @record_struct = record_struct
         @s3_adapter = s3_adapter
         entity_resolver = RegisterSourcesOc::Services::ResolverService.new
-        bods_publisher = RegisterSourcesBods::Services::Publisher.new
+        bods_publisher = Services::Publisher.new
         @bods_mapper = record_processor.new(entity_resolver:, bods_publisher:)
         @namespace = namespace
         @parallel_files = parallel_files
+        @exp_set = RegisterCommon::Utils::ExpiringSet.new(
+          redis: @redis, namespace:, ttl: REDIS_TRANSFORMED_TTL
+        )
       end
 
       def transform(s3_prefix)
@@ -56,8 +61,11 @@ module RegisterSourcesBods
       def process_rows(rows)
         rows.each do |record_data|
           record_h = JSON.parse(record_data, symbolize_names: true)
+          next if @exp_set.sismember(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+
           record = @record_struct[**record_h]
           @bods_mapper.process(record)
+          @exp_set.sadd(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
         end
       end
 
