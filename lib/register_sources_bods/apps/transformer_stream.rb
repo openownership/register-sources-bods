@@ -3,8 +3,10 @@
 require 'json'
 require 'logger'
 require 'register_common/services/stream_client_kinesis'
+require 'register_common/utils/expiring_set'
 require 'register_sources_oc/services/resolver_service'
 
+require_relative '../constants/redis'
 require_relative '../services/publisher'
 
 module RegisterSourcesBods
@@ -20,8 +22,12 @@ module RegisterSourcesBods
         @consumer_id = consumer_id
         @record_struct = record_struct
         entity_resolver = RegisterSourcesOc::Services::ResolverService.new
-        bods_publisher = RegisterSourcesBods::Services::Publisher.new
+        bods_publisher = Services::Publisher.new
         @bods_mapper = record_processor.new(entity_resolver:, bods_publisher:)
+        redis = Redis.new(url: ENV.fetch('REDIS_URL'))
+        @exp_set = RegisterCommon::Utils::ExpiringSet.new(
+          redis:, namespace: consumer_id, ttl: REDIS_TRANSFORMED_TTL
+        )
       end
       # rubocop:enable Metrics/ParameterLists
 
@@ -32,8 +38,11 @@ module RegisterSourcesBods
             match = %r{/company/(?<company_number>\w+)/}.match(record_h[:data][:links][:self])
             record_h[:company_number] = match[:company_number] if match
           end
+          next if @exp_set.sismember(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+
           record = @record_struct[**record_h]
           @bods_mapper.process(record)
+          @exp_set.sadd(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
         end
       end
     end
