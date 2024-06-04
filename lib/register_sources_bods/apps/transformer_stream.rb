@@ -34,15 +34,16 @@ module RegisterSourcesBods
       def transform
         @stream_client.consume(@consumer_id) do |record_data|
           record_h = JSON.parse(record_data, symbolize_names: true)
+          etag = record_h.dig(:data, :etag)
           unless record_h[:company_number]
             match = %r{/company/(?<company_number>\w+)/}.match(record_h[:data][:links][:self])
             record_h[:company_number] = match[:company_number] if match
           end
-          next if @exp_set.sismember(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+          next if etag && @exp_set.sismember(REDIS_TRANSFORMED_KEY, etag)
 
           record = @record_struct[**record_h]
           @bods_mapper.process(record)
-          @exp_set.sadd(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+          @exp_set.sadd(REDIS_TRANSFORMED_KEY, etag) if etag
         end
       end
     end

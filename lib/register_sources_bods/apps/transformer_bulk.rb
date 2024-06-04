@@ -62,11 +62,12 @@ module RegisterSourcesBods
       def process_rows(rows)
         rows.each do |record_data|
           record_h = JSON.parse(record_data, symbolize_names: true)
-          next if @exp_set.sismember(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+          etag = record_h.dig(:data, :etag)
+          next if etag && @exp_set.sismember(REDIS_TRANSFORMED_KEY, etag)
 
           record = @record_struct[**record_h]
           @bods_mapper.process(record)
-          @exp_set.sadd(REDIS_TRANSFORMED_KEY, record_h[:data][:etag])
+          @exp_set.sadd(REDIS_TRANSFORMED_KEY, etag) if etag
         end
       end
 
