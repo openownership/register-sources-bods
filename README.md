@@ -69,32 +69,238 @@ docker compose run sources-bods transform-bulk raw/xx/ raw-xx bods_v2_xx_dev1 bo
 
 Optionally, `0` can be appended to the command to disable resolving via Open Corporates. In case disabling is required but publishing to a Kinesis stream isn't, `'' 0` can be used as the final two arguments.
 
-### Bulk Data Export
+## Monthly bulk data tasks
 
-1.  Ingest OC bulk data
-2.  Ingest PSC bulk data
-3.  Ingest DK bulk data
-4.  Ingest SK bulk data
-5.  Transform PSC bulk data
-6.  Transform DK bulk data
-7.  Transform SK bulk data
-8.  Download S3 files (after 5m)
-    `aws s3 sync --delete s3://oo-register-v2/ ~/clones/oo-register-v2/`
-9.  Combine PSC files
-    `combine data/imports/source=PSC/ data/exports/prd/ psc`
-10. Combine DK files
-    `combine data/imports/source=DK/ data/exports/prd/ dk`
-11. Combine SK files
-    `combine data/imports/source=SK/ data/exports/prd/ sk`
-12. Combine All files
-    `combine-all data/exports/prd/`
-13. Upload S3 files
-    `aws s3 sync ~/code/register-sources-bods/data/exports/prd/     s3://oo-register-v2/exports/`
-    `aws s3 sync ~/code/register-sources-bods/data/exports/prd/all/ s3://public-bods/exports/`
+In order to perform the monthly bulk data tasks, it is necessary to import the latest raw data, process the raw data to turn it into BODS statements, and export the BODS statements to compressed files available for download internally and from the Register website. These tasks span multiple repositories and commands.
 
-- (1-4) can be done in any order or in parallel
-- (5) depends on (1, 2), (6) depends on (1, 3), (7) depends on (1, 4), but otherwise can be done in any order or in parallel
-- (8) depends on (5-7)
-- (9-11) depend on (8)
-- (12) depends on (9-11)
-- (13) depends on (9-12)
+All of these commands should be run on the Register server in EC2 (`bods-register`).
+
+### Ingester (Import)
+
+Ingester OC, Ingester PSC, Ingester DK, and Ingester SK steps can be done in any order, or in parallel.
+
+#### Ingester OC
+
+<https://github.com/openownership/register-ingester-oc?tab=readme-ov-file#helper-script>
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-ingester-oc/
+git checkout main
+git pull
+docker compose build
+```
+
+Ingest the bulk data, where `YYYY-MM-DD` is the date the Open Corporates FTP files were published:
+
+```sh
+docker compose run ingester-oc ingest-bulk YYYY-MM-DD
+```
+
+This will ask you for the FTP password, 3 times.
+
+#### Ingester PSC
+
+<https://github.com/openownership/register-ingester-psc?tab=readme-ov-file#snapshots-using-the-helper-script>
+
+Note that there is also a streaming ingester service running on Heroku (`register-ingester-psc-prd`). It might not be necessary to complete the rest of this step if that process is all working correctly without missed data (not currently the case).
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-ingester-psc/
+git checkout main
+git pull
+docker compose build
+```
+
+Ingest the bulk data:
+
+```sh
+docker compose run ingester-psc ingest-bulk
+```
+
+#### Ingester DK
+
+<https://github.com/openownership/register-ingester-dk?tab=readme-ov-file#usage>
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-ingester-dk/
+git checkout master
+git pull
+docker compose build
+```
+
+Ingest the bulk data:
+
+```sh
+docker compose run ingester-dk ingest-bulk
+```
+
+#### Ingester SK
+
+<https://github.com/openownership/register-ingester-sk?tab=readme-ov-file#usage>
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-ingester-sk/
+git checkout main
+git pull
+docker compose build
+```
+
+Ingest the bulk data:
+
+```sh
+docker compose run ingester-sk ingest-bulk
+```
+
+### Transformer (Process)
+
+Transformer PSC, Transformer DK, and Transformer SK steps can be done in any order, or in parallel, once their dependencies are satisfied.
+
+#### Transformer PSC
+
+Transformer PSC step depends on Ingester OC and Ingester PSC steps.
+
+<https://github.com/openownership/register-transformer-psc?tab=readme-ov-file#bulk-data>
+
+Note that there is also a streaming transformer service running on Heroku (`register-transformer-psc-prd`). It might not be necessary to complete the rest of this step if that process is all working correctly and no additional bulk data had to be imported.
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-transformer-psc/
+git checkout main
+git pull
+docker compose build
+```
+
+Transform the bulk data, where `YYYY` and `MM` are the current year and month to be transformed:
+
+```sh
+docker compose run transformer-psc transform-bulk raw_data/source=PSC/year=YYYY/month=MM/
+```
+
+#### Transformer DK
+
+Transformer DK step depends on Ingester OC and Ingester DK steps.
+
+<https://github.com/openownership/register-transformer-dk?tab=readme-ov-file#usage>
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-transformer-dk/
+git checkout master
+git pull
+docker compose build
+```
+
+Transform the bulk data, where `YYYY` and `MM` are the current year and month to be transformed:
+
+```sh
+docker compose run transformer-dk transform-bulk raw_data/source=DK/year=YYYY/month=MM/
+```
+
+#### Transformer SK
+
+Transformer SK step depends on Ingester OC and Ingester SK steps.
+
+<https://github.com/openownership/register-transformer-sk?tab=readme-ov-file#usage>
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-transformer-sk/
+git checkout main
+git pull
+docker compose build
+```
+
+Transform the bulk data, where `YYYY` and `MM` are the current year and month to be transformed:
+
+```sh
+docker compose run transformer-sk transform-bulk raw_data/source=SK/year=YYYY/month=MM/
+```
+
+### Combiner (Export)
+
+Download S3 files and all subsequent Combiner steps depend on Transformer steps being completed.
+
+<https://github.com/openownership/register-sources-bods>
+
+<https://github.com/openownership/register/issues/265#issuecomment-2165306401>
+
+#### Update
+
+Checkout the latest code and build via Docker:
+
+```sh
+cd ~/register-sources-bods/
+git checkout main
+git pull
+docker compose build
+```
+
+#### Download S3 files
+
+Download the files:
+
+```sh
+sync-clones
+```
+
+#### Combine PSC
+
+Combine the files:
+
+```sh
+docker compose run sources-bods combine data/imports/source=PSC/ data/exports/prd/ psc
+```
+
+#### Combine DK
+
+Combine the files:
+
+```sh
+docker compose run sources-bods combine data/imports/source=DK/ data/exports/prd/ dk
+```
+
+#### Combine SK
+
+Combine the files:
+
+```sh
+docker compose run sources-bods combine data/imports/source=SK/ data/exports/prd/ sk
+```
+
+#### Combine All
+
+Combine the files:
+
+```sh
+docker compose run sources-bods combine-all data/exports/prd/
+```
+
+#### Upload S3 files
+
+Upload the files:
+
+```sh
+sync-exports-tx
+```
+
+#### Check Register website
+
+Check that the All compressed file appears on the Register website automatically:
+
+<https://register.openownership.org/download>
+
+#### Announce
+
+Announce the availability of bulk data exports internally on Slack in `#oo-technology` channel.
