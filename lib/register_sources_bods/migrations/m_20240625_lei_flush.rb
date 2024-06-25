@@ -11,7 +11,7 @@ module RegisterSourcesBods
         super()
         @repo_bods = Repository.new(index: Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
-        @identifiers_reject = ->(i) { i.schemeName == IDENTIFIER_NAME_LEI }
+        @identifiers_reject = ->(i) { i.schemeName == IDENTIFIER_SCHEME_LEI }
       end
 
       def do_migrate
@@ -24,7 +24,7 @@ module RegisterSourcesBods
             query: {
               bool: {
                 must: [
-                  { term: { 'identifiers.schemeName': IDENTIFIER_NAME_LEI } }
+                  { term: { 'identifiers.scheme': IDENTIFIER_SCHEME_LEI } }
                 ]
               }
             }
