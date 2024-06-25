@@ -21,14 +21,13 @@ module RegisterSourcesBods
 
       def log_doc(doc)
         @n += 1
-        identifier = doc['_source']['identifiers']&.select do |i|
-          i['schemeName'] == IDENTIFIER_NAME_REG
-        end&.min_by { |i| i['id'] }
+        replaced = doc['_source']['metadata.replaced'] ? 'R' : '-'
         puts [
           format('%9s', @n),
           doc['_index'],
           doc['_id'].ljust(20),
-          (identifier ? identifier['id'] : '').ljust(30),
+          replaced,
+          doc['_source']['statementType'].ljust(27),
           doc['_source']['name']
         ].join(' ')
       end
