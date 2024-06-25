@@ -9,6 +9,7 @@ module RegisterSourcesBods
 
       def initialize
         @buffer = []
+        @n = 0
       end
 
       def migrate
@@ -19,10 +20,12 @@ module RegisterSourcesBods
       private
 
       def log_doc(doc)
+        @n += 1
         identifier = doc['_source']['identifiers']&.select do |i|
           i['schemeName'] == IDENTIFIER_NAME_REG
         end&.min_by { |i| i['id'] }
         puts [
+          format('%9s', @n),
           doc['_index'],
           doc['_id'].ljust(20),
           (identifier ? identifier['id'] : '').ljust(30),
