@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'register_sources_oc/repositories/alt_name_repository'
+require 'register_sources_oc/repository'
 
 require_relative '../mappers/resolver_mappings'
 require_relative '../repository'
@@ -17,7 +17,10 @@ module RegisterSourcesBods
         @buffer_ids = Set.new
         @jurisdiction_codes = jurisdiction_codes&.split(',') || []
         @company_numbers = company_numbers&.split(',') || []
-        @repo_ocan = RegisterSourcesOc::Repositories::AltNameRepository.new
+        @repo_ocan = RegisterSourcesOc::Repository.new(
+          RegisterSourcesOc::AltName,
+          index: RegisterSourcesOc::Config::ELASTICSEARCH_INDEX_ALT_NAMES
+        )
         @repo_bods = Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
       end
