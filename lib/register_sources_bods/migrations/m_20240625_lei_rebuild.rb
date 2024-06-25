@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require 'register_sources_oc/structs/add_id'
-
 require_relative 'base'
 
 module RegisterSourcesBods
