@@ -21,15 +21,31 @@ module RegisterSourcesBods
 
       def log_doc(doc)
         @n += 1
-        replaced = doc['_source']['metadata.replaced'] ? 'R' : '-'
-        puts [
-          format('%9s', @n),
-          doc['_index'],
-          doc['_id'].ljust(20),
-          replaced,
-          doc['_source']['statementType'].ljust(27),
-          doc['_source']['name']
-        ].join(' ')
+        fs = if doc['_source']['statementType']
+               replaced = doc['_source']['metadata.replaced'] ? 'R' : '-'
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20),
+                 replaced,
+                 doc['_source']['statementType'].ljust(27),
+                 doc['_source']['name']
+               ]
+             elsif doc['_source']['identifier_system_code']
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20),
+                 doc['_source']['identifier_system_code']
+               ]
+             else
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20)
+               ]
+             end
+        puts fs.join(' ')
       end
 
       def append_buffer(item)
