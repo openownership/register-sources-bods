@@ -1,38 +1,30 @@
 # frozen_string_literal: true
 
-require 'register_sources_oc/repository'
-
-require_relative '../mappers/resolver_mappings'
-require_relative '../repository'
-require_relative '../services/publisher'
 require_relative 'base'
 
 module RegisterSourcesBods
   module Migrations
-    class M20231213AltNames < Base
-      include RegisterSourcesBods::Mappers::ResolverMappings
+    class M20240625LEIsAdd < Base
+      include Mappers::ResolverMappings
 
-      def initialize(jurisdiction_codes = nil, company_numbers = nil)
+      def initialize(jurisdiction_codes = nil)
         super()
         @buffer_ids = Set.new
         @jurisdiction_codes = jurisdiction_codes&.split(',') || []
-        @company_numbers = company_numbers&.split(',') || []
-        @repo_ocan = RegisterSourcesOc::Repository.new(
-          RegisterSourcesOc::AltName,
-          index: RegisterSourcesOc::Config::ELASTICSEARCH_INDEX_ALT_NAMES
+        @repo_bods = Repository.new(index: Config::ELASTICSEARCH_INDEX)
+        @repo_ocai = RegisterSourcesOc::Repository.new(
+          RegisterSourcesOc::AddId,
+          index: RegisterSourcesOc::Config::ELASTICSEARCH_INDEX_ADD_IDS
         )
-        @repo_bods = Repository.new(index: RegisterSourcesBods::Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
       end
 
-      private
-
       def do_migrate
-        q = {
-          jurisdiction_codes: @jurisdiction_codes,
-          company_numbers: @company_numbers
-        }
-        @repo_ocan.each_alt_name(**q) do |doc|
+        q_must = [
+          { term: { identifier_system_code: 'lei' } },
+          { terms: { jurisdiction_code: @jurisdiction_codes } }
+        ]
+        @repo_ocai.each(q_must:) do |doc|
           log_doc(doc)
           process_doc(doc)
         end
@@ -51,11 +43,12 @@ module RegisterSourcesBods
       end
 
       def process_stmt(doc, id, stmt)
-        alternate_name = doc['_source']['name']
-        stmt = stmt.new(alternateNames: []) unless stmt.alternateNames
-        return if stmt.alternateNames.include?(alternate_name)
+        add_id = RegisterSourcesOc::AddId.new(doc['_source'])
+        identifier = identifier_lei_from_add_id(add_id)
+        stmt = stmt.new(identifiers: []) unless stmt.identifiers
+        return if stmt.identifiers.include?(identifier)
 
-        stmt.alternateNames << alternate_name
+        stmt.identifiers << identifier
         return if @buffer_ids.member?(id)
 
         append_buffer(stmt)

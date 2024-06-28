@@ -9,6 +9,7 @@ module RegisterSourcesBods
 
       def initialize
         @buffer = []
+        @n = 0
       end
 
       def migrate
@@ -19,15 +20,32 @@ module RegisterSourcesBods
       private
 
       def log_doc(doc)
-        identifier = doc['_source']['identifiers']&.select do |i|
-          i['schemeName'] == IDENTIFIER_NAME_REG
-        end&.min_by { |i| i['id'] }
-        puts [
-          doc['_index'],
-          doc['_id'].ljust(20),
-          (identifier ? identifier['id'] : '').ljust(30),
-          doc['_source']['name']
-        ].join(' ')
+        @n += 1
+        fs = if doc['_source']['statementType']
+               replaced = doc['_source']['metadata.replaced'] ? 'R' : '-'
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20),
+                 replaced,
+                 doc['_source']['statementType'].ljust(27),
+                 doc['_source']['name']
+               ]
+             elsif doc['_source']['identifier_system_code']
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20),
+                 doc['_source']['identifier_system_code']
+               ]
+             else
+               [
+                 format('%9s', @n),
+                 doc['_index'],
+                 doc['_id'].ljust(20)
+               ]
+             end
+        puts fs.join(' ')
       end
 
       def append_buffer(item)
