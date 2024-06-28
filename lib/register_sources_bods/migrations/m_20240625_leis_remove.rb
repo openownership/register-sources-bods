@@ -4,14 +4,14 @@ require_relative 'base'
 
 module RegisterSourcesBods
   module Migrations
-    class M20240625LEIFlush < Base
+    class M20240625LEIsRemove < Base
       include Mappers::ResolverMappings
 
-      def initialize
+      def initialize(identifier_scheme_name = nil)
         super()
         @repo_bods = Repository.new(index: Config::ELASTICSEARCH_INDEX)
         @publisher = Services::Publisher.new
-        @identifiers_reject = ->(i) { i.schemeName == IDENTIFIER_SCHEME_LEI }
+        @identifiers_reject = ->(i) { i.schemeName == identifier_scheme_name }
       end
 
       def do_migrate

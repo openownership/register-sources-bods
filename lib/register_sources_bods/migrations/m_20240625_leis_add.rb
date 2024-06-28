@@ -4,7 +4,7 @@ require_relative 'base'
 
 module RegisterSourcesBods
   module Migrations
-    class M20240625LEIRebuild < Base
+    class M20240625LEIsAdd < Base
       include Mappers::ResolverMappings
 
       def initialize(jurisdiction_codes = nil)
