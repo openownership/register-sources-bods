@@ -308,7 +308,7 @@ module RegisterSourcesBods
         }
       end
 
-      refresh = await_refresh || @await_refresh ? :wait_for : false
+      refresh = await_refresh || @await_refresh ? true : false
 
       result = client.bulk(body: operations, refresh:)
 
