@@ -39,7 +39,11 @@ module RegisterSourcesBods
       def transform(s3_prefix)
         s3_paths = @s3_adapter.list_objects(s3_bucket: @s3_bucket, s3_prefix:)
         @logger.debug "PARALLEL: #{@parallel_files}"
-        s3_paths.each_slice(@parallel_files) do |s3_paths_batch|
+        s3_paths2 = s3_paths.reject { |p| file_processed?(p) }
+        (s3_paths - s3_paths2).each do |s3_path|
+          @logger.debug "[#{s3_path}] SKIPPING"
+        end
+        s3_paths2.each_slice(@parallel_files) do |s3_paths_batch|
           threads = []
           s3_paths_batch.each do |s3_path|
             threads << Thread.new { process_s3_path(s3_path) }
@@ -51,10 +55,6 @@ module RegisterSourcesBods
       private
 
       def process_s3_path(s3_path)
-        if file_processed?(s3_path)
-          @logger.debug "[#{s3_path}] SKIPPING"
-          return
-        end
         @logger.debug "[#{s3_path}] PROCESSING"
         @file_reader.read_from_s3(s3_bucket: @s3_bucket, s3_path:) do |rows|
           process_rows(rows, s3_path)
