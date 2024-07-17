@@ -38,10 +38,10 @@ module RegisterSourcesBods
 
       def transform(s3_prefix)
         s3_paths = @s3_adapter.list_objects(s3_bucket: @s3_bucket, s3_prefix:)
-        @logger.debug "PARALLEL: #{@parallel_files}"
+        @logger.info "PARALLEL: #{@parallel_files}"
         s3_paths2 = s3_paths.reject { |p| file_processed?(p) }
         (s3_paths - s3_paths2).each do |s3_path|
-          @logger.debug "[#{s3_path}] SKIPPING"
+          @logger.info "[#{s3_path}] SKIPPING"
         end
         s3_paths2.each_slice(@parallel_files) do |s3_paths_batch|
           threads = []
@@ -55,19 +55,19 @@ module RegisterSourcesBods
       private
 
       def process_s3_path(s3_path)
-        @logger.debug "[#{s3_path}] PROCESSING"
+        @logger.info "[#{s3_path}] PROCESSING"
         @file_reader.read_from_s3(s3_bucket: @s3_bucket, s3_path:) do |rows|
           process_rows(rows, s3_path)
         end
         mark_file_complete(s3_path)
-        @logger.debug "[#{s3_path}] PROCESSED"
+        @logger.info "[#{s3_path}] PROCESSED"
       end
 
       def process_rows(rows, s3_path)
         rows.each do |record_data|
           @files_n[s3_path] += 1
           record_h = JSON.parse(record_data, symbolize_names: true)
-          @logger.info "[#{s3_path}] [#{format('%9s', @files_n[s3_path])}] #{record_h[:data][:links][:self]}"
+          @logger.debug "[#{s3_path}] [#{format('%9s', @files_n[s3_path])}] #{record_h[:data][:links][:self]}"
           etag = record_h.dig(:data, :etag)
           next if etag && @exp_set.sismember(REDIS_TRANSFORMED_KEY, etag)
 
