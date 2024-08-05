@@ -67,7 +67,7 @@ module RegisterSourcesBods
         rows.each do |record_data|
           @files_n[s3_path] += 1
           record_h = JSON.parse(record_data, symbolize_names: true)
-          @logger.debug "[#{s3_path}] [#{format('%9s', @files_n[s3_path])}] #{record_h[:data][:links][:self]}"
+          @logger.debug "[#{s3_path}] [#{format('%9s', @files_n[s3_path])}] #{record_h.dig(:data, :links, :self)}"
           etag = record_h.dig(:data, :etag)
           next if etag && @exp_set.sismember(REDIS_TRANSFORMED_KEY, etag)
 
